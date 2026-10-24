@@ -1,0 +1,2 @@
+// Comprobación de tipos del futuro backend.
+{"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"noEmit":true,"skipLibCheck":true},"include":["src"]}

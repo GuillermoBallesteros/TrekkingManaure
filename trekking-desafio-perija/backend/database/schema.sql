@@ -1,0 +1,9 @@
+-- Esquema MySQL pendiente; no crea tablas.
+-- administradores: acceso al panel.
+-- participantes: datos personales y estadía.
+-- acompanantes: datos pendientes de confirmar.
+-- pagos: inscripción, saldo, comprobante y aceptación/rechazo.
+-- cupos: capacidad y reservas confirmadas.
+-- compromisos_pago: fecha elegida para pagar el kit.
+-- extras_participante: cuatrimoto y parapente.
+-- recordatorios: seguimiento de envíos mediante Brevo.
