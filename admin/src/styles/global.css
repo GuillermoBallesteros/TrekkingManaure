@@ -1,1 +1,201 @@
-/* Estilos del panel administrativo pendientes. */
+@import '../../../shared/styles/fonts.css';
+@import '../../../shared/styles/tokens.css';
+@import '../../../shared/styles/reset.css';
+@import '../../../shared/styles/base.css';
+@import '../../../shared/styles/brand.css';
+@import '../../../shared/styles/modal.css';
+
+.admin-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.admin-page-head .eyebrow {
+  font-size: 0.6rem;
+  margin-bottom: 13px;
+}
+
+.admin-page-head h1 {
+  font-size: clamp(2.5rem, 4vw, 3.6rem);
+  margin-bottom: 12px;
+}
+
+.admin-page-head h1 em {
+  font-style: normal;
+  color: var(--dorado);
+}
+
+.admin-page-head p {
+  font-size: 0.74rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+
+.admin-small-btn {
+  font-size: 0.6rem;
+  padding: 0.75rem 1rem;
+}
+
+.admin-small-btn .ico {
+  width: 15px;
+  height: 15px;
+}
+
+.admin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  color: var(--dorado);
+  font-size: 0.56rem;
+  white-space: nowrap;
+}
+
+.admin-pill--warm {
+  background: rgba(211, 41, 15, 0.12);
+  border-color: rgba(211, 41, 15, 0.3);
+  color: #ffad94;
+}
+
+.admin-panel {
+  min-width: 0;
+  background: linear-gradient(160deg, rgba(11, 46, 38, 0.85), rgba(5, 35, 28, 0.8));
+  border: 1px solid var(--linea);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.admin-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px;
+}
+
+.admin-panel-head h2 {
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+}
+
+.admin-panel-head p {
+  font-size: 0.64rem;
+  color: rgba(253, 248, 223, 0.5);
+}
+
+.admin-panel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(253, 248, 223, 0.08);
+  font-size: 0.58rem;
+  color: rgba(253, 248, 223, 0.45);
+}
+
+.admin-panel-foot .ico {
+  color: var(--dorado);
+  width: 15px;
+  height: 15px;
+}
+
+.admin-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.65rem;
+  color: var(--dorado);
+  white-space: nowrap;
+}
+
+.admin-text-link .ico {
+  width: 15px;
+  height: 15px;
+}
+
+select,
+input[type='number'] {
+  padding: 11px 13px;
+  border: 1px solid rgba(253, 248, 223, 0.15);
+  border-radius: 10px;
+  background: var(--fondo-2);
+  color: var(--texto);
+  font-size: 0.75rem;
+  color-scheme: dark;
+}
+
+.admin-notice {
+  padding: 15px 18px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: rgba(242, 193, 78, 0.045);
+  color: rgba(253, 248, 223, 0.65);
+  font-size: 0.71rem;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.admin-feedback {
+  color: var(--dorado-claro) !important;
+  font-size: 0.72rem !important;
+  margin: 17px 0 0 !important;
+}
+
+.admin-feedback:empty {
+  display: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 1050px) {
+  .admin-page-head {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .admin-panel-head {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page-head h1 {
+    font-size: 2.8rem;
+  }
+  .admin-page-head p {
+    font-size: 0.7rem;
+  }
+  .admin-page-head .eyebrow {
+    font-size: 0.52rem;
+    letter-spacing: 0.16em;
+  }
+  .admin-panel-head {
+    padding: 21px 18px;
+  }
+  .admin-panel-head h2 {
+    font-size: 1.3rem;
+  }
+  .admin-panel-head p {
+    font-size: 0.6rem;
+  }
+  .admin-panel-foot {
+    padding-inline: 18px;
+    font-size: 0.53rem;
+    flex-wrap: wrap;
+  }
+}

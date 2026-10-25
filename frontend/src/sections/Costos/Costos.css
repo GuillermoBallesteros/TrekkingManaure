@@ -1,1 +1,112 @@
-/* Estilos mobile first de Costos, pendientes. */
+.costos-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 1.2rem;
+  align-items: stretch;
+}
+.price-card {
+  background: linear-gradient(160deg, rgba(14, 58, 47, 0.95), rgba(3, 27, 22, 0.95));
+  border: 1px solid var(--linea);
+  border-radius: 26px;
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+  position: relative;
+  overflow: hidden;
+}
+.price-card__total {
+  font-family: var(--titulos);
+  font-size: clamp(3.4rem, 8vw, 5rem);
+  line-height: 1;
+  color: var(--dorado);
+  margin: 0.2rem 0 0.2rem;
+}
+.price-card__total span {
+  font-size: 0.5em;
+  color: var(--texto);
+}
+.price-card__desc {
+  font-size: 0.82rem;
+  color: rgba(253, 248, 223, 0.65);
+  margin-bottom: 1.4rem;
+  max-width: 44ch;
+}
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+.split__item {
+  border: 1px solid rgba(253, 248, 223, 0.1);
+  background: rgba(253, 248, 223, 0.045);
+  border-radius: 14px;
+  padding: 1rem;
+}
+.split__item small {
+  display: block;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.5);
+  margin-bottom: 0.35rem;
+}
+.split__item strong {
+  font-family: var(--titulos);
+  font-size: 1.65rem;
+  letter-spacing: 0.03em;
+  color: var(--texto);
+}
+.split__item span {
+  font-size: 0.7rem;
+  color: rgba(253, 248, 223, 0.55);
+  display: block;
+  margin-top: 0.2rem;
+}
+.deadline {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  border: 1px dashed rgba(211, 41, 15, 0.5);
+  background: rgba(211, 41, 15, 0.08);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  font-size: 0.78rem;
+  color: rgba(253, 248, 223, 0.82);
+}
+.deadline .ico {
+  color: var(--naranja);
+  margin-top: 2px;
+}
+.deadline strong {
+  color: var(--dorado-claro);
+}
+.steps {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  background: rgba(11, 46, 38, 0.6);
+  border: 1px solid rgba(253, 248, 223, 0.08);
+  border-radius: 16px;
+  padding: 1.1rem;
+}
+.step__n {
+  font-family: var(--titulos);
+  font-size: 1.5rem;
+  color: var(--accion);
+  line-height: 1;
+  width: 34px;
+  text-align: center;
+}
+.step h3 {
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+.step p {
+  font-size: 0.76rem;
+  color: rgba(253, 248, 223, 0.6);
+}

@@ -1,0 +1,78 @@
+.admin-export {
+  max-width: 650px;
+  padding: 35px;
+}
+
+.admin-export .feature__icon {
+  width: 54px;
+  height: 54px;
+  color: var(--dorado);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--linea);
+  border-radius: 15px;
+  background: rgba(242, 193, 78, 0.07);
+  margin-bottom: 25px;
+}
+
+.admin-export .feature__icon .ico {
+  width: 28px;
+  height: 28px;
+}
+
+.admin-export h2 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.admin-export > p {
+  font-size: 0.77rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+
+.admin-export > label {
+  display: block;
+  font-size: 0.7rem;
+  margin: 28px 0 10px;
+}
+
+.admin-export > select {
+  width: 100%;
+}
+
+.admin-export-summary {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 18px 0;
+  margin: 22px 0;
+  border-block: 1px solid var(--linea);
+  color: rgba(253, 248, 223, 0.55);
+  font-size: 0.65rem;
+}
+
+.admin-export-summary strong {
+  display: block;
+  color: var(--dorado-claro);
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.admin-export > .btn {
+  font-size: 0.7rem;
+}
+
+.admin-export .admin-notice {
+  margin-top: 25px;
+  margin-bottom: 0;
+  font-size: 0.68rem;
+}
+
+@media (max-width: 480px) {
+  .admin-export {
+    padding: 26px 22px;
+  }
+  .admin-export h2 {
+    font-size: 2.2rem;
+  }
+}

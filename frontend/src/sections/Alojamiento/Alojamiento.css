@@ -1,1 +1,95 @@
-/* Estilos mobile first de Alojamiento, pendientes. */
+.stay-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+.stay {
+  position: relative;
+  border: 1.5px solid rgba(242, 193, 78, 0.16);
+  border-radius: 24px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  background: linear-gradient(160deg, rgba(11, 46, 38, 0.85), rgba(4, 30, 24, 0.9));
+  overflow: hidden;
+  transition:
+    border-color 0.25s,
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.stay:hover {
+  transform: translateY(-4px);
+  border-color: var(--linea);
+  box-shadow: var(--sombra);
+}
+.stay--paramo::after {
+  content: '';
+  position: absolute;
+  inset: auto -20% -40% auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(62, 122, 43, 0.35), transparent 70%);
+}
+.stay--hotel::after {
+  content: '';
+  position: absolute;
+  inset: auto -20% -40% auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 88, 28, 0.25), transparent 70%);
+}
+.stay__icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--linea);
+  background: rgba(242, 193, 78, 0.08);
+  color: var(--dorado);
+  margin-bottom: 1rem;
+}
+.stay__icon .ico {
+  width: 28px;
+  height: 28px;
+}
+.stay h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 0.4rem;
+}
+.stay p {
+  font-size: 0.84rem;
+  color: rgba(253, 248, 223, 0.68);
+  margin-bottom: 1rem;
+  max-width: 38ch;
+}
+.stay ul {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+.stay li {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: rgba(253, 248, 223, 0.75);
+}
+.stay li .ico {
+  width: 16px;
+  height: 16px;
+  color: var(--musgo);
+  margin-top: 3px;
+}
+.stay__tag {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid var(--linea);
+  color: var(--dorado);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  background: rgba(3, 27, 22, 0.7);
+}

@@ -1,2 +1,2 @@
-// Punto de entrada reservado para hooks.
-export {};
+export { useReveal } from './useReveal';
+export { useReserva } from './useReserva';

@@ -1,0 +1,40 @@
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.brand__mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 25%, var(--musgo), #0b2e26 70%);
+  border: 1.5px solid var(--dorado);
+  color: var(--dorado-claro);
+}
+.brand__mark .ico {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+}
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.brand__name {
+  font-family: var(--titulos);
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  color: var(--texto);
+}
+.brand__sub {
+  font-size: 0.56rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dorado);
+  margin-top: 3px;
+}

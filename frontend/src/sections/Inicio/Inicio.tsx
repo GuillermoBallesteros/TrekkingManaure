@@ -1,3 +1,69 @@
-// Hero, cuenta regresiva y contador de cupos.
+import Icon from '../../../../shared/components/Icon';
+import { evento } from '../../../../shared/config';
+import ContadorCupos from '../../components/ui/ContadorCupos';
 import './Inicio.css';
-export default function Inicio() { return <section><h2>Inicio</h2></section>; }
+
+export default function Inicio() {
+  return (
+    <section className="hero" id="inicio">
+      <svg
+        className="hero__mountains"
+        viewBox="0 0 1440 320"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          fill="#05231C"
+          d="M0 250l120-70 90 50 110-90 100 70 120-110 130 90 110-50 120 80 110-60 130 70 120-40 90 40v100H0z"
+          opacity=".9"
+        />
+        <path
+          fill="#031B16"
+          d="M0 290l140-60 120 45 130-80 150 70 140-50 130 60 140-40 150 50 140-60 200 65v30H0z"
+        />
+      </svg>
+      <div className="container hero__grid">
+        <div>
+          <span className="hero__kicker">
+            <i className="dot-live" /> Inscripciones · Cupos limitados
+          </span>
+          <div className="hero__place">Manaure · Cesar · Colombia</div>
+          <h1>
+            <span className="line">Trekking</span>
+            <span className="line">
+              Desafío <span className="brush">Perijá</span>
+            </span>
+            <span className="line stroke">13K</span>
+          </h1>
+          <p className="hero__lead">
+            Del pueblo al páramo. Dos días de recorrido, fogata y montaña, con guías, seguridad y
+            cupos limitados. Vive la experiencia completa o vuelve a dormir a Manaure.
+          </p>
+          <div className="hero__facts">
+            <span className="fact">
+              <Icon name="calendar" /> {evento.fechasTexto}
+            </span>
+            <span className="fact">
+              <Icon name="clock" /> Salida 6:00 a.m.
+            </span>
+            <span className="fact">
+              <Icon name="pin" /> Restaurante El Sabor · Villa Adelaida
+            </span>
+            <span className="fact">
+              <Icon name="mountain" /> {evento.distanciaKm} km
+            </span>
+          </div>
+          <div className="hero__actions">
+            <a href="#reserva" className="btn btn--primary">
+              Reservar mi cupo <Icon name="arrow" />
+            </a>
+            <a href="#evento" className="btn btn--ghost">
+              Ver información
+            </a>
+          </div>
+        </div>
+        <ContadorCupos />
+      </div>
+    </section>
+  );
+}

@@ -1,1 +1,44 @@
-/* Estilos mobile first de Evento, pendientes. */
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.feature {
+  background: linear-gradient(160deg, rgba(11, 46, 38, 0.85), rgba(5, 35, 28, 0.65));
+  border: 1px solid rgba(242, 193, 78, 0.14);
+  border-radius: var(--radio);
+  padding: 1.5rem 1.3rem;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+.feature:hover {
+  transform: translateY(-4px);
+  border-color: var(--linea);
+}
+.feature__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1rem;
+  background: rgba(242, 193, 78, 0.1);
+  color: var(--dorado);
+  border: 1px solid var(--linea);
+}
+.feature__icon .ico {
+  width: 24px;
+  height: 24px;
+}
+.feature h3 {
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+.feature p {
+  font-size: 0.8rem;
+  color: rgba(253, 248, 223, 0.65);
+  line-height: 1.55;
+}

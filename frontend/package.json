@@ -1,6 +1,6 @@
 {
   "name": "trekking-frontend",
-  "description": "Esqueleto inicial de la aplicación.",
+  "description": "Sitio p\u00fablico del Trekking Desaf\u00edo Perij\u00e1 13K.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write --ignore-path ../.prettierignore . ../admin ../shared ../docs ../README.md ../.prettierrc.json",
+    "format:check": "prettier --check --ignore-path ../.prettierignore . ../admin ../shared ../docs ../README.md ../.prettierrc.json"
   },
   "dependencies": {
     "react": "^19.3.1",
@@ -18,8 +20,8 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "prettier": "^3.9.10",
     "typescript": "^7.0.2",
     "vite": "^8.3.5"
   }
 }
-
