@@ -1,0 +1,101 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 1rem;
+  border: 0;
+  color: var(--texto);
+  background: transparent;
+}
+.modal[open] {
+  display: grid;
+  place-items: center;
+}
+.modal::backdrop {
+  background: rgba(1, 14, 11, 0.8);
+  backdrop-filter: blur(6px);
+}
+
+.modal__card {
+  width: min(100%, 560px);
+  max-height: 90svh;
+  overflow: auto;
+  background: linear-gradient(165deg, #0e3a2f, #031b16);
+  border: 1px solid var(--linea);
+  border-radius: 24px;
+  padding: clamp(1.3rem, 3vw, 1.8rem);
+  box-shadow: var(--sombra);
+  transform: translateY(12px);
+  transition: transform 0.25s;
+}
+.modal[open] .modal__card {
+  transform: none;
+}
+.modal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.modal__head h2 {
+  font-size: 1.7rem;
+}
+.modal__close {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(253, 248, 223, 0.15);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.modal__close:hover {
+  border-color: var(--dorado);
+  color: var(--dorado);
+}
+.modal p {
+  font-size: 0.82rem;
+  color: rgba(253, 248, 223, 0.65);
+  margin-bottom: 1rem;
+}
+.wa-preview {
+  background: rgba(3, 27, 22, 0.85);
+  border: 1px solid rgba(253, 248, 223, 0.1);
+  border-radius: 14px;
+  padding: 0.9rem;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.7rem;
+  line-height: 1.55;
+  color: rgba(253, 248, 223, 0.8);
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+  max-height: 230px;
+  overflow: auto;
+}
+.modal__channels {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+}
+.modal__channels div {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.74rem;
+  color: rgba(253, 248, 223, 0.65);
+}
+.modal__channels .ico {
+  width: 18px;
+  height: 18px;
+  color: var(--musgo);
+}
+.modal__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}

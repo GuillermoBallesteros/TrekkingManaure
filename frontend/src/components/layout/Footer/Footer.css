@@ -1,0 +1,66 @@
+footer {
+  border-top: 1px solid rgba(242, 193, 78, 0.15);
+  background: rgba(3, 27, 22, 0.85);
+  padding: 3rem 0 2rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-grid p {
+  font-size: 0.8rem;
+  color: rgba(253, 248, 223, 0.55);
+  max-width: 36ch;
+  margin-top: 0.8rem;
+}
+.footer-col h2 {
+  font-family: var(--titulos);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+  color: var(--dorado);
+}
+.footer-col ul {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+.footer-col a:hover {
+  color: var(--dorado);
+}
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(253, 248, 223, 0.08);
+  font-size: 0.7rem;
+  color: rgba(253, 248, 223, 0.4);
+}
+.wa-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 70;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #25d366;
+  color: #04301a;
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.35);
+  transition: transform 0.2s;
+}
+.wa-float:hover {
+  transform: scale(1.07);
+}
+.wa-float .ico {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.9;
+}

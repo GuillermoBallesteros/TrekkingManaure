@@ -1,1 +1,35 @@
-/* Estilos mobile first de Kit, pendientes. */
+.kit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.kit {
+  border: 1px solid rgba(242, 193, 78, 0.13);
+  border-radius: 16px;
+  padding: 1.25rem 1.15rem;
+  background: rgba(11, 46, 38, 0.5);
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  transition:
+    border-color 0.25s,
+    background 0.25s;
+}
+.kit:hover {
+  border-color: var(--linea);
+  background: rgba(14, 58, 47, 0.7);
+}
+.kit .ico {
+  width: 26px;
+  height: 26px;
+  color: var(--dorado);
+  margin-top: 2px;
+}
+.kit h3 {
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+.kit p {
+  font-size: 0.74rem;
+  color: rgba(253, 248, 223, 0.58);
+}

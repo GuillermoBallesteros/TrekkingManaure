@@ -1,1 +1,29 @@
-/* Estilos mobile first de Aliados, pendientes. */
+.aliados {
+  background: linear-gradient(180deg, transparent, rgba(253, 248, 223, 0.03), transparent);
+}
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.8rem;
+}
+.logo-card {
+  background: #fdf8df;
+  border-radius: 14px;
+  padding: 0.7rem;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.logo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+.logo-card img {
+  max-height: 78px;
+  width: auto;
+  object-fit: contain;
+  filter: saturate(0.95);
+}

@@ -1,1 +1,35 @@
-/* Estilos mobile first de Extras, pendientes. */
+.extras {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.extra {
+  border: 1px solid rgba(242, 193, 78, 0.16);
+  border-radius: 16px;
+  padding: 1.2rem;
+  background: linear-gradient(150deg, rgba(11, 46, 38, 0.7), rgba(3, 27, 22, 0.6));
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.extra .ico {
+  width: 26px;
+  height: 26px;
+  color: var(--dorado);
+  margin-bottom: 0.3rem;
+}
+.extra h3 {
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+}
+.extra strong {
+  font-family: var(--titulos);
+  font-size: 1.55rem;
+  color: var(--dorado-claro);
+  font-weight: 400;
+}
+.extra small {
+  font-size: 0.7rem;
+  color: rgba(253, 248, 223, 0.55);
+}

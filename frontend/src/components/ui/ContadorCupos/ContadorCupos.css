@@ -1,0 +1,78 @@
+.cupo-card {
+  position: relative;
+  background: linear-gradient(165deg, rgba(11, 46, 38, 0.96), rgba(3, 27, 22, 0.96));
+  border: 1px solid var(--linea);
+  border-radius: 26px;
+  padding: 1.6rem 1.5rem;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.cupo-card::after {
+  content: '';
+  position: absolute;
+  inset: -40% -30% auto auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 193, 78, 0.22), transparent 70%);
+}
+.cupo-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+.cupo-card__label {
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dorado);
+}
+.cupo-card__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.65);
+}
+.cupo-card__number {
+  font-family: var(--titulos);
+  font-size: clamp(4rem, 9vw, 5.6rem);
+  line-height: 0.9;
+  color: var(--texto);
+}
+.cupo-card__number small {
+  font-family: var(--textos);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.55);
+  display: block;
+  margin-top: 0.4rem;
+}
+
+.cupo-card__foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: rgba(253, 248, 223, 0.6);
+  gap: 0.5rem;
+}
+.cupo-card__note {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--linea);
+  font-size: 0.72rem;
+  color: rgba(253, 248, 223, 0.7);
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.cupo-card__note .ico {
+  color: var(--dorado);
+  margin-top: 2px;
+}

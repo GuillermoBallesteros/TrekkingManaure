@@ -1,0 +1,41 @@
+.admin-status-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 22px 24px;
+}
+
+.admin-status-filters button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(253, 248, 223, 0.14);
+  font-size: 0.65rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+
+.admin-status-filters button.is-active {
+  color: var(--dorado);
+  border-color: var(--linea);
+  background: rgba(242, 193, 78, 0.08);
+}
+
+.admin-status-filters button span {
+  font-size: 0.53rem;
+  padding: 1px 5px;
+  background: rgba(253, 248, 223, 0.05);
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .admin-status-filters {
+    padding: 18px;
+  }
+  .admin-status-filters button {
+    font-size: 0.6rem;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+}

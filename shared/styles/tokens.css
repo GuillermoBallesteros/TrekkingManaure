@@ -1,0 +1,20 @@
+:root {
+  --fondo: #031b16;
+  --fondo-2: #05231c;
+  --panel: #0b2e26;
+  --panel-2: #0e3a2f;
+  --accion: #d3290f;
+  --accion-oscuro: #a81e0a;
+  --dorado: #f2c14e;
+  --dorado-claro: #fde1a2;
+  --texto: #fdf8df;
+  --tierra: #a08c6a;
+  --naranja: #e8581c;
+  --musgo: #3e7a2b;
+  --linea: rgba(242, 193, 78, 0.22);
+  --sombra: 0 24px 60px rgba(0, 0, 0, 0.45);
+  --titulos: 'Bebas Neue', 'Oswald', sans-serif;
+  --textos: 'Poppins', 'Inter', system-ui, sans-serif;
+  --radio: 18px;
+  --max: 1180px;
+}

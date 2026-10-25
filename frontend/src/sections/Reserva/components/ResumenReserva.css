@@ -1,0 +1,104 @@
+.summary {
+  position: sticky;
+  top: 96px;
+  background: linear-gradient(165deg, rgba(14, 58, 47, 0.95), rgba(3, 27, 22, 0.95));
+  border: 1px solid var(--linea);
+  border-radius: 24px;
+  padding: 1.4rem;
+  box-shadow: var(--sombra);
+}
+.summary__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.summary__head h3 {
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+}
+.summary__head span {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.45);
+}
+.sum-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.79rem;
+  color: rgba(253, 248, 223, 0.7);
+  border-bottom: 1px dashed rgba(253, 248, 223, 0.08);
+}
+.sum-row:last-of-type {
+  border-bottom: 0;
+}
+.sum-row strong {
+  color: var(--texto);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sum-row--dyn strong {
+  color: var(--dorado-claro);
+}
+.sum-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--linea);
+}
+.sum-total span {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.55);
+}
+.sum-total strong {
+  font-family: var(--titulos);
+  font-size: 1.9rem;
+  color: var(--dorado);
+}
+.summary__note {
+  font-size: 0.66rem;
+  color: rgba(253, 248, 223, 0.45);
+  margin: 0.7rem 0 1rem;
+  display: flex;
+  gap: 0.4rem;
+}
+.summary__note .ico {
+  width: 14px;
+  height: 14px;
+  color: var(--dorado);
+  flex: none;
+  margin-top: 2px;
+}
+.summary .btn {
+  margin-bottom: 0.6rem;
+}
+.summary__channels {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px dashed rgba(253, 248, 223, 0.1);
+}
+.summary__channels span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.5);
+}
+.summary__channels .ico {
+  width: 15px;
+  height: 15px;
+  color: var(--musgo);
+}

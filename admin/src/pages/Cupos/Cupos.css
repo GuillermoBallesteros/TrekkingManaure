@@ -1,0 +1,110 @@
+.admin-capacity-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+
+.admin-capacity {
+  padding-bottom: 24px;
+}
+
+.admin-capacity-number {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  margin: 8px 30px 25px;
+}
+
+.admin-capacity-number > strong {
+  font-family: var(--titulos);
+  font-size: 6rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--dorado);
+}
+
+.admin-capacity-number > span {
+  font-size: 0.85rem;
+  color: var(--dorado-claro);
+}
+
+.admin-capacity-number small {
+  display: block;
+  font-size: 0.65rem;
+  color: rgba(253, 248, 223, 0.5);
+  margin-top: 7px;
+}
+
+.admin-capacity .bar {
+  margin: 0 30px 15px;
+}
+
+.admin-capacity-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 0 30px 25px;
+  font-size: 0.65rem;
+  color: rgba(253, 248, 223, 0.55);
+}
+
+.admin-capacity > .admin-notice {
+  margin: 0 24px;
+}
+
+.admin-settings {
+  padding: 28px;
+}
+
+.admin-settings h2 {
+  font-size: 1.8rem;
+  margin-bottom: 13px;
+}
+
+.admin-settings > p {
+  font-size: 0.75rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+
+.admin-settings form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.admin-settings label {
+  font-size: 0.7rem;
+}
+
+.admin-settings form small {
+  font-size: 0.62rem;
+  color: var(--tierra);
+}
+
+.admin-settings .btn {
+  font-size: 0.65rem;
+  margin-top: 8px;
+}
+
+@media (max-width: 1050px) {
+  .admin-capacity-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-capacity-number {
+    margin-inline: 23px;
+    gap: 18px;
+  }
+  .admin-capacity-number > strong {
+    font-size: 5rem;
+  }
+  .admin-capacity-number > span {
+    font-size: 0.72rem;
+  }
+  .admin-settings {
+    padding: 26px 22px;
+  }
+}
