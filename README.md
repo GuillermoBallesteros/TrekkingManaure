@@ -12,6 +12,14 @@ Primer esqueleto visual basado en `diseno.html`: página pública y administraci
 
 El código fuente está formateado en varias líneas. No se incrusta el archivo HTML completo ni se ejecuta su script original.
 
+## Trabajo en equipo
+
+El reparto de Santiago, Damian, administración y backend está en [TRABAJO-EN-EQUIPO.md](docs/TRABAJO-EN-EQUIPO.md). Cada archivo tiene un único responsable definido en `docs/responsables.json`.
+
+Durante el trabajo paralelo, usa `node scripts/team-workflow.mjs check RESPONSABLE --base origin/main` para comprobar tu alcance y `node scripts/team-workflow.mjs format RESPONSABLE --base origin/main` para dar formato solo a tus cambios. Los identificadores son `santiago`, `damian`, `admin` y `backend`.
+
+El comando general de formato que aparece más abajo se reserva para una integración coordinada: también modifica archivos de otras áreas.
+
 ## Ejecutar el proyecto
 
 Se requiere Node.js y npm. Desde la raíz, instala las dependencias de cada aplicación:
