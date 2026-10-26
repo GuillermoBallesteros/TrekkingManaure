@@ -15,6 +15,43 @@
     radial-gradient(900px 700px at 10% 90%, rgba(62, 122, 43, 0.25), transparent 60%);
   pointer-events: none;
 }
+.hero__bg {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 68%;
+  background: url('../../../../shared/assets/images/flyer/portada-fondo.webp') center top / cover
+    no-repeat;
+  filter: saturate(1.08) contrast(1.04);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 28%, #000 56%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 28%, #000 56%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 27, 22, 0.82) 0%, rgba(3, 27, 22, 0.5) 42%, transparent 66%),
+    linear-gradient(0deg, var(--fondo) 0%, transparent 28%),
+    linear-gradient(180deg, rgba(3, 27, 22, 0.6) 0%, transparent 20%);
+  pointer-events: none;
+}
+@media (max-width: 1024px) {
+  .hero__bg {
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1332 / 1164;
+    max-height: 640px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 38%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 38%, transparent 100%);
+  }
+  .hero::after {
+    background:
+      linear-gradient(180deg, rgba(3, 27, 22, 0.5) 0%, transparent 22%),
+      linear-gradient(0deg, var(--fondo) 0%, transparent 18%);
+  }
+}
 .hero__mountains {
   position: absolute;
   left: 0;
@@ -52,6 +89,10 @@
 .hero h1 {
   font-size: clamp(3.2rem, 7.4vw, 6.1rem);
   margin: 0.1rem 0 0.5rem;
+}
+.hero h1,
+.hero__lead {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
 }
 .hero h1 .line {
   display: block;

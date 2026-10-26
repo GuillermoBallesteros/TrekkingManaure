@@ -1,5 +1,3 @@
-import flyerOficial from '../assets/images/flyer/flyer-oficial.webp';
-
 export type GalleryImage = {
   id: string;
   src: string;
@@ -15,20 +13,27 @@ const photos = import.meta.glob<string>('../assets/images/galeria/*.{webp,jpg,jp
   import: 'default',
 });
 
+const captions: Record<string, [string, string]> = {
+  '01-paramo-de-frailejones': ['Páramo de frailejones', 'El páramo de la Serranía del Perijá'],
+  '02-panoramica-serrania-del-perija': ['Serranía del Perijá', 'Panorámica de la serranía'],
+  '03-fogata-en-circulo-de-piedra': ['Fogata en la montaña', 'Círculo de piedra para la fogata'],
+  '04-laguna-del-perija': ['Laguna del Perijá', 'Agua y montaña en el Perijá'],
+  '05-cordillera-de-manaure': ['Cordillera de Manaure', 'Las montañas que rodean Manaure'],
+  '06-sol-en-la-montana': ['El sol en la montaña', 'Luz de montaña en Manaure'],
+  '07-jardin-de-villa-adelaida': ['Villa Adelaida', 'Punto de encuentro · Villa Adelaida'],
+};
+
 export const galleryImages: GalleryImage[] = [
-  {
-    id: 'afiche',
-    src: flyerOficial,
-    title: 'Desafío Perijá 13K',
-    description: 'Afiche del evento · Manaure, Cesar',
-    poster: true,
-  },
   ...Object.entries(photos)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([path, src]) => ({
-      id: path,
-      src,
-      title: (path.split('/').pop() || 'El Perijá').replace(/\.[^.]+$/, '').replace(/[-_]/g, ' '),
-      description: 'Galería general del evento',
-    })),
+    .map(([path, src]) => {
+      const name = (path.split('/').pop() || 'El Perijá').replace(/\.[^.]+$/, '');
+      const caption = captions[name];
+      return {
+        id: path,
+        src,
+        title: caption?.[0] ?? name.replace(/^\d+[-_]?/, '').replace(/[-_]/g, ' '),
+        description: caption?.[1] ?? 'Galería general del evento',
+      };
+    }),
 ];

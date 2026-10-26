@@ -35,6 +35,7 @@ export default function Modal({ open, title, children, onClose, className = '' }
       ref={ref}
       className={`modal ${className}`}
       aria-label={title}
+      data-lenis-prevent
       onCancel={onClose}
       onClick={(event) => {
         if (event.target === ref.current) onClose();

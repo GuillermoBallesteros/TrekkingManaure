@@ -52,7 +52,7 @@ footer {
   display: grid;
   place-items: center;
   background: #25d366;
-  color: #04301a;
+  color: #fff;
   box-shadow: 0 12px 30px rgba(37, 211, 102, 0.35);
   transition: transform 0.2s;
 }
@@ -60,7 +60,7 @@ footer {
   transform: scale(1.07);
 }
 .wa-float .ico {
-  width: 28px;
-  height: 28px;
-  stroke-width: 1.9;
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.7;
 }

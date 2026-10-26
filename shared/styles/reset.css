@@ -9,6 +9,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 90px;
 }
+html.lenis {
+  scroll-behavior: auto;
+  scroll-padding-top: 0;
+}
 body {
   font-family: var(--textos);
   background: var(--fondo);
