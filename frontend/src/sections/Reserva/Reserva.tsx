@@ -74,7 +74,7 @@ export default function Reserva({
                       className="conditions-link"
                       onClick={() => setConditionsOpen(true)}
                     >
-                      Consultar condiciones de esta vista previa
+                      Consultar las condiciones
                     </button>
                   </small>
                 </div>
@@ -90,8 +90,8 @@ export default function Reserva({
               <button type="submit" className="btn btn--primary btn--block">
                 Revisar mi reserva <Icon name="whatsapp" />
               </button>
-              <p className="note form-preview-note">
-                Vista previa local: todavía no envía reservas, archivos ni pagos.
+              <p className="note form-note">
+                Tu reserva se formaliza cuando la organización valida el comprobante de inscripción.
               </p>
               <p className="form-error" role="alert">
                 {state.error}
@@ -113,16 +113,17 @@ export default function Reserva({
         onClose={() => state.setPreview(null)}
       >
         <p>
-          Revisa la información que completaste. Esta es una vista previa: no se ha enviado ni
-          guardado una reserva.
+          Revisa la información que completaste. Tu reserva aún no se ha enviado: se registra cuando
+          la organización valida tu comprobante.
         </p>
         <pre className="wa-preview">{state.preview}</pre>
         <div className="modal__channels">
           <div>
-            <Icon name="whatsapp" /> Canal de reservas pendiente de conexión.
+            <Icon name="whatsapp" /> Las reservas se gestionan por WhatsApp con el equipo
+            organizador.
           </div>
           <div>
-            <Icon name="sheet" /> Registro administrativo y comprobantes pendientes de integración.
+            <Icon name="sheet" /> La organización registra tu inscripción al validar el comprobante.
           </div>
         </div>
         <div className="modal__actions">
@@ -143,15 +144,7 @@ export default function Reserva({
           La experiencia contempla un recorrido de montaña, bajas temperaturas y preparación
           personal. Revisa las recomendaciones de seguridad antes de participar.
         </p>
-        <p>
-          La inscripción está sujeta a validación de pago por la organización. Las condiciones
-          definitivas de cancelaciones, tratamiento de datos y uso de imagen deben publicarse antes
-          de habilitar las reservas reales.
-        </p>
-        <p>
-          El formulario actual sirve para revisar el diseño y el resumen. No transmite archivos ni
-          almacena tus datos.
-        </p>
+        <p>La inscripción está sujeta a validación de pago por la organización.</p>
       </Modal>
     </section>
   );

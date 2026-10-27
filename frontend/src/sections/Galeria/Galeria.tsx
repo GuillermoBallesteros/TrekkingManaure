@@ -4,16 +4,6 @@ import Modal from '../../../../shared/components/Modal';
 import { galleryImages } from '../../../../shared/data/galeria';
 import './Galeria.css';
 
-const upcoming = [
-  {
-    title: 'Senderos y paisajes',
-    text: 'La belleza de nuestro territorio',
-    icon: 'mountain' as const,
-  },
-  { title: 'En el camino', text: 'Cada paso cuenta una historia', icon: 'camera' as const },
-  { title: 'Momentos compartidos', text: 'La experiencia se vive juntos', icon: 'users' as const },
-];
-
 export default function Galeria() {
   const [selected, setSelected] = useState<number | null>(null);
   const [failed, setFailed] = useState<Record<string, boolean>>({});
@@ -92,8 +82,7 @@ export default function Galeria() {
             El Perijá se <em>vive y se recuerda</em>
           </h2>
           <p className="section-sub">
-            Un espacio para los paisajes, las personas y los momentos del Desafío Perijá. Aquí
-            reuniremos las fotografías generales del evento.
+            Los paisajes, los lugares y los momentos que vas a encontrar en el Desafío Perijá.
           </p>
         </div>
         <div className="gallery-grid">
@@ -126,27 +115,8 @@ export default function Galeria() {
               </span>
             </button>
           ))}
-          {galleryImages.length === 1 &&
-            upcoming.map((item, index) => (
-              <div
-                key={item.title}
-                className={
-                  'gallery-placeholder reveal ' + (index === 2 ? 'gallery-placeholder--wide' : '')
-                }
-                data-delay={index + 1}
-              >
-                <span className="gallery-placeholder__index">0{index + 1}</span>
-                <Icon name={item.icon} />
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-                <small>Próximamente · Fotos del evento</small>
-              </div>
-            ))}
         </div>
-        <p className="note gallery-note">
-          Imágenes de Manaure y de la Serranía del Perijá. Las fotografías del evento se irán
-          sumando a esta galería.
-        </p>
+        <p className="note gallery-note">Imágenes de Manaure y de la Serranía del Perijá.</p>
       </div>
       <Modal
         open={image !== null}

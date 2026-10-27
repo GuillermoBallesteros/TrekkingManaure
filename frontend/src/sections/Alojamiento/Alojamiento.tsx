@@ -40,6 +40,9 @@ export default function Alojamiento({ onSelect }: { onSelect: (value: Estadia) =
               <li>
                 <Icon name="check" /> Frío intenso: lleva abrigo y ropa térmica
               </li>
+              <li>
+                <Icon name="check" /> Sin conectividad a internet en el páramo
+              </li>
             </ul>
             <a href="#reserva" className="btn btn--ghost" onClick={() => onSelect('Páramo')}>
               Elegir páramo <Icon name="arrow" />

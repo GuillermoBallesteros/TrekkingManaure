@@ -64,16 +64,6 @@
   font-size: 0.7rem;
   padding: 0.75rem 1.2rem;
 }
-.preview-tag {
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--dorado);
-  border: 1px solid var(--linea);
-  border-radius: 999px;
-  padding: 0.3rem 0.6rem;
-  white-space: nowrap;
-}
 .nav__toggle {
   display: none;
   width: 44px;

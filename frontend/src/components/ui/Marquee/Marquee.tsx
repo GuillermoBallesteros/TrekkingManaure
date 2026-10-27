@@ -1,8 +1,8 @@
-import { evento } from '../../../../../shared/config';
+import { cupos, evento } from '../../../../../shared/config';
 import './Marquee.css';
 
 const items = [
-  '60 cupos + 10',
+  cupos.iniciales + ' cupos',
   evento.fechasTexto,
   'Páramo o hotel',
   'Seguridad en ruta',

@@ -76,7 +76,7 @@ export default function ResumenReserva({ stay, date, companion, extrasTotal, tot
           <Icon name="calendar" /> Tu fecha
         </span>
         <span>
-          <Icon name="lock" /> Vista previa
+          <Icon name="users" /> Cupo limitado
         </span>
       </div>
     </aside>

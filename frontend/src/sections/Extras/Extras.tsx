@@ -67,7 +67,7 @@ export default function Extras() {
         </article>
       </div>
       <p className="note" style={{ marginTop: '.9rem' }}>
-        Valores de cuatrimoto y parapente pendientes de confirmación con el flyer oficial.
+        Las actividades adicionales se eligen al reservar y se suman al total de tu inscripción.
       </p>
     </div>
   );

@@ -71,6 +71,15 @@ export default function Seguridad() {
                 <small>Cobertura del evento</small>
               </div>
             </div>
+            <div className="safety-item">
+              <Icon name="phone" />
+              <div>
+                <strong>Sin internet en el páramo</strong>
+                <small>
+                  No hay conectividad: avisa a tu familia y descarga lo que necesites antes de subir
+                </small>
+              </div>
+            </div>
           </div>
         </div>
       </div>

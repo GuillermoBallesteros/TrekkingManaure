@@ -7,7 +7,7 @@ export default function Cupos() {
     <section className="section section--tight" id="cupos">
       <div className="container cupos-wrap">
         <div className="cupos-big reveal">
-          <span className="cupos-big__cap">Capacidad inicial del evento</span>
+          <span className="cupos-big__cap">Capacidad del evento</span>
           <div className="cupos-big__num">
             <span>{cupos.iniciales}</span> <small>CUPOS</small>
           </div>
@@ -15,10 +15,8 @@ export default function Cupos() {
             <div className="bar__fill" />
           </div>
           <div className="cupos-big__legend">
-            <span>Disponibilidad por conectar</span>
-            <span>
-              Límite inicial: {cupos.iniciales} · ampliable a {cupos.maximo}
-            </span>
+            <span>Cupo limitado</span>
+            <span>Límite: {cupos.iniciales} personas</span>
           </div>
           <div className="highlight">
             <strong>Importante:</strong> el cupo se confirma cuando la organización valida el
@@ -38,8 +36,8 @@ export default function Cupos() {
               <div>
                 <strong>Son {cupos.iniciales} cupos</strong>
                 <p>
-                  La capacidad inicial es de {cupos.iniciales} personas. Cuando se llenen, se
-                  habilitan {cupos.ampliacion} cupos adicionales.
+                  La capacidad del evento es de {cupos.iniciales} personas, para cuidar la ruta y la
+                  experiencia de todos.
                 </p>
               </div>
             </div>
@@ -55,10 +53,10 @@ export default function Cupos() {
             <div className="rule">
               <span className="rule__n">3</span>
               <div>
-                <strong>Consulta la disponibilidad</strong>
+                <strong>Los cupos se descuentan al validar</strong>
                 <p>
-                  El contador se conectará a los cupos confirmados para mostrar la disponibilidad
-                  actualizada.
+                  A medida que la organización valida cada inscripción, el cupo queda asegurado y la
+                  disponibilidad baja.
                 </p>
               </div>
             </div>

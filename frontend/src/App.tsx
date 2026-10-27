@@ -3,8 +3,11 @@ import { Navbar, Footer } from './components/layout';
 import { Home } from './pages';
 import Modal from '../../shared/components/Modal';
 import Icon from '../../shared/components/Icon';
-import { contacto } from '../../shared/config';
+import { contacto, evento } from '../../shared/config';
+import { formatDate } from '../../shared/utils/format';
 import { useSmoothScroll } from './hooks';
+
+const apertura = formatDate(evento.fechaAperturaInscripciones);
 
 export default function App() {
   const [contactOpen, setContactOpen] = useState(false);
@@ -40,12 +43,11 @@ export default function App() {
       )}
       <Modal open={contactOpen} title="Reservar con Asesor" onClose={() => setContactOpen(false)}>
         <p>
-          El canal de WhatsApp de reservas estará disponible cuando se configure el número oficial
-          de contacto.
+          El canal de WhatsApp de reservas se habilitará con la apertura de inscripciones, el{' '}
+          {apertura}.
         </p>
         <p>
-          Mientras tanto, explora la información del evento y prepara tu reserva en el formulario de
-          esta vista previa.
+          Mientras tanto, explora la información del evento y prepara tu reserva en el formulario.
         </p>
         <a href="#reserva" className="btn btn--primary" onClick={() => setContactOpen(false)}>
           Ver formulario <Icon name="arrow" />

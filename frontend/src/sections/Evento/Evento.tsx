@@ -38,7 +38,10 @@ export default function Evento() {
               <Icon name="fire" />
             </span>
             <h3>Fogata y montaña</h3>
-            <p>Para quienes se quedan en el páramo: noche de fogata y experiencia completa.</p>
+            <p>
+              Para quienes se quedan en el páramo: noche de fogata y experiencia completa, sin
+              conectividad a internet.
+            </p>
           </article>
           <article className="feature reveal" data-delay="4">
             <span className="feature__icon">
