@@ -1,20 +1,30 @@
 import Icon from '../../../../../shared/components/Icon';
-import { precios } from '../../../../../shared/config';
+import { evento, precios } from '../../../../../shared/config';
 import { formatDate, formatMoney } from '../../../../../shared/utils/format';
-import type { Estadia } from '../../../types/reserva';
+import type { Cotizacion, Estadia, PlanTitular } from '../../../types/reserva';
 import './ResumenReserva.css';
 
 type Props = {
   stay: Estadia;
-  date: string;
+  plan: PlanTitular | null;
+  planDate: string;
   companion: boolean;
+  companionDate: string;
   extrasTotal: number;
-  total: number;
+  quote: Cotizacion;
 };
 
-export default function ResumenReserva({ stay, date, companion, extrasTotal, total }: Props) {
+export default function ResumenReserva({
+  stay,
+  plan,
+  planDate,
+  companion,
+  companionDate,
+  extrasTotal,
+  quote,
+}: Props) {
   function focusForm() {
-    document.getElementById('nombre')?.focus();
+    document.getElementById('nombres')?.focus();
   }
 
   return (
@@ -24,12 +34,18 @@ export default function ResumenReserva({ stay, date, companion, extrasTotal, tot
         <span>Resumen</span>
       </div>
       <div className="sum-row">
-        <span>Inscripción (hoy)</span>
-        <strong>{formatMoney(precios.inscripcion)}</strong>
-      </div>
-      <div className="sum-row">
-        <span>Saldo kit</span>
-        <strong>{formatMoney(precios.kitCompleto)}</strong>
+        <span>
+          {plan === null
+            ? 'Modalidad por elegir'
+            : plan === 'total'
+              ? 'Inscripción + kit'
+              : 'Inscripción (apartado)'}
+        </span>
+        <strong>
+          {plan === null
+            ? '—'
+            : formatMoney(plan === 'total' ? precios.total : precios.inscripcion)}
+        </strong>
       </div>
       {companion && (
         <div className="sum-row sum-row--dyn">
@@ -48,18 +64,33 @@ export default function ResumenReserva({ stay, date, companion, extrasTotal, tot
         <strong>{stay || 'Por elegir'}</strong>
       </div>
       <div className="sum-row">
-        <span>Pago del saldo</span>
-        <strong>{date ? formatDate(date) : 'Por elegir'}</strong>
+        <span>Pagas ahora</span>
+        <strong>{formatMoney(quote.ahora)}</strong>
       </div>
+      {quote.saldoTitular > 0 && (
+        <div className="sum-row">
+          <span>Saldo kit · {planDate ? formatDate(planDate) : 'fecha por elegir'}</span>
+          <strong>{formatMoney(quote.saldoTitular)}</strong>
+        </div>
+      )}
+      {quote.saldoAcompanante > 0 && (
+        <div className="sum-row">
+          <span>
+            Saldo kit acompañante · {companionDate ? formatDate(companionDate) : 'fecha por elegir'}
+          </span>
+          <strong>{formatMoney(quote.saldoAcompanante)}</strong>
+        </div>
+      )}
       <div className="sum-total">
-        <span>Total estimado</span>
-        <strong>{formatMoney(total)}</strong>
+        <span>Total</span>
+        <strong>{formatMoney(quote.total)}</strong>
       </div>
       <p className="summary__note">
         <Icon name="info" />
         <span>
-          La inscripción es de $50.000. Los $300.000 restantes se pagan en la fecha que elijas,
-          dentro del plazo.
+          El pago es por llave Bre-B. Al finalizar te llevamos a WhatsApp con tus datos y la
+          organización te indica cómo pagar. Los saldos se pagan a más tardar el {evento.plazoTexto}
+          .
         </span>
       </p>
       <button className="btn btn--gold btn--block" type="button" onClick={focusForm}>
@@ -70,13 +101,13 @@ export default function ResumenReserva({ stay, date, companion, extrasTotal, tot
       </a>
       <div className="summary__channels">
         <span>
-          <Icon name="whatsapp" /> Reservas
+          <Icon name="whatsapp" /> WhatsApp
         </span>
         <span>
-          <Icon name="calendar" /> Tu fecha
+          <Icon name="calendar" /> Bre-B
         </span>
         <span>
-          <Icon name="users" /> Cupo limitado
+          <Icon name="lock" /> Datos por WhatsApp
         </span>
       </div>
     </aside>

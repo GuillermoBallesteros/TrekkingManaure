@@ -18,7 +18,7 @@
   margin-bottom: 1.5rem;
   border-bottom: 1px dashed rgba(253, 248, 223, 0.1);
 }
-.form-block:last-of-type {
+.form-card > .bloque-progresivo:last-child > .form-block {
   border-bottom: 0;
   padding-bottom: 0;
   margin-bottom: 0;
@@ -68,14 +68,16 @@
 .field--full {
   grid-column: 1/-1;
 }
-.field label {
+.field label,
+.field .field__label {
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(253, 248, 223, 0.62);
 }
-.field label .req {
+.field label .req,
+.field .field__label .req {
   color: var(--naranja);
 }
 .field input,
@@ -108,6 +110,40 @@
 }
 .field input[type='date'] {
   color-scheme: dark;
+}
+/* Los bloques del formulario aparecen uno a uno según se completa el anterior. */
+.form-card [hidden] {
+  display: none !important;
+}
+.bloque-progresivo {
+  animation: bloque-entra 0.35s ease both;
+}
+@keyframes bloque-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bloque-progresivo {
+    animation: none;
+  }
+}
+/* El autollenado del navegador pinta el fondo de azul/verde. La transición lo congela y el campo
+   conserva su fondo normal; el borde y el texto también se mantienen como en el formulario. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus,
+.field select:-webkit-autofill,
+.field textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--texto);
+  border-color: rgba(253, 248, 223, 0.14);
+  caret-color: var(--texto);
+  transition: background-color 9999s ease-out 0s;
 }
 .field-hint {
   font-size: 0.66rem;
