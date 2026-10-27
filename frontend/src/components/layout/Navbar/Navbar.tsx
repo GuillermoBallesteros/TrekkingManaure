@@ -56,7 +56,6 @@ export default function Navbar() {
           </a>
         </nav>
         <div className="nav__actions">
-          <span className="preview-tag">Vista previa</span>
           <a href="#reserva" className="btn btn--primary nav__cta">
             Reservar cupo
           </a>
