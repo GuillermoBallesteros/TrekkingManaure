@@ -5,25 +5,16 @@ import type { Estadia, Extra } from '../../../types/reserva';
 type Props = {
   stay: Estadia;
   onStay: (value: Estadia) => void;
-  companion: boolean;
-  onCompanion: (value: boolean) => void;
   extras: Extra[];
   onExtras: (value: Extra) => void;
 };
 
-export default function OpcionesReserva({
-  stay,
-  onStay,
-  companion,
-  onCompanion,
-  extras,
-  onExtras,
-}: Props) {
+export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Props) {
   return (
     <>
       <div className="form-block">
         <div className="form-block__head">
-          <span className="form-block__n">2</span>
+          <span className="form-block__n">3</span>
           <div>
             <h3>Opción de estadía</h3>
             <small>Elige dónde pasas la noche.</small>
@@ -49,6 +40,10 @@ export default function OpcionesReserva({
                 value={option.value}
                 required
                 checked={stay === option.value}
+                onClick={() => {
+                  // Un clic sobre la opción ya marcada la desmarca.
+                  if (stay === option.value) onStay('');
+                }}
                 onChange={() => onStay(option.value)}
               />
               <span className="choice__dot" />
@@ -59,57 +54,10 @@ export default function OpcionesReserva({
             </label>
           ))}
         </div>
-        <div className="toggle-line companion-toggle">
-          <div className="toggle-line__text">
-            <strong>Llevo acompañante</strong>
-            <small>
-              Costo adicional de {formatMoney(precios.acompanante)} · incluye recorrido, sin kit.
-            </small>
-          </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              aria-label="Llevo acompañante"
-              checked={companion}
-              onChange={(event) => onCompanion(event.target.checked)}
-            />
-            <span className="switch__track" />
-          </label>
-        </div>
-        {companion && (
-          <div className="fields companion-fields is-open">
-            <div className="field">
-              <label htmlFor="acompNombre">
-                Nombre del acompañante <span className="req">*</span>
-              </label>
-              <input
-                id="acompNombre"
-                name="acompNombre"
-                required
-                placeholder="Nombre completo"
-                maxLength={150}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="acompCedula">
-                Cédula del acompañante <span className="req">*</span>
-              </label>
-              <input
-                id="acompCedula"
-                name="acompCedula"
-                required
-                inputMode="numeric"
-                pattern="[0-9]{5,20}"
-                maxLength={20}
-                placeholder="Número de documento"
-              />
-            </div>
-          </div>
-        )}
       </div>
       <div className="form-block">
         <div className="form-block__head">
-          <span className="form-block__n">3</span>
+          <span className="form-block__n">4</span>
           <div>
             <h3>Actividades extra</h3>
             <small>Opcionales. Incluyen merienda.</small>

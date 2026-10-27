@@ -1,0 +1,65 @@
+.resumen-modal {
+  display: grid;
+  gap: 0.9rem;
+}
+.resumen-modal__intro {
+  font-size: 0.8rem;
+  color: rgba(253, 248, 223, 0.7);
+}
+.resumen-sec {
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  background: rgba(253, 248, 223, 0.03);
+}
+.resumen-sec h4 {
+  font-family: var(--titulos);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  color: var(--dorado);
+  margin-bottom: 0.55rem;
+}
+.resumen-sec > p {
+  font-size: 0.8rem;
+  color: rgba(253, 248, 223, 0.6);
+}
+.resumen-sec--pago {
+  border-color: rgba(242, 193, 78, 0.35);
+  background: rgba(242, 193, 78, 0.06);
+}
+.resumen-lista {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+.resumen-sec .resumen-lista + .resumen-lista {
+  margin-top: 0.4rem;
+}
+.resumen-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px dashed rgba(253, 248, 223, 0.08);
+}
+.resumen-fila dt {
+  color: rgba(253, 248, 223, 0.55);
+}
+.resumen-fila dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 500;
+}
+.resumen-metodo__elegido {
+  font-size: 0.82rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--linea);
+  background: rgba(242, 193, 78, 0.08);
+  color: var(--dorado-claro);
+}
+.resumen-acciones {
+  display: grid;
+  gap: 0.6rem;
+}

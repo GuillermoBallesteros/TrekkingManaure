@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Modal from '../../../../shared/components/Modal';
 import Icon from '../../../../shared/components/Icon';
-import Calendario from '../../components/ui/Calendario';
+import { useBloquesProgresivos } from '../../hooks/useBloquesProgresivos';
 import { useReserva } from '../../hooks/useReserva';
 import type { Estadia } from '../../types/reserva';
 import DatosPersonales from './components/DatosPersonales';
 import OpcionesReserva from './components/OpcionesReserva';
-import Comprobante from './components/Comprobante';
+import ControlSeguridad from './components/ControlSeguridad';
+import ModalidadInscripcion from './components/ModalidadInscripcion';
+import Acompanante from './components/Acompanante';
+import FechasPago from './components/FechasPago';
 import ResumenReserva from './components/ResumenReserva';
+import ResumenModal from './components/ResumenModal';
 import './Reserva.css';
 
 export default function Reserva({
@@ -19,6 +23,8 @@ export default function Reserva({
 }) {
   const state = useReserva(stay);
   const [conditionsOpen, setConditionsOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { visibles, revisar } = useBloquesProgresivos(formRef);
 
   return (
     <section className="section reserva" id="reserva">
@@ -29,110 +35,114 @@ export default function Reserva({
             Aparta tu <em>cupo</em>
           </h2>
           <p className="section-sub">
-            Paso 1: paga los $50.000 y guarda el comprobante. Paso 2: llena tus datos, elige estadía
-            y selecciona la fecha en que pagarás los $300.000 restantes.
+            Completa tus datos, elige tu modalidad y finaliza. Te llevamos a WhatsApp con tu
+            información. Pagas por Nequi o llave Bre-B, la vía que prefieras.
           </p>
         </div>
         <div className="reserva-grid">
-          <form className="form-card reveal" onSubmit={state.submit}>
-            <DatosPersonales />
-            <OpcionesReserva
-              stay={stay}
-              onStay={onStay}
-              companion={state.companion}
-              onCompanion={state.setCompanion}
-              extras={state.extras}
-              onExtras={state.toggleExtra}
-            />
-            <Comprobante file={state.file} onChange={state.changeFile} />
-            <div className="form-block">
-              <div className="form-block__head">
-                <span className="form-block__n">5</span>
-                <div>
-                  <h3>Fecha de pago de los $300.000</h3>
-                  <small>
-                    Se habilita al adjuntar el comprobante. Elige un día dentro del plazo.
-                  </small>
-                </div>
-              </div>
-              <Calendario
-                unlocked={Boolean(state.file)}
-                selected={state.date}
-                onSelect={state.setDate}
-              />
-              <p className="field-hint calendar-hint">
-                La fecha elegida aparecerá en el resumen de tu reserva.
-              </p>
+          <form
+            className="form-card reveal"
+            ref={formRef}
+            onSubmit={state.submit}
+            onChange={revisar}
+            onInput={revisar}
+          >
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 0}>
+              <DatosPersonales />
             </div>
-            <div className="form-block form-submit">
-              <div className="toggle-line terms-toggle">
-                <div className="toggle-line__text">
-                  <strong>He revisado las condiciones de participación</strong>
-                  <small>
-                    <button
-                      type="button"
-                      className="conditions-link"
-                      onClick={() => setConditionsOpen(true)}
-                    >
-                      Consultar condiciones de esta vista previa
-                    </button>
-                  </small>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 1}>
+              <ControlSeguridad />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 2}>
+              <OpcionesReserva
+                stay={stay}
+                onStay={onStay}
+                extras={state.extras}
+                onExtras={state.toggleExtra}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 3}>
+              <ModalidadInscripcion plan={state.plan} onPlan={state.setPlan} />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 4}>
+              <Acompanante
+                companion={state.companion}
+                onCompanion={state.setCompanion}
+                kit={state.companionKit}
+                onKit={state.setCompanionKit}
+                pago={state.companionPago}
+                onPago={state.setCompanionPago}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 5}>
+              <FechasPago
+                holder={state.needsHolderDate}
+                holderDate={state.planDate}
+                onHolderDate={state.setPlanDate}
+                companion={state.needsCompanionDate}
+                companionDate={state.companionDate}
+                onCompanionDate={state.setCompanionDate}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 6}>
+              <div className="form-block form-submit">
+                <div className="toggle-line terms-toggle">
+                  <div className="toggle-line__text">
+                    <strong>He revisado las condiciones de participación</strong>
+                    <small>
+                      <button
+                        type="button"
+                        className="conditions-link"
+                        onClick={() => setConditionsOpen(true)}
+                      >
+                        Consultar condiciones
+                      </button>
+                    </small>
+                  </div>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      required
+                      aria-label="He revisado las condiciones de participación"
+                    />
+                    <span className="switch__track" />
+                  </label>
                 </div>
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    required
-                    aria-label="He revisado las condiciones de participación"
-                  />
-                  <span className="switch__track" />
-                </label>
+                <button type="submit" className="btn btn--primary btn--block">
+                  Finalizar registro <Icon name="whatsapp" />
+                </button>
+                <p className="note form-preview-note">
+                  Primero revisas el resumen; después se abre WhatsApp con tus datos. No se realiza
+                  ningún pago desde la página.
+                </p>
+                {state.error && (
+                  <p className="form-error" role="alert">
+                    {state.error}
+                  </p>
+                )}
               </div>
-              <button type="submit" className="btn btn--primary btn--block">
-                Revisar mi reserva <Icon name="whatsapp" />
-              </button>
-              <p className="note form-preview-note">
-                Vista previa local: todavía no envía reservas, archivos ni pagos.
-              </p>
-              <p className="form-error" role="alert">
-                {state.error}
-              </p>
             </div>
           </form>
           <ResumenReserva
             stay={stay}
-            date={state.date}
+            plan={state.plan}
+            planDate={state.planDate}
             companion={state.companion}
+            companionDate={state.companionDate}
             extrasTotal={state.extrasTotal}
-            total={state.total}
+            quote={state.quote}
           />
         </div>
       </div>
       <Modal
         open={state.preview !== null}
         title="Resumen de tu reserva"
+        className="modal--resumen"
         onClose={() => state.setPreview(null)}
       >
-        <p>
-          Revisa la información que completaste. Esta es una vista previa: no se ha enviado ni
-          guardado una reserva.
-        </p>
-        <pre className="wa-preview">{state.preview}</pre>
-        <div className="modal__channels">
-          <div>
-            <Icon name="whatsapp" /> Canal de reservas pendiente de conexión.
-          </div>
-          <div>
-            <Icon name="sheet" /> Registro administrativo y comprobantes pendientes de integración.
-          </div>
-        </div>
-        <div className="modal__actions">
-          <button className="btn btn--primary" disabled>
-            Envío aún no habilitado
-          </button>
-          <button type="button" className="btn btn--ghost" onClick={() => state.setPreview(null)}>
-            Volver al formulario
-          </button>
-        </div>
+        {state.preview && (
+          <ResumenModal resumen={state.preview} onBack={() => state.setPreview(null)} />
+        )}
       </Modal>
       <Modal
         open={conditionsOpen}
@@ -149,8 +159,8 @@ export default function Reserva({
           de habilitar las reservas reales.
         </p>
         <p>
-          El formulario actual sirve para revisar el diseño y el resumen. No transmite archivos ni
-          almacena tus datos.
+          El pago se hace por hace llave Bre-B. y el cupo queda confirmado cuando la organización
+          verifica el pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
         </p>
       </Modal>
     </section>

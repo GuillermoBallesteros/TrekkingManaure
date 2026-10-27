@@ -139,9 +139,6 @@
   .cal-day {
     font-size: 0.7rem;
   }
-  .summary {
-    order: -1;
-  }
 }
 @media (max-width: 420px) {
   .features,
