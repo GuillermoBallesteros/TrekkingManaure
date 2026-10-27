@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, type CSSProperties, type TouchEvent } from 'react';
+import CloudImage from '../../../../shared/components/CloudImage';
 import Icon from '../../../../shared/components/Icon';
 import Modal from '../../../../shared/components/Modal';
 import { galleryImages } from '../../../../shared/data/galeria';
+import { presets } from '../../../../shared/data/imagenes';
+import { cloudinaryUrl } from '../../../../shared/utils/cloudinary';
 import './Galeria.css';
 
 export default function Galeria() {
@@ -37,15 +40,6 @@ export default function Galeria() {
     const dy = touch.clientY - start.y;
     if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) move(dx < 0 ? 1 : -1);
   }
-
-  useEffect(() => {
-    if (!isOpen) return;
-    galleryImages.forEach((item) => {
-      const probe = new Image();
-      probe.src = item.src;
-      probe.decode?.().catch(() => undefined);
-    });
-  }, [isOpen]);
 
   useEffect(() => {
     const container = strip.current;
@@ -95,11 +89,11 @@ export default function Galeria() {
               onClick={() => setSelected(index)}
               aria-label={'Ampliar ' + item.title}
             >
-              <img
-                src={item.src}
+              <CloudImage
+                publicId={item.publicId}
+                preset={presets.galeriaMiniatura}
                 alt={item.description}
                 loading="lazy"
-                decoding="async"
                 width={item.poster ? 1200 : undefined}
                 height={item.poster ? 2594 : undefined}
               />
@@ -133,17 +127,21 @@ export default function Galeria() {
                     <div
                       key={item.id}
                       className={'visor__slide' + (index === selected ? ' activa' : '')}
-                      style={{ '--foto': `url("${item.src}")` } as CSSProperties}
+                      style={
+                        {
+                          '--foto': `url("${cloudinaryUrl(item.publicId, 96, presets.galeriaFondo)}")`,
+                        } as CSSProperties
+                      }
                       aria-hidden={index !== selected}
                     >
                       {failed[item.id] ? (
                         <p className="visor__error">No se pudo cargar esta imagen.</p>
                       ) : (
-                        <img
+                        <CloudImage
                           className="visor__img"
-                          src={item.src}
+                          publicId={item.publicId}
+                          preset={presets.galeriaVisor}
                           alt={item.description}
-                          decoding="async"
                           draggable={false}
                           onError={() => setFailed((prev) => ({ ...prev, [item.id]: true }))}
                         />
@@ -164,7 +162,11 @@ export default function Galeria() {
                     aria-current={index === selected}
                     onClick={() => goTo(index)}
                   >
-                    <img src={item.src} alt="" decoding="async" draggable={false} />
+                    <CloudImage
+                      publicId={item.publicId}
+                      preset={presets.galeriaMini}
+                      draggable={false}
+                    />
                   </button>
                 ))}
               </div>

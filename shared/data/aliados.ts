@@ -1,87 +1,89 @@
-import casaHostalMiRanchito from '../assets/images/aliados/casa-hostal-mi-ranchito.webp';
-import corptur from '../assets/images/aliados/corptur-circulo.webp';
-import cuatriTours from '../assets/images/aliados/cuatri-tours-circulo.webp';
-import laCasaDeLasArepas from '../assets/images/aliados/la-casa-de-las-arepas-circulo.webp';
-import manaureAventura from '../assets/images/aliados/manaure-aventura-circulo.webp';
-import manaureVive from '../assets/images/aliados/manaure-vive-circulo.webp';
-import manauridad from '../assets/images/aliados/manauridad-circulo.webp';
-import metalluraNatureTourism from '../assets/images/aliados/metallura-nature-tourism-circulo.webp';
-import photours from '../assets/images/aliados/photours-circulo.webp';
-import villaAdelaida from '../assets/images/aliados/villa-adelaida-circulo.webp';
-import villaLaura from '../assets/images/aliados/villa-laura-circulo.webp';
+import { aliadoId } from './imagenes';
 
 // Los logos "-circulo" están recortados al círculo mínimo que contiene el diseño
-// (los originales siguen en la carpeta); así rellenan la tarjeta redonda.
+// y así rellenan la tarjeta redonda. Viven en Cloudinary, en trekking-manaure/aliados.
 // `instagram` es el usuario sin @; si falta, el logo no lleva enlace.
 export const aliados: {
   id: string;
   name: string;
-  src: string;
+  publicId: string;
   delay: number;
   instagram?: string;
 }[] = [
   {
     id: 'manauridad',
     name: 'Manauridad',
-    src: manauridad,
+    publicId: aliadoId('manauridad-circulo'),
     delay: 1,
     instagram: 'alcaldiamanaurecesar',
   },
-  { id: 'corptur', name: 'Corptur', src: corptur, delay: 1, instagram: 'corpturmanaure' },
+  {
+    id: 'corptur',
+    name: 'Corptur',
+    publicId: aliadoId('corptur-circulo'),
+    delay: 1,
+    instagram: 'corpturmanaure',
+  },
   {
     id: 'cuatri-tours',
     name: 'Cuatri Tours',
-    src: cuatriTours,
+    publicId: aliadoId('cuatri-tours-circulo'),
     delay: 2,
     instagram: 'cuatritours_manaure',
   },
   {
     id: 'manaure-vive',
     name: 'Manaure Vive',
-    src: manaureVive,
+    publicId: aliadoId('manaure-vive-circulo'),
     delay: 2,
     instagram: 'manaurevive',
   },
   {
     id: 'la-casa-de-las-arepas',
     name: 'La Casa de las Arepas',
-    src: laCasaDeLasArepas,
+    publicId: aliadoId('la-casa-de-las-arepas-circulo'),
     delay: 3,
     instagram: 'casadelasarepas.manaure',
   },
   {
     id: 'manaure-aventura',
     name: 'Manaure Aventura',
-    src: manaureAventura,
+    publicId: aliadoId('manaure-aventura-circulo'),
     delay: 3,
     instagram: 'manaureaventura',
   },
-  { id: 'photours', name: 'Photours', src: photours, delay: 4, instagram: 'photour_' },
+  {
+    id: 'photours',
+    name: 'Photours',
+    publicId: aliadoId('photours-circulo'),
+    delay: 4,
+    instagram: 'photour_',
+  },
   {
     id: 'casa-hostal-mi-ranchito',
     name: 'Casa Hostal Mi Ranchito',
-    src: casaHostalMiRanchito,
+    publicId: aliadoId('casa-hostal-mi-ranchito'),
     delay: 4,
     instagram: 'mi_ranchito_manaurero',
   },
   {
     id: 'villa-adelaida',
     name: 'Villa Adelaida',
-    src: villaAdelaida,
+    publicId: aliadoId('villa-adelaida-circulo'),
     delay: 4,
     instagram: 'restaurantevilladelaida',
   },
   {
     id: 'hostal-villa-laura',
     name: 'Hostal Villa Laura',
-    src: villaLaura,
+    publicId: aliadoId('villa-laura-circulo'),
     delay: 4,
     instagram: 'hostalvillalaura.manaure',
   },
   {
     id: 'metallura-nature-tourism',
     name: 'Metallura Nature Tourism',
-    src: metalluraNatureTourism,
+    publicId: aliadoId('metallura-nature-tourism-circulo'),
     delay: 4,
     instagram: 'metalluraturismo',
   },

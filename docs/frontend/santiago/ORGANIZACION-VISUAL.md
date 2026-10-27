@@ -23,11 +23,8 @@ Tekking Manaure/
 ├─ admin/                        Panel de administración (otra área)
 ├─ backend/                      API y base de datos (otra área)
 ├─ shared/                       Recursos compartidos por frontend y admin
-│  ├─ assets/fonts/              Bebas Neue y Poppins
-│  ├─ assets/images/aliados/     logos de los aliados
-│  ├─ assets/images/flyer/       afiches y foto de portada
-│  ├─ assets/images/galeria/     fotos de la galería (se incluyen solas, en orden por nombre)
-│  ├─ components/                Brand, Icon, Modal
+│  ├─ assets/fonts/              Bebas Neue y Poppins (las imágenes viven en Cloudinary)
+│  ├─ components/                Brand, Icon, Modal, CloudImage
 │  ├─ config/ · data/ · utils/   datos del evento, catálogos (aliados.ts, galeria.ts) y utilidades
 │  └─ styles/                    colores, fuentes, normalización, marca y diálogos
 ├─ docs/                         guías del equipo
@@ -38,6 +35,8 @@ Tekking Manaure/
 ## 2. Qué se añadió o cambió, por carpeta
 
 ### `shared/assets/images/` (archivos nuevos, ninguno existente se modificó)
+
+> Desde el 27 de octubre de 2026 estas imágenes ya no están en el repo: se migraron a Cloudinary (`trekking-manaure/`). Ver `docs/frontend/imagenes-cloudinary.md`.
 
 | Carpeta    | Archivo                                                              | Para qué sirve                                                    |
 | ---------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -73,9 +72,11 @@ Tekking Manaure/
 
 ## 3. Cómo añadir contenido
 
-- **Foto a la galería:** guarda un `.webp`, `.jpg` o `.png` autorizado en `shared/assets/images/galeria/` con nombre `NN-descripcion.webp`. Para un título y una descripción propios, añade su nombre (sin extensión) al objeto `captions` de `shared/data/galeria.ts`.
-- **Aliado nuevo:** guarda su logo en `shared/assets/images/aliados/` y añade una línea en `shared/data/aliados.ts`. Si el logo no es redondo, recórtalo al círculo mínimo que contiene su diseño y nómbralo `nombre-circulo.webp`, como los demás.
-- **Foto de portada:** `shared/assets/images/flyer/portada-fondo.webp`. Se sustituye por una versión en alta resolución sin tocar código.
+Las imágenes se suben a Cloudinary, no al repo. El paso a paso está en `docs/frontend/imagenes-cloudinary.md`.
+
+- **Foto a la galería:** súbela a `trekking-manaure/galeria` con nombre `NN-descripcion` y añade una línea (nombre, título, descripción) a la lista de `shared/data/galeria.ts`.
+- **Aliado nuevo:** sube su logo a `trekking-manaure/aliados` y añade una línea en `shared/data/aliados.ts` con `aliadoId('nombre-circulo')`. Si el logo no es redondo, recórtalo al círculo mínimo que contiene su diseño, como los demás.
+- **Foto de portada:** reemplaza `trekking-manaure/portada/portada-fondo` en Cloudinary con el mismo `public_id`. No hace falta tocar código.
 
 ## 4. Archivos sin uso (se conservan hasta la depuración final)
 

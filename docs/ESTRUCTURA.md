@@ -8,15 +8,15 @@ La entrega sigue siendo visual. La información del HTML se conserva como base d
 
 ## Recursos compartidos
 
-| Ruta                     | Responsabilidad                                                            |
-| ------------------------ | -------------------------------------------------------------------------- |
-| `shared/config/index.ts` | Nombre, fechas, plazo, precios, cupos y contacto                           |
-| `shared/assets/images/`  | Los mismos once archivos de imagen existentes, reubicados sin modificarlos |
-| `shared/assets/fonts/`   | Bebas Neue y Poppins con sus licencias OFL                                 |
-| `shared/data/galeria.ts` | Catálogo único para la galería pública y su vista administrativa           |
-| `shared/styles/`         | Colores, fuentes, normalización, botones, marca y diálogos                 |
-| `shared/components/`     | Marca, iconos del diseño y diálogo con cierre por Escape y foco contenido  |
-| `shared/utils/`          | Formato de dinero, fechas de Colombia y cálculo de capacidad               |
+| Ruta                      | Responsabilidad                                                           |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `shared/config/index.ts`  | Nombre, fechas, plazo, precios, cupos y contacto                          |
+| `shared/data/imagenes.ts` | Catálogo de imágenes en Cloudinary y tamaños por uso (móvil y PC)         |
+| `shared/assets/fonts/`    | Bebas Neue y Poppins con sus licencias OFL                                |
+| `shared/data/galeria.ts`  | Catálogo único para la galería pública y su vista administrativa          |
+| `shared/styles/`          | Colores, fuentes, normalización, botones, marca y diálogos                |
+| `shared/components/`      | Marca, iconos del diseño y diálogo con cierre por Escape y foco contenido |
+| `shared/utils/`           | Formato de dinero, fechas de Colombia y cálculo de capacidad              |
 
 `shared` significa recursos compartidos: evita que frontend y administración mantengan copias diferentes de colores, imágenes y datos del mismo evento.
 
@@ -63,7 +63,7 @@ Cada página administrativa importa su propio archivo CSS. `admin/src/App.css` c
 
 El afiche aparece una sola vez en el sitio público, dentro de la galería, en lugar de repetirse después de los aliados. Los espacios de futuras fotografías se distinguen del material ya disponible.
 
-Para añadir fotos, guarda archivos WEBP, JPG, JPEG o PNG autorizados en `shared/assets/images/galeria/`. El catálogo los incluye automáticamente en orden por nombre. Usa nombres descriptivos, por ejemplo `01-sendero-de-montana.webp`, para obtener títulos legibles. El diálogo permite recorrer varias imágenes con botones y flechas del teclado.
+Para añadir fotos, súbelas a la carpeta `trekking-manaure/galeria` de Cloudinary y añade una línea a la lista de `shared/data/galeria.ts`; el orden de esa lista es el de la galería. Paso a paso en `docs/frontend/imagenes-cloudinary.md`. El diálogo permite recorrer varias imágenes con botones y flechas del teclado.
 
 ## Coherencia de información
 

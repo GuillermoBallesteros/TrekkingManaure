@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
+import CloudImage from '../../../../shared/components/CloudImage';
 import { aliados } from '../../../../shared/data/aliados';
+import { presets } from '../../../../shared/data/imagenes';
 import './Aliados.css';
 
 const VELOCIDAD_BASE = 38; // px por segundo hacia la izquierda
@@ -135,10 +137,11 @@ export default function Aliados() {
           {[...aliados, ...aliados].map((aliado, indice) => {
             const copia = indice >= aliados.length;
             const logo = (
-              <img
-                src={aliado.src}
+              <CloudImage
+                publicId={aliado.publicId}
+                preset={presets.aliado}
                 alt={copia ? '' : aliado.name}
-                decoding="async"
+                loading="lazy"
                 draggable={false}
               />
             );

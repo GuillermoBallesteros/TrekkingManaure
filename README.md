@@ -67,4 +67,4 @@ El formulario permite elegir estadía, acompañante, actividades y fecha de pago
 
 El panel usa seis participantes ficticios. Sus acciones solo cambian la demostración en memoria y se reinician al recargar. La autenticación, los comprobantes reales, WhatsApp, la persistencia y la exportación .xlsx se conectarán en una etapa posterior. La descarga actual es una muestra CSV compatible con Excel.
 
-La configuración de referencia está en `shared/config/index.ts`. Las fotografías generales se añaden a `shared/assets/images/galeria/`; las dos aplicaciones usan el mismo catálogo. Se conservaron el afiche y los diez logos ya existentes.
+La configuración de referencia está en `shared/config/index.ts`. Las imágenes del sitio viven en Cloudinary (carpeta `trekking-manaure/`) y se entregan optimizadas para móvil y PC; las dos aplicaciones usan el mismo catálogo (`shared/data/imagenes.ts`). Cómo agregar o cambiar una imagen: `docs/frontend/imagenes-cloudinary.md`.
