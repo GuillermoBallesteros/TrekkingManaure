@@ -24,7 +24,7 @@ export const EPS_OTRA = 'Otra';
 // Sin guiones ni paréntesis dentro de los patrones: con el flag v de Chrome
 // una expresión inválida hace que el campo acepte cualquier valor.
 export const PATRON_DOCUMENTO = '[A-Za-z0-9]{5,20}';
-export const PATRON_TELEFONO = '[0-9 ]{7,15}';
+export const PATRON_TELEFONO = '[0-9 +]{7,20}';
 export const PATRON_NOMBRE = '.*[^ ].*';
 export const EDAD_MIN = 1;
 export const EDAD_MAX = 99;

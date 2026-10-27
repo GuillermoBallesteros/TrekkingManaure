@@ -93,9 +93,11 @@ export default function Reserva({
               <p className="note form-preview-note">
                 Vista previa local: todavía no envía reservas, archivos ni pagos.
               </p>
-              <p className="form-error" role="alert">
-                {state.error}
-              </p>
+              {state.error && (
+                <p className="form-error" role="alert">
+                  {state.error}
+                </p>
+              )}
             </div>
           </form>
           <ResumenReserva

@@ -113,9 +113,9 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           required
           placeholder="300 000 0000"
           autoComplete={prefijo ? 'off' : 'tel'}
-          maxLength={15}
+          maxLength={20}
           pattern={PATRON_TELEFONO}
-          title="Entre 7 y 15 números"
+          title="Entre 7 y 20 caracteres: números, espacios o +"
         />
       </div>
       <div className="field">
@@ -163,9 +163,9 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           required
           placeholder="300 000 0000"
           autoComplete="off"
-          maxLength={15}
+          maxLength={20}
           pattern={PATRON_TELEFONO}
-          title="Entre 7 y 15 números"
+          title="Entre 7 y 20 caracteres: números, espacios o +"
         />
       </div>
       <div className="field field--full">
