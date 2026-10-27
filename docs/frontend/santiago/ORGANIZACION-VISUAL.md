@@ -42,7 +42,6 @@ Tekking Manaure/
 | Carpeta    | Archivo                                                              | Para qué sirve                                                    |
 | ---------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `aliados/` | `*-circulo.webp` (10 archivos)                                       | Logos recortados al círculo mínimo que contiene el diseño         |
-| `aliados/` | `villa-laura.webp`                                                   | Logo cuadrado original del Hostal Villa Laura (sin uso)           |
 | `flyer/`   | `portada-fondo.webp` (1776×1552)                                     | Foto de fondo de la portada, ampliada con Real-ESRGAN             |
 | `flyer/`   | `flyer-vigente.webp` (1200×2594)                                     | Afiche vigente ampliado; ya no se muestra en el sitio             |
 | `galeria/` | `01-paramo-de-frailejones.webp` … `07-jardin-de-villa-adelaida.webp` | Las 7 fotos de la galería, con título en `shared/data/galeria.ts` |
@@ -80,7 +79,7 @@ Tekking Manaure/
 
 ## 4. Archivos sin uso (se conservan hasta la depuración final)
 
-- **Imágenes:** `flyer/flyer-oficial.webp`, `flyer/flyer-vigente.webp`, `aliados/villa-laura.webp` y los logos originales `corptur`, `cuatri-tours`, `la-casa-de-las-arepas`, `manaure-aventura`, `manaure-vive`, `manauridad`, `metallura-nature-tourism`, `photours` y `villa-adelaida` (`casa-hostal-mi-ranchito.webp` sí se usa).
+- **Imágenes:** `flyer/flyer-oficial.webp`, `flyer/flyer-vigente.webp`.
 - **Estilos:** `.logo-grid` y `.preview-tag` en `styles/global.css`; `.preview-tag` en `Navbar.css`; `.gallery-modal__image`, `.gallery-modal__footer` y `.gallery-item--poster` en `Galeria.css`.
 - **Lógica:** el campo `poster` de `GalleryImage` y el texto de las tarjetas «La invitación» en `Galeria.tsx`.
 

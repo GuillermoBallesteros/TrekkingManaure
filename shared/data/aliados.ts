@@ -10,8 +10,8 @@ import photours from '../assets/images/aliados/photours-circulo.webp';
 import villaAdelaida from '../assets/images/aliados/villa-adelaida-circulo.webp';
 import villaLaura from '../assets/images/aliados/villa-laura-circulo.webp';
 
-// Los logos "-circulo" están recortados al círculo mínimo que contiene el diseño
-// (los originales siguen en la carpeta); así rellenan la tarjeta redonda.
+// Los logos "-circulo" están recortados al círculo mínimo que contiene el diseño;
+// así rellenan la tarjeta redonda.
 export const aliados = [
   { id: 'manauridad', name: 'Manauridad', src: manauridad, delay: 1 },
   { id: 'corptur', name: 'Corptur', src: corptur, delay: 1 },
