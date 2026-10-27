@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
-  EDAD_MAX,
-  EDAD_MIN,
+  NACIMIENTO_MAX,
+  NACIMIENTO_MIN,
   EPS_CESAR,
   EPS_OTRA,
   PATRON_DOCUMENTO,
@@ -72,19 +72,16 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
         />
       </div>
       <div className="field">
-        <label htmlFor={id('edad')}>
-          Edad{sufijo} {req}
+        <label htmlFor={id('nacimiento')}>
+          Fecha de nacimiento{sufijo} {req}
         </label>
         <input
-          id={id('edad')}
-          name={id('edad')}
-          type="number"
-          inputMode="numeric"
+          id={id('nacimiento')}
+          name={id('nacimiento')}
+          type="date"
           required
-          min={EDAD_MIN}
-          max={EDAD_MAX}
-          step={1}
-          placeholder="Años"
+          min={NACIMIENTO_MIN}
+          max={NACIMIENTO_MAX}
         />
       </div>
       {conTalla && (

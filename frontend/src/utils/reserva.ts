@@ -22,7 +22,7 @@ export function readPerson(data: FormData, prefix = '', withSize = false): Datos
     nombre: read('nombre'),
     tipoDocumento: read('tipoDocumento'),
     documento: read('documento'),
-    edad: read('edad'),
+    nacimiento: read('nacimiento'),
     telefono: read('telefono'),
     correo: read('correo'),
     ciudad: read('ciudad'),
@@ -37,7 +37,7 @@ export function describePerson(person: DatosPersona): string[] {
   return [
     'Nombre: ' + person.nombre,
     'Documento: ' + person.tipoDocumento + ' ' + person.documento,
-    'Edad: ' + person.edad,
+    'Fecha de nacimiento: ' + formatBirth(person.nacimiento),
     ...(person.talla ? ['Talla de camisa: ' + person.talla] : []),
     'Teléfono: ' + person.telefono,
     'Correo: ' + person.correo,
@@ -60,4 +60,10 @@ export function validateReceipt(file: Pick<File, 'name' | 'type' | 'size'>): str
   }
 
   return '';
+}
+
+/** Convierte AAAA-MM-DD a DD/MM/AAAA para el resumen. */
+export function formatBirth(value: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  return match ? match[3] + '/' + match[2] + '/' + match[1] : value;
 }

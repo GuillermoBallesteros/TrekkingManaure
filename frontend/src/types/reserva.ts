@@ -6,7 +6,7 @@ export type DatosPersona = {
   nombre: string;
   tipoDocumento: string;
   documento: string;
-  edad: string;
+  nacimiento: string;
   telefono: string;
   correo: string;
   ciudad: string;
