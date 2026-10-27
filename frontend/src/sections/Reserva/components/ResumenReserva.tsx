@@ -1,28 +1,16 @@
 import Icon from '../../../../../shared/components/Icon';
-import { evento, precios } from '../../../../../shared/config';
+import { evento } from '../../../../../shared/config';
 import { formatDate, formatMoney } from '../../../../../shared/utils/format';
-import type { Cotizacion, Estadia, PlanTitular } from '../../../types/reserva';
+import type { Cotizacion, Estadia } from '../../../types/reserva';
 import './ResumenReserva.css';
 
 type Props = {
   stay: Estadia;
-  plan: PlanTitular | null;
   planDate: string;
-  companion: boolean;
-  companionDate: string;
-  extrasTotal: number;
   quote: Cotizacion;
 };
 
-export default function ResumenReserva({
-  stay,
-  plan,
-  planDate,
-  companion,
-  companionDate,
-  extrasTotal,
-  quote,
-}: Props) {
+export default function ResumenReserva({ stay, planDate, quote }: Props) {
   function focusForm() {
     document.getElementById('nombres')?.focus();
   }
@@ -34,29 +22,19 @@ export default function ResumenReserva({
         <span>Resumen</span>
       </div>
       <div className="sum-row">
-        <span>
-          {plan === null
-            ? 'Modalidad por elegir'
-            : plan === 'total'
-              ? 'Inscripción + kit'
-              : 'Inscripción (apartado)'}
-        </span>
-        <strong>
-          {plan === null
-            ? '—'
-            : formatMoney(plan === 'total' ? precios.total : precios.inscripcion)}
-        </strong>
+        <span>Inscripción + kit</span>
+        <strong>{formatMoney(quote.titular)}</strong>
       </div>
-      {companion && (
+      {quote.acompanante > 0 && (
         <div className="sum-row sum-row--dyn">
           <span>Acompañante</span>
-          <strong>{formatMoney(precios.acompanante)}</strong>
+          <strong>{formatMoney(quote.acompanante)}</strong>
         </div>
       )}
-      {extrasTotal > 0 && (
+      {quote.extras > 0 && (
         <div className="sum-row sum-row--dyn">
           <span>Actividades extra</span>
-          <strong>{formatMoney(extrasTotal)}</strong>
+          <strong>{formatMoney(quote.extras)}</strong>
         </div>
       )}
       <div className="sum-row">
@@ -67,18 +45,10 @@ export default function ResumenReserva({
         <span>Pagas ahora</span>
         <strong>{formatMoney(quote.ahora)}</strong>
       </div>
-      {quote.saldoTitular > 0 && (
+      {quote.saldo > 0 && (
         <div className="sum-row">
-          <span>Saldo kit · {planDate ? formatDate(planDate) : 'fecha por elegir'}</span>
-          <strong>{formatMoney(quote.saldoTitular)}</strong>
-        </div>
-      )}
-      {quote.saldoAcompanante > 0 && (
-        <div className="sum-row">
-          <span>
-            Saldo kit acompañante · {companionDate ? formatDate(companionDate) : 'fecha por elegir'}
-          </span>
-          <strong>{formatMoney(quote.saldoAcompanante)}</strong>
+          <span>Restante · {planDate ? formatDate(planDate) : 'fecha por elegir'}</span>
+          <strong>{formatMoney(quote.saldo)}</strong>
         </div>
       )}
       <div className="sum-total">
@@ -89,7 +59,7 @@ export default function ResumenReserva({
         <Icon name="info" />
         <span>
           El pago es por llave Bre-B. Al finalizar te llevamos a WhatsApp con tus datos y la
-          organización te indica cómo pagar. Los saldos se pagan a más tardar el {evento.plazoTexto}
+          organización te indica cómo pagar. El restante se paga a más tardar el {evento.plazoTexto}
           .
         </span>
       </p>

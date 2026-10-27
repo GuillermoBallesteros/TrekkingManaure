@@ -57,7 +57,9 @@ export default function ResumenModal({ resumen, onBack }: Props) {
         <dl className="resumen-lista">
           <Fila label="Estadía" value={resumen.estadia} />
           <Fila label="Modalidad" value={resumen.modalidad} />
-          {resumen.fechaSaldo && <Fila label="Pago del saldo del kit" value={resumen.fechaSaldo} />}
+          {resumen.fechaRestante && (
+            <Fila label="Pago del restante" value={resumen.fechaRestante} />
+          )}
           <Fila label="Actividades extra" value={resumen.extras} />
         </dl>
       </section>

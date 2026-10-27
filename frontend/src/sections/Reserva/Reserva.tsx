@@ -7,9 +7,8 @@ import type { Estadia } from '../../types/reserva';
 import DatosPersonales from './components/DatosPersonales';
 import OpcionesReserva from './components/OpcionesReserva';
 import ControlSeguridad from './components/ControlSeguridad';
-import ModalidadInscripcion from './components/ModalidadInscripcion';
 import Acompanante from './components/Acompanante';
-import FechasPago from './components/FechasPago';
+import FormaPago from './components/FormaPago';
 import ResumenReserva from './components/ResumenReserva';
 import ResumenModal from './components/ResumenModal';
 import './Reserva.css';
@@ -35,7 +34,7 @@ export default function Reserva({
             Aparta tu <em>cupo</em>
           </h2>
           <p className="section-sub">
-            Completa tus datos, elige tu modalidad y finaliza. Te llevamos a WhatsApp con tu
+            Completa tus datos, elige cómo pagar y finaliza. Te llevamos a WhatsApp con tu
             información. Pagas por Nequi o llave Bre-B, la vía que prefieras.
           </p>
         </div>
@@ -62,29 +61,23 @@ export default function Reserva({
               />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={visibles <= 3}>
-              <ModalidadInscripcion plan={state.plan} onPlan={state.setPlan} />
-            </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 4}>
               <Acompanante
                 companion={state.companion}
                 onCompanion={state.setCompanion}
                 kit={state.companionKit}
                 onKit={state.setCompanionKit}
-                pago={state.companionPago}
-                onPago={state.setCompanionPago}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 4}>
+              <FormaPago
+                plan={state.plan}
+                onPlan={state.setPlan}
+                date={state.planDate}
+                onDate={state.setPlanDate}
+                quote={state.quote}
               />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={visibles <= 5}>
-              <FechasPago
-                holder={state.needsHolderDate}
-                holderDate={state.planDate}
-                onHolderDate={state.setPlanDate}
-                companion={state.needsCompanionDate}
-                companionDate={state.companionDate}
-                onCompanionDate={state.setCompanionDate}
-              />
-            </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 6}>
               <div className="form-block form-submit">
                 <div className="toggle-line terms-toggle">
                   <div className="toggle-line__text">
@@ -123,15 +116,7 @@ export default function Reserva({
               </div>
             </div>
           </form>
-          <ResumenReserva
-            stay={stay}
-            plan={state.plan}
-            planDate={state.planDate}
-            companion={state.companion}
-            companionDate={state.companionDate}
-            extrasTotal={state.extrasTotal}
-            quote={state.quote}
-          />
+          <ResumenReserva stay={stay} planDate={state.planDate} quote={state.quote} />
         </div>
       </div>
       <Modal
@@ -155,8 +140,8 @@ export default function Reserva({
         </p>
         <p>La inscripción está sujeta a validación de pago por la organización.</p>
         <p>
-          El pago se hace por hace llave Bre-B. y el cupo queda confirmado cuando la organización
-          verifica el pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
+          El pago se hace por llave Bre-B y el cupo queda confirmado cuando la organización verifica
+          el pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
         </p>
       </Modal>
     </section>

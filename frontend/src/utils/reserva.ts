@@ -13,31 +13,22 @@ export function fieldName(prefix: string, base: string): string {
 }
 
 /**
- * Calcula cuánto se paga ahora (Nequi) y qué saldos quedan.
- * Titular: kit obligatorio; paga 350.000 o aparta con 50.000 (saldo 300.000).
- * Acompañante: 150.000 sin kit. Con kit, 350.000 de inmediato; si es diferido se paga
- * 150.000 ahora y la diferencia del kit después (regla provisional, no está en la especificación).
+ * Calcula el total de la reserva y cómo se reparte el pago.
+ * Titular: inscripción + kit obligatorio (350.000). Acompañante: 150.000 sin kit o 350.000 con kit.
+ * Pago completo: todo se paga ahora. Apartado: se paga solo la inscripción (50.000) ahora y todo
+ * el restante, de todos los participantes y extras, en una única fecha elegida.
  */
 export function getQuote(options: OpcionesCotizacion): Cotizacion {
   const extras = options.extras.reduce((sum, extra) => sum + precios[extra], 0);
-  const saldoTitular = options.plan === 'apartado' ? precios.kitCompleto : 0;
-  const titularAhora = precios.total - saldoTitular;
+  const acompanante = options.companion
+    ? options.companionKit
+      ? precios.acompananteConKit
+      : precios.acompanante
+    : 0;
+  const total = precios.total + acompanante + extras;
+  const ahora = options.plan === 'apartado' ? precios.inscripcion : total;
 
-  let acompananteAhora = 0;
-  let saldoAcompanante = 0;
-  if (options.companion) {
-    if (!options.companionKit) {
-      acompananteAhora = precios.acompanante;
-    } else if (options.companionPago === 'diferido') {
-      acompananteAhora = precios.acompanante;
-      saldoAcompanante = precios.acompananteConKit - precios.acompanante;
-    } else {
-      acompananteAhora = precios.acompananteConKit;
-    }
-  }
-
-  const ahora = titularAhora + acompananteAhora + extras;
-  return { total: ahora + saldoTitular + saldoAcompanante, ahora, saldoTitular, saldoAcompanante };
+  return { titular: precios.total, acompanante, extras, total, ahora, saldo: total - ahora };
 }
 
 /** Lee los campos de una persona del formulario; prefijo '' = titular, 'acomp' = acompañante. */
@@ -99,7 +90,7 @@ export function buildMessage(resumen: ResumenReservaTexto): string {
     ...describePerson(resumen.participante),
     'Estadía: ' + resumen.estadia,
     'Modalidad: ' + resumen.modalidad,
-    ...(resumen.fechaSaldo ? ['Fecha de pago del saldo del kit: ' + resumen.fechaSaldo] : []),
+    ...(resumen.fechaRestante ? ['Fecha de pago del restante: ' + resumen.fechaRestante] : []),
     'Método de pago: ' + METODO_PAGO.label,
     '',
     ...(acompanante
