@@ -1,8 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { getCapacity } from '../../../../shared/utils/capacity';
 import { useAdminPreview } from '../../context/AdminPreviewContext';
 import { tallas } from '../../data/cupos/tallas';
 import { getRunners, summarize } from '../../utils/comun/inscripcion';
+import { getAvailability } from '../../utils/cupos/disponibilidad';
 
 export function useCupos() {
   const { registrations, today, capacity, setCapacity } = useAdminPreview();
@@ -14,7 +14,8 @@ export function useCupos() {
   const runners = secured.flatMap((summary) =>
     getRunners(summary.registration).map((runner) => ({ ...runner, status: summary.status })),
   );
-  const availability = getCapacity(runners.length, capacity);
+  const availability = getAvailability(runners.length, capacity);
+  const minCapacity = Math.max(1, availability.occupied);
   const kits = runners.filter((runner) => runner.kit);
   const atRisk = kits.filter((runner) => runner.status === 'Vencido').length;
   const countRunners = (match: (runner: (typeof runners)[number]) => boolean) =>
@@ -32,6 +33,10 @@ export function useCupos() {
     availability,
     barStyle: { width: availability.percentage + '%' },
     value,
+    minCapacity,
+    limitText: 'Mínimo ' + minCapacity + ' cupos: los ya ocupados.',
+    policyText:
+      'La capacidad del evento es de ' + capacity + ' cupos y solo cambia desde este panel.',
     feedback,
     changeValue: (event: ChangeEvent<HTMLInputElement>) => setValue(Number(event.target.value)),
     applyCapacity,

@@ -1,9 +1,9 @@
 import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { getCapacity } from '../../../../shared/utils/capacity';
 import { useAdminPreview } from '../../context/AdminPreviewContext';
 import { fechaLimiteSaldo } from '../../data/comun/tarifas';
 import type { RegistrationStatus } from '../../types/participante';
 import { classNames } from '../../utils/comun/classNames';
+import { getAvailability } from '../../utils/cupos/disponibilidad';
 import { daysBetween, describeDeadline } from '../../utils/comun/fechas';
 import {
   countRunners,
@@ -22,7 +22,7 @@ export function useDashboard() {
   const secured = countRunners(
     summaries.filter((summary) => summary.paid > 0).map((summary) => summary.registration),
   );
-  const availability = getCapacity(secured, capacity);
+  const availability = getAvailability(secured, capacity);
   const reviews = summaries
     .flatMap((summary) => summary.pending.map((payment) => ({ summary, payment })))
     .sort((a, b) => a.payment.date.localeCompare(b.payment.date));

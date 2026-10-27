@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent } from 'react';
-import { cupos } from '../../../../shared/config';
 import { useAdminPreview } from '../../context/AdminPreviewContext';
 import { contenidoLibro } from '../../data/exportar/libro';
 import { countRunners, statusOrder, summarize } from '../../utils/comun/inscripcion';
@@ -30,7 +29,6 @@ export function useExportar() {
       summaries,
       today,
       capacity,
-      maxCapacity: cupos.maximo,
       filterLabel: filter,
     });
     downloadBlob('perija-gestion-' + today + '.xlsx', blob);

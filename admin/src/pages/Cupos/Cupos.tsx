@@ -1,6 +1,5 @@
 import './Cupos.css';
 import Icon from '../../../../shared/components/Icon';
-import { cupos } from '../../../../shared/config';
 import { useCupos } from '../../hooks';
 
 export default function Cupos() {
@@ -46,10 +45,7 @@ export default function Cupos() {
             <span>{view.availability.occupied} ocupados</span>
             <span>{view.availability.available} disponibles</span>
           </div>
-          <p className="admin-notice">
-            La política del evento contempla {cupos.iniciales} cupos iniciales y una ampliación de{' '}
-            {cupos.ampliacion} al llenarse, hasta {cupos.maximo} participantes.
-          </p>
+          <p className="admin-notice">{view.policyText}</p>
         </article>
         <article className="admin-panel admin-settings">
           <h2>Probar capacidad</h2>
@@ -60,14 +56,11 @@ export default function Cupos() {
               id="capacity"
               required
               type="number"
-              min={cupos.iniciales}
-              max={cupos.maximo}
+              min={view.minCapacity}
               value={view.value}
               onChange={view.changeValue}
             />
-            <small>
-              Entre {cupos.iniciales} y {cupos.maximo} cupos.
-            </small>
+            <small>{view.limitText}</small>
             <button className="btn btn--primary" type="submit">
               Aplicar al ejemplo <Icon name="check" />
             </button>

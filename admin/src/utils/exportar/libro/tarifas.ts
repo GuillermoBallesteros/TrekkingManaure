@@ -76,18 +76,11 @@ export function crearTarifas(contexto: LibroContexto) {
       help: 'Primer día del recorrido.',
     },
     {
-      name: 'DiasLimiteSaldo',
-      label: 'Días de anticipación para pagar el saldo',
-      value: 14,
-      style: 'parametroEntero',
-      help: 'El calendario bloquea compromisos posteriores a esta fecha.',
-    },
-    {
       name: 'FechaLimiteSaldo',
       label: 'Fecha límite del saldo',
-      formula: 'FechaEvento-DiasLimiteSaldo',
-      style: 'calculado',
-      help: 'Calculada: fecha del evento menos los días de anticipación.',
+      value: excelDate(evento.fechaLimitePago),
+      style: 'parametroFecha',
+      help: 'Último día para pagar el saldo; el calendario del sitio no admite fechas posteriores.',
     },
     {
       name: 'Capacidad',
@@ -95,13 +88,6 @@ export function crearTarifas(contexto: LibroContexto) {
       value: contexto.capacity,
       style: 'parametroEntero',
       help: 'Cupos disponibles para titulares y acompañantes con pago aprobado.',
-    },
-    {
-      name: 'CapacidadMaxima',
-      label: 'Capacidad máxima con ampliación',
-      value: contexto.maxCapacity,
-      style: 'parametroEntero',
-      help: 'Tope si se habilita la ampliación de cupos.',
     },
   ];
 

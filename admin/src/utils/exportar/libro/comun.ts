@@ -12,7 +12,6 @@ export type LibroContexto = {
   summaries: Summary[];
   today: string;
   capacity: number;
-  maxCapacity: number;
   filterLabel: string;
 };
 

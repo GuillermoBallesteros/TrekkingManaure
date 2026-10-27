@@ -248,7 +248,6 @@ export const estilosLibro: Record<string, StyleDef> = {
   parametro: { fill: colores.arena, border: 'entrada', numFmt: moneda, font: { bold: true } },
   parametroFecha: { fill: colores.arena, border: 'entrada', numFmt: fecha, font: { bold: true } },
   parametroEntero: { fill: colores.arena, border: 'entrada', numFmt: '0', font: { bold: true } },
-  calculado: { fill: colores.crema, border: 'fina', numFmt: fecha, font: { bold: true } },
 };
 
 export const dxfLibro: Record<string, DxfDef> = {

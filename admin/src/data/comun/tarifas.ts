@@ -1,5 +1,4 @@
 import { evento, precios } from '../../../../shared/config';
-import { subtractDays } from '../../utils/comun/fechas';
 
 // Reglas de la organización para el panel. El acompañante cuesta $150.000 sin kit
 // y lo mismo que un titular si compra kit.
@@ -12,5 +11,5 @@ export const tarifas = {
   parapente: precios.parapente,
 } as const;
 
-// El saldo se puede comprometer hasta dos semanas antes del evento.
-export const fechaLimiteSaldo = subtractDays(evento.fechas[0], 14);
+// Último día para pagar los saldos; viene de la configuración del evento.
+export const fechaLimiteSaldo = evento.fechaLimitePago;
