@@ -3,25 +3,10 @@ import { evento } from '../../../../shared/config';
 // Opciones del formulario de reserva. Editar aquí para cambiar los desplegables.
 export const TIPOS_DOCUMENTO = ['CC', 'CE', 'TI', 'RC', 'Pasaporte', 'PPT'] as const;
 
+// Lista provisional: pendiente de confirmar con el cliente.
+export const GENEROS = ['Femenino', 'Masculino', 'Otro', 'Prefiero no decirlo'] as const;
+
 export const TALLAS = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
-
-export const EPS_CESAR = [
-  'Nueva EPS',
-  'Sura',
-  'Sanitas',
-  'Salud Total',
-  'Compensar',
-  'Famisanar',
-  'Coosalud',
-  'Mutual SER',
-  'Emssanar',
-  'Asmet Salud',
-  'Dusakawi',
-  'SOS',
-  'Aliansalud',
-] as const;
-
-export const EPS_OTRA = 'Otra';
 
 // Sin guiones ni paréntesis dentro de los patrones: con el flag v de Chrome
 // una expresión inválida hace que el campo acepte cualquier valor.

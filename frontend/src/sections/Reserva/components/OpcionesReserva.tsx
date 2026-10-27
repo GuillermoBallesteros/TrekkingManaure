@@ -1,30 +1,20 @@
 import { precios } from '../../../../../shared/config';
 import { formatMoney } from '../../../../../shared/utils/format';
 import type { Estadia, Extra } from '../../../types/reserva';
-import CamposPersona from './CamposPersona';
 
 type Props = {
   stay: Estadia;
   onStay: (value: Estadia) => void;
-  companion: boolean;
-  onCompanion: (value: boolean) => void;
   extras: Extra[];
   onExtras: (value: Extra) => void;
 };
 
-export default function OpcionesReserva({
-  stay,
-  onStay,
-  companion,
-  onCompanion,
-  extras,
-  onExtras,
-}: Props) {
+export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Props) {
   return (
     <>
       <div className="form-block">
         <div className="form-block__head">
-          <span className="form-block__n">2</span>
+          <span className="form-block__n">3</span>
           <div>
             <h3>Opción de estadía</h3>
             <small>Elige dónde pasas la noche.</small>
@@ -60,32 +50,10 @@ export default function OpcionesReserva({
             </label>
           ))}
         </div>
-        <div className="toggle-line companion-toggle">
-          <div className="toggle-line__text">
-            <strong>Llevo acompañante</strong>
-            <small>
-              Costo adicional de {formatMoney(precios.acompanante)} · incluye recorrido, sin kit.
-            </small>
-          </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              aria-label="Llevo acompañante"
-              checked={companion}
-              onChange={(event) => onCompanion(event.target.checked)}
-            />
-            <span className="switch__track" />
-          </label>
-        </div>
-        {companion && (
-          <div className="fields companion-fields is-open">
-            <CamposPersona prefijo="acomp" sufijo=" del acompañante" />
-          </div>
-        )}
       </div>
       <div className="form-block">
         <div className="form-block__head">
-          <span className="form-block__n">3</span>
+          <span className="form-block__n">4</span>
           <div>
             <h3>Actividades extra</h3>
             <small>Opcionales. Incluyen merienda.</small>

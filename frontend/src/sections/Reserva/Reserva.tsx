@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import Modal from '../../../../shared/components/Modal';
 import Icon from '../../../../shared/components/Icon';
-import Calendario from '../../components/ui/Calendario';
 import { useReserva } from '../../hooks/useReserva';
 import type { Estadia } from '../../types/reserva';
 import DatosPersonales from './components/DatosPersonales';
 import OpcionesReserva from './components/OpcionesReserva';
-import Comprobante from './components/Comprobante';
+import ControlSeguridad from './components/ControlSeguridad';
+import ModalidadInscripcion from './components/ModalidadInscripcion';
+import Acompanante from './components/Acompanante';
 import ResumenReserva from './components/ResumenReserva';
 import './Reserva.css';
 
@@ -29,41 +30,36 @@ export default function Reserva({
             Aparta tu <em>cupo</em>
           </h2>
           <p className="section-sub">
-            Paso 1: paga los $50.000 y guarda el comprobante. Paso 2: llena tus datos, elige estadía
-            y selecciona la fecha en que pagarás los $300.000 restantes.
+            Completa tus datos, elige tu modalidad y finaliza. Te llevamos a WhatsApp con tu
+            información y el pago se hace por Nequi.
           </p>
         </div>
         <div className="reserva-grid">
           <form className="form-card reveal" onSubmit={state.submit}>
             <DatosPersonales />
+            <ControlSeguridad />
             <OpcionesReserva
               stay={stay}
               onStay={onStay}
-              companion={state.companion}
-              onCompanion={state.setCompanion}
               extras={state.extras}
               onExtras={state.toggleExtra}
             />
-            <Comprobante file={state.file} onChange={state.changeFile} />
-            <div className="form-block">
-              <div className="form-block__head">
-                <span className="form-block__n">5</span>
-                <div>
-                  <h3>Fecha de pago de los $300.000</h3>
-                  <small>
-                    Se habilita al adjuntar el comprobante. Elige un día dentro del plazo.
-                  </small>
-                </div>
-              </div>
-              <Calendario
-                unlocked={Boolean(state.file)}
-                selected={state.date}
-                onSelect={state.setDate}
-              />
-              <p className="field-hint calendar-hint">
-                La fecha elegida aparecerá en el resumen de tu reserva.
-              </p>
-            </div>
+            <ModalidadInscripcion
+              plan={state.plan}
+              onPlan={state.setPlan}
+              date={state.planDate}
+              onDate={state.setPlanDate}
+            />
+            <Acompanante
+              companion={state.companion}
+              onCompanion={state.setCompanion}
+              kit={state.companionKit}
+              onKit={state.setCompanionKit}
+              pago={state.companionPago}
+              onPago={state.setCompanionPago}
+              date={state.companionDate}
+              onDate={state.setCompanionDate}
+            />
             <div className="form-block form-submit">
               <div className="toggle-line terms-toggle">
                 <div className="toggle-line__text">
@@ -74,7 +70,7 @@ export default function Reserva({
                       className="conditions-link"
                       onClick={() => setConditionsOpen(true)}
                     >
-                      Consultar condiciones de esta vista previa
+                      Consultar condiciones
                     </button>
                   </small>
                 </div>
@@ -88,10 +84,11 @@ export default function Reserva({
                 </label>
               </div>
               <button type="submit" className="btn btn--primary btn--block">
-                Revisar mi reserva <Icon name="whatsapp" />
+                Finalizar registro <Icon name="whatsapp" />
               </button>
               <p className="note form-preview-note">
-                Vista previa local: todavía no envía reservas, archivos ni pagos.
+                Primero revisas el resumen; después se abre WhatsApp con tus datos. No se realiza
+                ningún pago desde la página.
               </p>
               {state.error && (
                 <p className="form-error" role="alert">
@@ -102,10 +99,12 @@ export default function Reserva({
           </form>
           <ResumenReserva
             stay={stay}
-            date={state.date}
+            plan={state.plan}
+            planDate={state.planDate}
             companion={state.companion}
+            companionDate={state.companionDate}
             extrasTotal={state.extrasTotal}
-            total={state.total}
+            quote={state.quote}
           />
         </div>
       </div>
@@ -115,22 +114,30 @@ export default function Reserva({
         onClose={() => state.setPreview(null)}
       >
         <p>
-          Revisa la información que completaste. Esta es una vista previa: no se ha enviado ni
-          guardado una reserva.
+          Revisa la información. Al continuar se abre WhatsApp con este mensaje; la organización te
+          indica cómo pagar por Nequi y, una vez confirmado el pago, registra tu estado.
         </p>
-        <pre className="wa-preview">{state.preview}</pre>
-        <div className="modal__channels">
-          <div>
-            <Icon name="whatsapp" /> Canal de reservas pendiente de conexión.
-          </div>
-          <div>
-            <Icon name="sheet" /> Registro administrativo y comprobantes pendientes de integración.
-          </div>
-        </div>
+        <pre className="wa-preview">{state.preview?.text}</pre>
         <div className="modal__actions">
-          <button className="btn btn--primary" disabled>
-            Envío aún no habilitado
-          </button>
+          {state.preview?.link ? (
+            <a
+              className="btn btn--primary"
+              href={state.preview.link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Continuar a WhatsApp <Icon name="whatsapp" />
+            </a>
+          ) : (
+            <>
+              <button className="btn btn--primary" disabled>
+                WhatsApp aún no configurado
+              </button>
+              <p className="note">
+                Falta el número de WhatsApp de la organización en la configuración del sitio.
+              </p>
+            </>
+          )}
           <button type="button" className="btn btn--ghost" onClick={() => state.setPreview(null)}>
             Volver al formulario
           </button>
@@ -151,8 +158,8 @@ export default function Reserva({
           de habilitar las reservas reales.
         </p>
         <p>
-          El formulario actual sirve para revisar el diseño y el resumen. No transmite archivos ni
-          almacena tus datos.
+          El pago se hace por Nequi y el cupo queda confirmado cuando la organización verifica el
+          pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
         </p>
       </Modal>
     </section>

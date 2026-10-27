@@ -1,28 +1,29 @@
 import { useState, type FormEvent } from 'react';
-import { precios, evento } from '../../../shared/config';
+import { contacto, evento, precios } from '../../../shared/config';
 import { formatDate, formatMoney } from '../../../shared/utils/format';
-import { describePerson, getReservationTotal, readPerson } from '../utils/reserva';
-import type { Estadia, Extra } from '../types/reserva';
+import { describePerson, getQuote, readPerson, whatsappLink } from '../utils/reserva';
+import type { Estadia, Extra, PagoKitAcompanante, PlanTitular } from '../types/reserva';
 
 export function useReserva(stay: Estadia) {
+  const [plan, setPlan] = useState<PlanTitular>('total');
+  const [planDate, setPlanDate] = useState('');
   const [companion, setCompanion] = useState(false);
+  const [companionKit, setCompanionKit] = useState(false);
+  const [companionPago, setCompanionPago] = useState<PagoKitAcompanante>('inmediato');
+  const [companionDate, setCompanionDate] = useState('');
   const [extras, setExtras] = useState<Extra[]>([]);
-  const [file, setFile] = useState<File | null>(null);
-  const [date, setDate] = useState('');
   const [error, setError] = useState('');
-  const [preview, setPreview] = useState<string | null>(null);
-  const total = getReservationTotal(companion, extras);
+  const [preview, setPreview] = useState<{ text: string; link: string | null } | null>(null);
+
+  const quote = getQuote({ plan, companion, companionKit, companionPago, extras });
   const extrasTotal = extras.reduce((sum, item) => sum + precios[item], 0);
+  const needsHolderDate = plan === 'apartado';
+  const needsCompanionDate = companion && companionKit && companionPago === 'diferido';
 
   function toggleExtra(extra: Extra) {
     setExtras((current) =>
       current.includes(extra) ? current.filter((item) => item !== extra) : [...current, extra],
     );
-  }
-
-  function changeFile(next: File | null) {
-    setFile(next);
-    setDate('');
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -31,8 +32,16 @@ export function useReserva(stay: Estadia) {
     const form = event.currentTarget;
 
     if (!form.reportValidity()) return;
-    if (!file || !date || !stay) {
-      setError('Adjunta un comprobante válido, elige tu estadía y selecciona una fecha de pago.');
+    if (!stay) {
+      setError('Elige tu estadía.');
+      return;
+    }
+    if (needsHolderDate && !planDate) {
+      setError('Elige la fecha en que pagarás el saldo del kit.');
+      return;
+    }
+    if (needsCompanionDate && !companionDate) {
+      setError('Elige la fecha en que pagarás el saldo del kit del acompañante.');
       return;
     }
 
@@ -41,33 +50,55 @@ export function useReserva(stay: Estadia) {
       'RESERVA · TREKKING DESAFÍO PERIJÁ 13K',
       evento.fechasTexto + ' · Manaure, Cesar',
       '',
-      'INSCRITO',
+      'PARTICIPANTE',
       ...describePerson(readPerson(data, '', true)),
-      '',
-      ...(companion ? ['ACOMPAÑANTE', ...describePerson(readPerson(data, 'acomp')), ''] : []),
       'Estadía: ' + stay,
-      'Acompañante: ' + (companion ? 'Sí' : 'No'),
+      'Modalidad: ' + (plan === 'total' ? 'Inscripción + kit (pago total)' : 'Solo inscripción'),
+      ...(needsHolderDate ? ['Fecha de pago del saldo del kit: ' + formatDate(planDate)] : []),
+      '',
+      ...(companion
+        ? [
+            'ACOMPAÑANTE',
+            ...describePerson(readPerson(data, 'acomp', companionKit)),
+            'Estadía del acompañante: ' + String(data.get('acompEstadia')),
+            'Kit del acompañante: ' +
+              (companionKit
+                ? 'Sí, pago ' +
+                  (companionPago === 'diferido'
+                    ? 'diferido, saldo el ' + formatDate(companionDate)
+                    : 'inmediato')
+                : 'No'),
+            '',
+          ]
+        : ['Acompañante: No', '']),
       'Actividades extra: ' + (extras.length ? extras.join(', ') : 'Ninguna'),
-      'Comprobante seleccionado: ' + file.name,
-      'Fecha de pago del saldo: ' + formatDate(date),
-      'Total estimado: ' + formatMoney(total),
+      'A pagar ahora por Nequi: ' + formatMoney(quote.ahora),
+      'Saldo pendiente: ' + formatMoney(quote.saldoTitular + quote.saldoAcompanante),
+      'Total: ' + formatMoney(quote.total),
     ];
-    setPreview(lines.join('\n'));
+    const text = lines.join('\n');
+    setPreview({ text, link: whatsappLink(contacto.whatsapp, text) });
   }
 
   return {
+    plan,
+    setPlan,
+    planDate,
+    setPlanDate,
     companion,
     setCompanion,
+    companionKit,
+    setCompanionKit,
+    companionPago,
+    setCompanionPago,
+    companionDate,
+    setCompanionDate,
     extras,
     toggleExtra,
-    file,
-    changeFile,
-    date,
-    setDate,
     error,
     preview,
     setPreview,
-    total,
+    quote,
     extrasTotal,
     submit,
   };

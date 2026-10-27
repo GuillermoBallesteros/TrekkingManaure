@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { fieldName } from '../../../utils/reserva';
 import {
+  GENEROS,
   NACIMIENTO_MAX,
   NACIMIENTO_MIN,
-  EPS_CESAR,
-  EPS_OTRA,
   PATRON_DOCUMENTO,
   PATRON_NOMBRE,
   PATRON_TELEFONO,
@@ -20,24 +19,36 @@ type Props = {
 };
 
 export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = false }: Props) {
-  const [eps, setEps] = useState('');
-  const id = (base: string) =>
-    prefijo ? prefijo + base.charAt(0).toUpperCase() + base.slice(1) : base;
+  const id = (base: string) => fieldName(prefijo, base);
   const req = <span className="req">*</span>;
 
   return (
     <>
-      <div className="field field--full">
-        <label htmlFor={id('nombre')}>
-          Nombre completo{sufijo} {req}
+      <div className="field">
+        <label htmlFor={id('nombres')}>
+          Nombres{sufijo} {req}
         </label>
         <input
-          id={id('nombre')}
-          name={id('nombre')}
+          id={id('nombres')}
+          name={id('nombres')}
           required
-          placeholder="Nombres y apellidos"
-          autoComplete={prefijo ? 'off' : 'name'}
-          maxLength={150}
+          placeholder="Nombres"
+          autoComplete={prefijo ? 'off' : 'given-name'}
+          maxLength={100}
+          pattern={PATRON_NOMBRE}
+        />
+      </div>
+      <div className="field">
+        <label htmlFor={id('apellidos')}>
+          Apellidos{sufijo} {req}
+        </label>
+        <input
+          id={id('apellidos')}
+          name={id('apellidos')}
+          required
+          placeholder="Apellidos"
+          autoComplete={prefijo ? 'off' : 'family-name'}
+          maxLength={100}
           pattern={PATRON_NOMBRE}
         />
       </div>
@@ -83,6 +94,21 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           min={NACIMIENTO_MIN}
           max={NACIMIENTO_MAX}
         />
+      </div>
+      <div className="field">
+        <label htmlFor={id('genero')}>
+          Género{sufijo} {req}
+        </label>
+        <select id={id('genero')} name={id('genero')} required defaultValue="">
+          <option value="" disabled>
+            Selecciona
+          </option>
+          {GENEROS.map((genero) => (
+            <option key={genero} value={genero}>
+              {genero}
+            </option>
+          ))}
+        </select>
       </div>
       {conTalla && (
         <div className="field">
@@ -165,43 +191,6 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           title="Entre 7 y 20 caracteres: números, espacios o +"
         />
       </div>
-      <div className="field field--full">
-        <label htmlFor={id('eps')}>
-          EPS{sufijo} {req}
-        </label>
-        <select
-          id={id('eps')}
-          name={id('eps')}
-          required
-          value={eps}
-          onChange={(event) => setEps(event.target.value)}
-        >
-          <option value="" disabled>
-            Selecciona la EPS
-          </option>
-          {EPS_CESAR.map((nombre) => (
-            <option key={nombre} value={nombre}>
-              {nombre}
-            </option>
-          ))}
-          <option value={EPS_OTRA}>{EPS_OTRA}</option>
-        </select>
-      </div>
-      {eps === EPS_OTRA && (
-        <div className="field field--full">
-          <label htmlFor={id('epsOtra')}>
-            ¿Cuál EPS o seguro?{sufijo} {req}
-          </label>
-          <input
-            id={id('epsOtra')}
-            name={id('epsOtra')}
-            required
-            placeholder="Nombre de la entidad"
-            maxLength={100}
-            pattern={PATRON_NOMBRE}
-          />
-        </div>
-      )}
     </>
   );
 }

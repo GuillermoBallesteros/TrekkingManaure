@@ -59,17 +59,18 @@ export default function Costos() {
             <div className="step">
               <span className="step__n">01</span>
               <div>
-                <h3>Paga los {formatMoney(precios.inscripcion)}</h3>
-                <p>Transfiere la inscripción y guarda el comprobante.</p>
+                <h3>Registra tus datos</h3>
+                <p>Completa el formulario y sigue a WhatsApp con tu información.</p>
               </div>
             </div>
             <div className="step">
               <span className="step__n">02</span>
               <div>
-                <h3>Registra y elige tu fecha</h3>
+                <h3>Paga por Nequi y elige tu fecha</h3>
                 <p>
-                  Sube el comprobante en el formulario y selecciona en el calendario el día en que
-                  pagarás los {formatMoney(precios.kitCompleto)}. Esa fecha queda registrada.
+                  Paga {formatMoney(precios.inscripcion)} para apartar o{' '}
+                  {formatMoney(precios.total)} completo. Si apartas, eliges en el calendario el día
+                  en que pagarás los {formatMoney(precios.kitCompleto)}.
                 </p>
               </div>
             </div>

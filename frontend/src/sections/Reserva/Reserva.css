@@ -68,14 +68,16 @@
 .field--full {
   grid-column: 1/-1;
 }
-.field label {
+.field label,
+.field .field__label {
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(253, 248, 223, 0.62);
 }
-.field label .req {
+.field label .req,
+.field .field__label .req {
   color: var(--naranja);
 }
 .field input,
