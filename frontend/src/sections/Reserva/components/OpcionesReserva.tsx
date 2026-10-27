@@ -1,6 +1,7 @@
 import { precios } from '../../../../../shared/config';
 import { formatMoney } from '../../../../../shared/utils/format';
 import type { Estadia, Extra } from '../../../types/reserva';
+import CamposPersona from './CamposPersona';
 
 type Props = {
   stay: Estadia;
@@ -78,32 +79,7 @@ export default function OpcionesReserva({
         </div>
         {companion && (
           <div className="fields companion-fields is-open">
-            <div className="field">
-              <label htmlFor="acompNombre">
-                Nombre del acompañante <span className="req">*</span>
-              </label>
-              <input
-                id="acompNombre"
-                name="acompNombre"
-                required
-                placeholder="Nombre completo"
-                maxLength={150}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="acompCedula">
-                Cédula del acompañante <span className="req">*</span>
-              </label>
-              <input
-                id="acompCedula"
-                name="acompCedula"
-                required
-                inputMode="numeric"
-                pattern="[0-9]{5,20}"
-                maxLength={20}
-                placeholder="Número de documento"
-              />
-            </div>
+            <CamposPersona prefijo="acomp" sufijo=" del acompañante" />
           </div>
         )}
       </div>

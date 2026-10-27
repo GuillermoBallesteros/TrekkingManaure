@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { precios, evento } from '../../../shared/config';
 import { formatDate, formatMoney } from '../../../shared/utils/format';
-import { getReservationTotal } from '../utils/reserva';
+import { describePerson, getReservationTotal, readPerson } from '../utils/reserva';
 import type { Estadia, Extra } from '../types/reserva';
 
 export function useReserva(stay: Estadia) {
@@ -37,22 +37,16 @@ export function useReserva(stay: Estadia) {
     }
 
     const data = new FormData(form);
-    const value = (key: string) => String(data.get(key) || '').trim() || 'No indicado';
     const lines = [
       'RESERVA · TREKKING DESAFÍO PERIJÁ 13K',
       evento.fechasTexto + ' · Manaure, Cesar',
       '',
-      'Nombre: ' + value('nombre'),
-      'Cédula: ' + value('cedula'),
-      'Teléfono: ' + value('telefono'),
-      'Correo: ' + value('correo'),
-      'Ciudad: ' + value('ciudad'),
-      'Contacto de emergencia: ' + value('emergencia'),
-      'EPS / seguro: ' + value('eps'),
+      'INSCRITO',
+      ...describePerson(readPerson(data, '', true)),
       '',
+      ...(companion ? ['ACOMPAÑANTE', ...describePerson(readPerson(data, 'acomp')), ''] : []),
       'Estadía: ' + stay,
-      'Acompañante: ' +
-        (companion ? value('acompNombre') + ' · C.C. ' + value('acompCedula') : 'No'),
+      'Acompañante: ' + (companion ? 'Sí' : 'No'),
       'Actividades extra: ' + (extras.length ? extras.join(', ') : 'Ninguna'),
       'Comprobante seleccionado: ' + file.name,
       'Fecha de pago del saldo: ' + formatDate(date),
