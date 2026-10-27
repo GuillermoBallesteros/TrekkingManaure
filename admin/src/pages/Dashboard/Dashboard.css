@@ -139,16 +139,32 @@
   flex: none;
 }
 
-.legend-dot--confirmed {
-  background: var(--dorado);
+.admin-chart {
+  --estado-por-verificar: var(--dorado);
+  --estado-saldo-pendiente: var(--naranja);
+  --estado-vencido: var(--accion);
+  --estado-pagado: #54d16a;
+  --estado-rechazado: var(--panel-2);
 }
 
-.legend-dot--pending {
-  background: var(--naranja);
+.legend-dot--por-verificar {
+  background: var(--estado-por-verificar);
 }
 
-.legend-dot--rejected {
-  background: var(--panel-2);
+.legend-dot--saldo-pendiente {
+  background: var(--estado-saldo-pendiente);
+}
+
+.legend-dot--vencido {
+  background: var(--estado-vencido);
+}
+
+.legend-dot--pagado {
+  background: var(--estado-pagado);
+}
+
+.legend-dot--rechazado {
+  background: var(--estado-rechazado);
   border: 1px solid rgba(253, 248, 223, 0.3);
 }
 
@@ -228,6 +244,67 @@
   color: var(--dorado);
 }
 
+.admin-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.admin-list li > a,
+.admin-list li > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  border-top: 1px solid rgba(253, 248, 223, 0.07);
+  font-size: 0.66rem;
+}
+
+.admin-list li > a:hover {
+  background: rgba(242, 193, 78, 0.05);
+}
+
+.admin-list li > a > .ico {
+  width: 13px;
+  height: 13px;
+  color: var(--dorado);
+  flex: none;
+}
+
+.admin-list span {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-list strong {
+  display: block;
+  font-weight: 500;
+}
+
+.admin-list small {
+  display: block;
+  font-size: 0.56rem;
+  color: rgba(253, 248, 223, 0.5);
+  margin-top: 3px;
+}
+
+.admin-list em {
+  font-style: normal;
+  color: var(--dorado-claro);
+  white-space: nowrap;
+}
+
+.admin-list .status-badge {
+  flex: none;
+}
+
+.admin-list-empty {
+  padding: 20px 24px 26px;
+  border-top: 1px solid rgba(253, 248, 223, 0.07);
+  font-size: 0.68rem;
+  color: rgba(253, 248, 223, 0.55);
+}
+
 .admin-bottom-note {
   display: flex;
   align-items: center;
@@ -286,7 +363,8 @@
   .admin-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .admin-overview-grid {
+  .admin-overview-grid,
+  .admin-lists {
     grid-template-columns: minmax(0, 1fr);
   }
   .admin-chart {
@@ -332,6 +410,14 @@
 @media (max-width: 480px) {
   .admin-metric {
     padding: 18px 13px;
+  }
+  .admin-list li > a,
+  .admin-list li > div {
+    padding-inline: 18px;
+    flex-wrap: wrap;
+  }
+  .admin-list-empty {
+    padding-inline: 18px;
   }
   .admin-metric > div {
     font-size: 0.58rem;

@@ -1,31 +1,64 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { cupos } from '../../../shared/config';
-import { demoParticipants } from '../data/demo';
-import type { Participant, PaymentStatus } from '../types/participante';
+import { todayInColombia } from '../../../shared/utils/format';
+import { demoRegistrations } from '../data/comun/demo';
+import type { PaymentReview, Registration } from '../types/participante';
+import {
+  appendApprovedPayment,
+  applyReview,
+  type NewPayment,
+} from '../utils/pagos/actualizaciones';
 
 type PreviewContext = {
-  participants: Participant[];
+  registrations: Registration[];
+  today: string;
   capacity: number;
   setCapacity: (value: number) => void;
-  setPaymentStatus: (id: string, status: PaymentStatus) => void;
+  reviewPayment: (
+    registrationId: string,
+    paymentId: string,
+    review: PaymentReview,
+    reason?: string | null,
+  ) => void;
+  addPayment: (registrationId: string, payment: NewPayment) => void;
+  focusPaymentId: string | null;
+  setFocusPaymentId: (id: string | null) => void;
 };
 
 const Context = createContext<PreviewContext | null>(null);
 
 export function AdminPreviewProvider({ children }: { children: ReactNode }) {
-  const [participants, setParticipants] = useState(demoParticipants);
+  const [registrations, setRegistrations] = useState(demoRegistrations);
   const [capacity, setCapacity] = useState<number>(cupos.iniciales);
+  const [focusPaymentId, setFocusPaymentId] = useState<string | null>(null);
+  const today = todayInColombia();
 
-  function setPaymentStatus(id: string, status: PaymentStatus) {
-    setParticipants((current) =>
-      current.map((participant) =>
-        participant.id === id ? { ...participant, status } : participant,
-      ),
-    );
+  function reviewPayment(
+    registrationId: string,
+    paymentId: string,
+    review: PaymentReview,
+    reason: string | null = null,
+  ) {
+    setRegistrations((current) => applyReview(current, registrationId, paymentId, review, reason));
+  }
+
+  function addPayment(registrationId: string, payment: NewPayment) {
+    setRegistrations((current) => appendApprovedPayment(current, registrationId, payment, today));
   }
 
   return (
-    <Context.Provider value={{ participants, capacity, setCapacity, setPaymentStatus }}>
+    <Context.Provider
+      value={{
+        registrations,
+        today,
+        capacity,
+        setCapacity,
+        reviewPayment,
+        addPayment,
+        focusPaymentId,
+        setFocusPaymentId,
+      }}
+    >
       {children}
     </Context.Provider>
   );

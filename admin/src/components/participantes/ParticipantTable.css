@@ -64,41 +64,45 @@ tr:last-child td {
   margin-top: 4px;
 }
 
-.status-badge {
+.table-health {
   display: inline-flex;
-  gap: 6px;
+  vertical-align: middle;
+  margin-left: 6px;
+  color: #ffad94;
+}
+
+.table-health .ico {
+  width: 13px;
+  height: 13px;
+}
+
+.table-group {
+  display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  font-size: 0.56rem;
-  font-weight: 500;
-  border-radius: 999px;
-  border: 1px solid transparent;
+  gap: 6px;
   white-space: nowrap;
 }
 
-.status-badge i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.status-badge--pendiente {
-  background: rgba(242, 193, 78, 0.09);
-  border-color: rgba(242, 193, 78, 0.16);
+.table-group .ico {
+  width: 14px;
+  height: 14px;
   color: var(--dorado);
 }
 
-.status-badge--confirmado {
-  background: rgba(84, 209, 106, 0.08);
-  border-color: rgba(84, 209, 106, 0.18);
-  color: #91dba1;
+.table-due {
+  color: #ffb27f;
 }
 
-.status-badge--rechazado {
-  background: rgba(211, 41, 15, 0.12);
-  border-color: rgba(211, 41, 15, 0.25);
-  color: #ffa28b;
+.table-sub {
+  display: block;
+  font-size: 0.53rem;
+  color: rgba(253, 248, 223, 0.42);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+td {
+  white-space: nowrap;
 }
 
 .table-action {
@@ -139,45 +143,6 @@ tr:last-child td {
   color: rgba(253, 248, 223, 0.6);
 }
 
-.admin-demo-label {
-  color: var(--dorado) !important;
-  font-size: 0.65rem !important;
-  margin: 10px 0 20px !important;
-}
-
-.detail-list {
-  margin-bottom: 22px;
-}
-
-.detail-list > div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(253, 248, 223, 0.08);
-  font-size: 0.75rem;
-}
-
-.detail-list dt {
-  color: rgba(253, 248, 223, 0.55);
-}
-
-.detail-list dd {
-  margin: 0;
-  text-align: right;
-}
-
-.admin-review-actions {
-  margin-top: 20px;
-}
-
-.admin-review-actions .btn {
-  font-size: 0.65rem;
-  padding: 0.8rem 1rem;
-  flex: 1;
-}
-
 @media (max-width: 1050px) {
   th,
   td {
@@ -191,8 +156,11 @@ tr:last-child td {
     padding: 13px 11px;
     font-size: 0.6rem;
   }
-  th {
+  th,
+  td {
     white-space: normal;
+  }
+  th {
     font-size: 0.53rem;
   }
   th:first-child,
@@ -213,11 +181,6 @@ tr:last-child td {
   .table-person small {
     font-size: 0.48rem;
   }
-  .status-badge {
-    font-size: 0.5rem;
-    padding: 4px 6px;
-    gap: 4px;
-  }
   .table-action {
     font-size: 0.53rem;
     white-space: normal;
@@ -226,8 +189,5 @@ tr:last-child td {
   .table-action .ico {
     width: 10px;
     height: 10px;
-  }
-  .admin-review-actions {
-    flex-direction: column;
   }
 }

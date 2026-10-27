@@ -1,0 +1,58 @@
+.status-badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 0.56rem;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-badge i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge--por-verificar,
+.status-badge--por-revisar {
+  background: rgba(242, 193, 78, 0.09);
+  border-color: rgba(242, 193, 78, 0.16);
+  color: var(--dorado);
+}
+
+.status-badge--saldo-pendiente {
+  background: rgba(232, 88, 28, 0.1);
+  border-color: rgba(232, 88, 28, 0.25);
+  color: #ffb27f;
+}
+
+.status-badge--pagado,
+.status-badge--aprobado {
+  background: rgba(84, 209, 106, 0.08);
+  border-color: rgba(84, 209, 106, 0.18);
+  color: #91dba1;
+}
+
+.status-badge--vencido {
+  background: rgba(211, 41, 15, 0.12);
+  border-color: rgba(211, 41, 15, 0.25);
+  color: #ffa28b;
+}
+
+.status-badge--rechazado {
+  background: rgba(253, 248, 223, 0.05);
+  border-color: rgba(253, 248, 223, 0.16);
+  color: rgba(253, 248, 223, 0.62);
+}
+
+@media (max-width: 480px) {
+  .status-badge {
+    font-size: 0.5rem;
+    padding: 4px 6px;
+    gap: 4px;
+  }
+}

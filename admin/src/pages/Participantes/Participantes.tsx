@@ -1,18 +1,10 @@
 import './Participantes.css';
-import { useState } from 'react';
 import Icon from '../../../../shared/components/Icon';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import ParticipantTable from '../../components/ParticipantTable';
+import ParticipantTable from '../../components/participantes/ParticipantTable';
+import { useParticipantes } from '../../hooks';
 
 export default function Participantes() {
-  const { participants } = useAdminPreview();
-  const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('Todos');
-  const rows = participants.filter(
-    (person) =>
-      (person.id + ' ' + person.name).toLowerCase().includes(search.toLowerCase()) &&
-      (status === 'Todos' || person.status === status),
-  );
+  const participantes = useParticipantes();
 
   return (
     <>
@@ -22,9 +14,9 @@ export default function Participantes() {
           <h1>
             Los <em>participantes</em>
           </h1>
-          <p>Datos, estadía y estado de inscripción organizados en una sola vista.</p>
+          <p>Titulares, acompañantes, salud, estadía y estado de pago en una sola vista.</p>
         </div>
-        <span className="admin-pill">{participants.length} registros de ejemplo</span>
+        <span className="admin-pill">{participantes.totalLabel}</span>
       </div>
       <article className="admin-panel">
         <div className="admin-filter-bar">
@@ -32,26 +24,33 @@ export default function Participantes() {
             <Icon name="search" />
             <input
               aria-label="Buscar participante"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar por nombre o identificador…"
+              value={participantes.search}
+              onChange={participantes.changeSearch}
+              placeholder="Nombre, documento, teléfono o acompañante…"
             />
           </label>
-          <label className="admin-select-label">
-            Estado
-            <select value={status} onChange={(event) => setStatus(event.target.value)}>
-              <option>Todos</option>
-              <option>Pendiente</option>
-              <option>Confirmado</option>
-              <option>Rechazado</option>
-            </select>
-          </label>
+          <div className="admin-filter-group">
+            <label className="admin-check">
+              <input
+                type="checkbox"
+                checked={participantes.healthOnly}
+                onChange={participantes.changeHealthOnly}
+              />
+              Con alertas de salud
+            </label>
+            <label className="admin-select-label">
+              Estado
+              <select value={participantes.status} onChange={participantes.changeStatus}>
+                {participantes.statusOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
+              </select>
+            </label>
+          </div>
         </div>
-        <ParticipantTable rows={rows} />
+        <ParticipantTable rows={participantes.rows} />
         <div className="admin-panel-foot">
-          <span>
-            {rows.length} de {participants.length} registros
-          </span>
+          <span>{participantes.resultLabel}</span>
           <span>Información ficticia</span>
         </div>
       </article>

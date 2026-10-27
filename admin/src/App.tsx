@@ -1,86 +1,53 @@
 import './App.css';
 import { Dashboard, Login, Participantes, Pagos, Cupos, Exportar } from './pages';
-import { useEffect, useState } from 'react';
 import Brand from '../../shared/components/Brand';
 import Icon from '../../shared/components/Icon';
-import { AdminPreviewProvider, useAdminPreview } from './context/AdminPreviewContext';
+import { AdminPreviewProvider } from './context/AdminPreviewContext';
+import { useAdminNavigation } from './hooks';
 
-const links = [
-  { id: 'resumen', label: 'Vista general', icon: 'grid' as const },
-  { id: 'participantes', label: 'Participantes', icon: 'users' as const },
-  { id: 'pagos', label: 'Revisión de pagos', icon: 'sheet' as const },
-  { id: 'cupos', label: 'Gestión de cupos', icon: 'tent' as const },
-  { id: 'exportar', label: 'Exportar información', icon: 'upload' as const },
-];
+const pages = {
+  resumen: Dashboard,
+  participantes: Participantes,
+  pagos: Pagos,
+  cupos: Cupos,
+  exportar: Exportar,
+  acceso: Login,
+};
 
 function AdminRoutes() {
-  const [route, setRoute] = useState(location.hash.slice(2) || 'acceso');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { participants } = useAdminPreview();
-  const pending = participants.filter((person) => person.status === 'Pendiente').length;
-  const title = links.find((link) => link.id === route)?.label || 'Vista general';
-  const publicUrl =
-    import.meta.env.VITE_PUBLIC_URL || location.protocol + '//' + location.hostname + ':5173';
+  const navigation = useAdminNavigation();
+  const Page = pages[navigation.route] || Dashboard;
 
-  useEffect(() => {
-    function onHash() {
-      setRoute(location.hash.slice(2) || 'acceso');
-      setMenuOpen(false);
-      window.scrollTo(0, 0);
-    }
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setMenuOpen(false);
-    }
-    window.addEventListener('hashchange', onHash);
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('hashchange', onHash);
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.title = (route === 'acceso' ? 'Acceso' : title) + ' · Perijá Admin';
-    document.getElementById('admin-content')?.focus({ preventScroll: true });
-  }, [route, title]);
-
-  if (route === 'acceso') return <Login />;
+  if (navigation.route === 'acceso') return <Login />;
 
   return (
     <div className="admin-shell">
-      <a
-        className="skip-link"
-        href="#admin-content"
-        onClick={(event) => {
-          event.preventDefault();
-          document.getElementById('admin-content')?.focus();
-        }}
-      >
+      <a className="skip-link" href="#admin-content" onClick={navigation.skipToContent}>
         Saltar al contenido
       </a>
-      {menuOpen && (
+      {navigation.menuOpen && (
         <button
           className="admin-sidebar-backdrop"
           aria-label="Cerrar navegación"
-          onClick={() => setMenuOpen(false)}
+          onClick={navigation.closeMenu}
         />
       )}
-      <aside className={'admin-sidebar ' + (menuOpen ? 'is-open' : '')}>
+      <aside className={navigation.sidebarClass}>
         <a href="#/resumen" aria-label="Perijá, vista general">
           <Brand />
         </a>
         <span className="admin-nav-label">ESPACIO DE ORGANIZACIÓN</span>
         <nav aria-label="Navegación administrativa">
-          {links.map((link) => (
+          {navigation.links.map((link) => (
             <a
               key={link.id}
-              href={'#/' + link.id}
-              onClick={() => setMenuOpen(false)}
-              aria-current={route === link.id ? 'page' : undefined}
+              href={link.href}
+              onClick={navigation.closeMenu}
+              aria-current={link.current}
             >
               <Icon name={link.icon} />
               <span>{link.label}</span>
-              {link.id === 'pagos' && pending > 0 && <small>{pending}</small>}
+              {link.badge && <small>{link.badge}</small>}
             </a>
           ))}
         </nav>
@@ -89,7 +56,7 @@ function AdminRoutes() {
           <small>EL PRÓXIMO DESAFÍO</small>
           <strong>Perijá 13K</strong>
           <span>15 y 16 de noviembre</span>
-          <a href={publicUrl}>
+          <a href={navigation.publicUrl}>
             Ver página del evento <Icon name="arrow" />
           </a>
         </div>
@@ -109,19 +76,19 @@ function AdminRoutes() {
               type="button"
               className="admin-menu-toggle"
               aria-label="Abrir navegación"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={navigation.menuOpen}
+              onClick={navigation.toggleMenu}
             >
               <span />
               <span />
               <span />
             </button>
             <span className="admin-breadcrumb">
-              Administración <span>/</span> <strong>{title}</strong>
+              Administración <span>/</span> <strong>{navigation.title}</strong>
             </span>
           </div>
           <div>
-            <a href={publicUrl} className="admin-public-link">
+            <a href={navigation.publicUrl} className="admin-public-link">
               Ver sitio público <Icon name="arrow" />
             </a>
             <span className="admin-user-avatar">P</span>
@@ -140,17 +107,7 @@ function AdminRoutes() {
           <span>Sin conexión al servidor</span>
         </div>
         <main id="admin-content" className="admin-content" tabIndex={-1}>
-          {route === 'participantes' ? (
-            <Participantes />
-          ) : route === 'pagos' ? (
-            <Pagos />
-          ) : route === 'cupos' ? (
-            <Cupos />
-          ) : route === 'exportar' ? (
-            <Exportar />
-          ) : (
-            <Dashboard />
-          )}
+          <Page />
         </main>
       </div>
     </div>

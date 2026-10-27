@@ -1,5 +1,11 @@
+.admin-export-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
 .admin-export {
-  max-width: 650px;
   padding: 35px;
 }
 
@@ -68,7 +74,56 @@
   font-size: 0.68rem;
 }
 
+.admin-export-sheets ol {
+  counter-reset: hoja;
+  padding: 0 24px 16px;
+}
+
+.admin-export-sheets li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(253, 248, 223, 0.08);
+  counter-increment: hoja;
+}
+
+.admin-export-sheets li::before {
+  content: counter(hoja);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid var(--linea);
+  color: var(--dorado);
+  font-family: var(--titulos);
+  font-size: 1.1rem;
+}
+
+.admin-export-sheets strong {
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+
+.admin-export-sheets span {
+  font-size: 0.64rem;
+  color: rgba(253, 248, 223, 0.55);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1050px) {
+  .admin-export-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 480px) {
+  .admin-export-sheets ol {
+    padding-inline: 18px;
+  }
   .admin-export {
     padding: 26px 22px;
   }
