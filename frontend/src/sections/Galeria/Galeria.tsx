@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type TouchEvent } from 'react';
 import Icon from '../../../../shared/components/Icon';
 import Modal from '../../../../shared/components/Modal';
 import { galleryImages } from '../../../../shared/data/galeria';
@@ -16,31 +16,72 @@ const upcoming = [
 
 export default function Galeria() {
   const [selected, setSelected] = useState<number | null>(null);
+  const [failed, setFailed] = useState<Record<string, boolean>>({});
+  const strip = useRef<HTMLDivElement>(null);
+  const selectedRef = useRef<number | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const total = galleryImages.length;
   const image = selected === null ? null : galleryImages[selected];
+  const isOpen = selected !== null;
+  selectedRef.current = selected;
 
-  function move(direction: number) {
-    setSelected((current) =>
-      current === null ? null : (current + direction + galleryImages.length) % galleryImages.length,
-    );
+  function goTo(index: number) {
+    setSelected((index + total) % total);
+  }
+
+  function move(step: number) {
+    goTo((selectedRef.current ?? 0) + step);
+  }
+
+  function onTouchStart(event: TouchEvent) {
+    const touch = event.touches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function onTouchEnd(event: TouchEvent) {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start || total < 2) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) move(dx < 0 ? 1 : -1);
   }
 
   useEffect(() => {
-    if (selected === null || galleryImages.length < 2) return;
+    if (!isOpen) return;
+    galleryImages.forEach((item) => {
+      const probe = new Image();
+      probe.src = item.src;
+      probe.decode?.().catch(() => undefined);
+    });
+  }, [isOpen]);
+
+  useEffect(() => {
+    const container = strip.current;
+    const thumb = selected === null ? null : (container?.children[selected] as HTMLElement | null);
+    if (!container || !thumb) return;
+    container.scrollTo({
+      left: thumb.offsetLeft - container.clientWidth / 2 + thumb.clientWidth / 2,
+      behavior: 'smooth',
+    });
+  }, [selected]);
+
+  useEffect(() => {
+    if (!isOpen || total < 2) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight') {
         event.preventDefault();
-        setSelected((current) => (current === null ? null : (current + 1) % galleryImages.length));
+        move(1);
       }
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        setSelected((current) =>
-          current === null ? null : (current - 1 + galleryImages.length) % galleryImages.length,
-        );
+        move(-1);
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selected]);
+  }, [isOpen]);
 
   return (
     <section className="section gallery" id="galeria">
@@ -69,8 +110,9 @@ export default function Galeria() {
                 src={item.src}
                 alt={item.description}
                 loading="lazy"
-                width={item.poster ? 1024 : undefined}
-                height={item.poster ? 1536 : undefined}
+                decoding="async"
+                width={item.poster ? 1200 : undefined}
+                height={item.poster ? 2594 : undefined}
               />
               <span className="gallery-item__zoom">
                 <Icon name="camera" />
@@ -102,8 +144,8 @@ export default function Galeria() {
             ))}
         </div>
         <p className="note gallery-note">
-          Las fotografías generales se incorporarán a esta galería. El material disponible ahora es
-          el afiche del evento.
+          Imágenes de Manaure y de la Serranía del Perijá. Las fotografías del evento se irán
+          sumando a esta galería.
         </p>
       </div>
       <Modal
@@ -113,35 +155,59 @@ export default function Galeria() {
         className="gallery-modal"
       >
         {image && (
-          <>
-            <img src={image.src} alt={image.description} className="gallery-modal__image" />
-            <div className="gallery-modal__footer">
-              <span>{image.description}</span>
-              {galleryImages.length > 1 && (
-                <div>
-                  <button
-                    type="button"
-                    className="modal__close"
-                    aria-label="Imagen anterior"
-                    onClick={() => move(-1)}
-                  >
-                    ←
-                  </button>
-                  <span>
-                    {(selected || 0) + 1} / {galleryImages.length}
-                  </span>
-                  <button
-                    type="button"
-                    className="modal__close"
-                    aria-label="Imagen siguiente"
-                    onClick={() => move(1)}
-                  >
-                    →
-                  </button>
+          <div className="visor">
+            <div className="visor__escenario">
+              <div className="visor__foto" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+                <div className="visor__pista">
+                  {galleryImages.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className={'visor__slide' + (index === selected ? ' activa' : '')}
+                      style={{ '--foto': `url("${item.src}")` } as CSSProperties}
+                      aria-hidden={index !== selected}
+                    >
+                      {failed[item.id] ? (
+                        <p className="visor__error">No se pudo cargar esta imagen.</p>
+                      ) : (
+                        <img
+                          className="visor__img"
+                          src={item.src}
+                          alt={item.description}
+                          decoding="async"
+                          draggable={false}
+                          onError={() => setFailed((prev) => ({ ...prev, [item.id]: true }))}
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
-          </>
+            {total > 1 && (
+              <div className="visor__tira" ref={strip}>
+                {galleryImages.map((item, index) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={'visor__mini' + (index === selected ? ' activo' : '')}
+                    aria-label={'Ver ' + item.title}
+                    aria-current={index === selected}
+                    onClick={() => goTo(index)}
+                  >
+                    <img src={item.src} alt="" decoding="async" draggable={false} />
+                  </button>
+                ))}
+              </div>
+            )}
+            <p className="visor__pie">
+              <span>{image.description}</span>
+              {total > 1 && (
+                <strong className="visor__cuenta">
+                  {(selected ?? 0) + 1} / {total}
+                </strong>
+              )}
+            </p>
+          </div>
         )}
       </Modal>
     </section>

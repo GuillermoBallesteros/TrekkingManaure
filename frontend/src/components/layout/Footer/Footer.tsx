@@ -1,5 +1,5 @@
 import Brand from '../../../../../shared/components/Brand';
-import { evento, contacto } from '../../../../../shared/config';
+import { evento } from '../../../../../shared/config';
 import './Footer.css';
 
 export default function Footer() {
@@ -48,7 +48,7 @@ export default function Footer() {
               <li>
                 <a href="#seguridad">Seguridad</a>
               </li>
-              <li>Reservas: {contacto.encargada}</li>
+              <li>Reservas: equipo organizador</li>
               <li>{evento.lugar}</li>
               <li>
                 <a href={adminUrl}>Administración</a>
