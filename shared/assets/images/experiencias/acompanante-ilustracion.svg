@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+<defs>
+<linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d5f86"/><stop offset=".42" stop-color="#e8a64e"/><stop offset=".6" stop-color="#f6d48a"/></linearGradient>
+<radialGradient id="brillo" cx="880" cy="330" r="280" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff6cf"/><stop offset=".25" stop-color="#ffd978" stop-opacity=".8"/><stop offset="1" stop-color="#ffb34a" stop-opacity="0"/></radialGradient>
+<radialGradient id="lumbre" cx="1030" cy="690" r="90" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffb347" stop-opacity=".85"/><stop offset="1" stop-color="#ff7a1c" stop-opacity="0"/></radialGradient>
+<g id="senderista"><path d="M-4 0 L-2 -22 M4 0 L3 -22" stroke="#0f241b" stroke-width="5" stroke-linecap="round"/><rect x="-7" y="-47" width="15" height="27" rx="5" fill="#27493a"/><rect x="-14" y="-47" width="9" height="25" rx="4" fill="#0f1f19"/><rect x="-12" y="-42" width="2.6" height="16" fill="#E8581C"/><circle cx="1" cy="-54" r="6" fill="#d9a77a"/><path d="M-5 -55 A6.5 6.5 0 0 1 8 -55Z" fill="#2a3f33"/><path d="M9 -32 L17 0" stroke="#e6d9ae" stroke-width="1.8" stroke-linecap="round"/></g>
+<g id="frailejon"><rect x="-4" y="0" width="8" height="34" fill="#6b5a2e"/><g fill="#c9c36c"><ellipse cy="-18" rx="5" ry="18"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(40)" fill="#9bb552"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(80)"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(120)" fill="#9bb552"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(160)"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(200)" fill="#9bb552"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(240)"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(280)" fill="#9bb552"/><ellipse cy="-18" rx="5" ry="18" transform="rotate(320)"/></g></g>
+</defs>
+<rect width="1200" height="800" fill="url(#cielo)"/>
+<circle cx="880" cy="330" r="280" fill="url(#brillo)"/>
+<g fill="#fff0b3" opacity=".13"><path d="M880 330 L240 230 L240 290Z"/><path d="M880 330 L300 120 L380 110Z"/><path d="M880 330 L640 60 L720 60Z"/><path d="M880 330 L1200 120 L1200 200Z"/><path d="M880 330 L1200 330 L1200 400Z"/></g>
+<circle cx="880" cy="330" r="32" fill="#fffbe6"/>
+<g fill="#fbe3b0"><ellipse cx="230" cy="130" rx="190" ry="22" opacity=".55"/><ellipse cy="165" cx="420" rx="140" ry="16" opacity=".4"/><ellipse cx="1010" cy="110" rx="170" ry="20" opacity=".5"/><ellipse cx="760" cy="190" rx="120" ry="14" opacity=".4"/></g>
+<path d="M0 400 L120 360 L230 395 L360 330 L470 385 L600 345 L720 400 L860 360 L1000 405 L1100 372 L1200 400 V800 H0Z" fill="#7b9a86"/>
+<ellipse cx="600" cy="425" rx="720" ry="26" fill="#f3e3bb" opacity=".38"/>
+<path d="M0 470 L140 420 L280 470 L430 405 L560 465 L700 420 L860 480 L1010 430 L1200 470 V800 H0Z" fill="#4a7753"/>
+<ellipse cx="600" cy="490" rx="720" ry="24" fill="#f3e3bb" opacity=".3"/>
+<path d="M0 560 L180 500 L330 555 L500 490 L660 560 L820 510 L980 565 L1200 520 V800 H0Z" fill="#2f5f46"/>
+<ellipse cx="600" cy="570" rx="720" ry="20" fill="#e6edd0" opacity=".25"/>
+<path d="M0 650 C200 600 380 630 560 612 C760 592 980 650 1200 612 V800 H0Z" fill="#17402f"/>
+<path d="M40 800 C200 700 420 690 520 620 C580 580 640 560 690 520 L706 526 C660 572 610 604 562 644 C470 712 280 734 130 800Z" fill="#b9894a" opacity=".9"/>
+<path d="M0 730 C300 698 700 738 1200 708 V800 H0Z" fill="#0e2d22"/>
+<use href="#senderista" transform="translate(556 632) scale(1.2)"/>
+<use href="#senderista" transform="translate(612 606) scale(.98)"/>
+<use href="#senderista" transform="translate(656 582) scale(.82)"/>
+<path d="M850 706 L920 606 L990 706Z" fill="#e9893a"/>
+<path d="M920 606 L990 706 L934 706Z" fill="#c4651f"/>
+<path d="M920 648 L944 706 L896 706Z" fill="#ffb84d"/>
+<circle cx="1030" cy="690" r="90" fill="url(#lumbre)"/>
+<path d="M1012 706 L1050 699 M1014 699 L1052 707" stroke="#2a1608" stroke-width="5" stroke-linecap="round"/>
+<path d="M1030 702 C1018 702 1014 686 1024 676 C1026 683 1031 683 1031 676 C1031 668 1036 664 1038 654 C1048 666 1052 682 1046 694 C1043 700 1037 702 1030 702Z" fill="#E8581C"/>
+<path d="M1030 702 C1024 702 1022 694 1027 688 C1029 691 1032 691 1032 687 C1036 691 1037 697 1035 701Z" fill="#ffd36b"/>
+<use href="#frailejon" transform="translate(150 706) scale(1.5)"/>
+<use href="#frailejon" transform="translate(300 752) scale(1.05)"/>
+<use href="#frailejon" transform="translate(1130 740) scale(1.15)"/>
+</svg>

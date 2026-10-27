@@ -111,3 +111,48 @@ Ahora hay 7 fotos nuevas, un afiche fuera de la galería y un visor con miniatur
 ## 8. HTML de demostración
 
 `Trekking-Perija-13K-vista-v4.html` en la carpeta Descargas: sitio compilado en un solo archivo, sin internet. Es una foto del estado de este día; hay que generarlo de nuevo si el sitio cambia. El formulario es una vista previa y el enlace «Administración» no abre nada.
+
+## 9. Actualización del 27 de octubre de 2026
+
+Cambios posteriores a las secciones 1 a 8. Mismas reglas: nada existente se borró ni se movió; los archivos nuevos van en la carpeta que ya correspondía.
+
+### Carpetas nuevas dentro de `shared/assets/images/` (subcarpetas de una carpeta existente, con lógica propia)
+
+| Carpeta         | Contenido                                                                                                                                                             | Quién la usa                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `marca/`        | `logo-trekking-perija.png` (logo sin fondo), `logo-trekking-perija-cuadrado.png`, `logo-trekking-perija-claro.png`, `favicon-32/192.png` y `favicon-claro-32/192.png` | `shared/components/Brand.tsx`; iconos de pestaña |
+| `experiencias/` | Una foto por experiencia, recortadas a 3:2 (webp de 1200×800)                                                                                                         | `Extras.tsx`                                     |
+| `galeria/`      | Se añadió `08-punto-de-encuentro-villa-adelaida.webp`                                                                                                                 | Galería (título en `shared/data/galeria.ts`)     |
+
+### Qué cambió en archivos existentes
+
+| Archivo                                      | Cambio                                                                                                                                          |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shared/components/Brand.tsx`, `brand.css`   | La marca muestra el logo de los senderistas, sin círculo ni fondo (52×46). Afecta a barra, pie y también al admin, porque `Brand` es compartido |
+| `frontend/index.html`, `frontend/public/`    | Icono de pestaña: crema en tema oscuro y verde en tema claro (`media="(prefers-color-scheme: …)"`); copias en `public/`                         |
+| `shared/data/aliados.ts`, `Aliados.tsx/.css` | Cada logo enlaza a su Instagram (campo `instagram`); un toque abre el enlace, arrastrar la cinta no                                             |
+| `shared/data/galeria.ts`                     | 8 fotos; la 07 se llama «Jardines de Villa Adelaida» y la 08 «Punto de encuentro»                                                               |
+| `Extras.tsx/.css`                            | Foto arriba en Acompañante, Cuatrimoto y Parapente; texto de Acompañante: sin pago de kit, cubre hospedaje y las 3 comidas; chips               |
+| `Alojamiento.css`                            | Quedaron reglas de la foto que se quitó (ver «Archivos sin uso añadidos»)                                                                       |
+
+### Archivos sin uso añadidos (se conservan hasta la depuración final)
+
+- **Imágenes** en `experiencias/`: `acompanante-desayuno`, `acompanante-fogata`, `acompanante-glamping`, `acompanante-ilustracion.svg`, `cuatrimoto-cordillera`, `los-pinos-topiarios`, `paramo-frailejones`, `parapente-despegue-atardecer` y `parapente-vuelo`. Se usan solo `acompanante-mochilas`, `cuatrimoto-montana` y `parapente-biplaza`.
+- **Imagen** en `marca/`: `logo-trekking-perija-claro.png` y `logo-trekking-perija-cuadrado.png` (de ellos salen los iconos; la web usa `logo-trekking-perija.png`).
+- **Archivo**: `frontend/public/favicon.svg` (icono provisional del esqueleto).
+- **Estilos**: `.stay__foto` y `--stay-pad` en `Alojamiento.css`.
+
+### Fuera del área de Santiago (por orden expresa)
+
+- `frontend/src/sections/Extras/` (Damian): fotos, chips y texto de Acompañante.
+- `shared/config/index.ts` (Damian): `precios.acompanante` pasó de 100.000 a 150.000.
+- `frontend/src/sections/Costos/Costos.tsx` (Damian): texto del paso 03.
+- `OpcionesReserva.tsx` (Damian) sigue diciendo «incluye recorrido, sin kit»; no se tocó.
+- Las carpetas `imagenes/` y `logos/` de la raíz tienen archivos sin rastrear que no son de este trabajo (videos, capturas de WhatsApp, imágenes con nombres sueltos); no se movieron ni se incluyen.
+
+### Verificación
+
+- Compilación de `frontend` y `admin` correcta; Prettier correcto; typecheck correcto.
+- Revisado en el navegador a 527 px (y 360 px en las partes anteriores). Pendiente: ver el icono en una pestaña real.
+- `Trekking-Perija-13K-vista-v9.html` en Descargas es la versión actual (un solo archivo, sin internet; los v3 a v8 son versiones anteriores).
+- Pendiente: confirmar que las fotos tienen autorización de uso y hacer el commit (nada de esto está en commit).
