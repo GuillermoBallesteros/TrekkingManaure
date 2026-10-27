@@ -18,7 +18,7 @@ export const precios = {
   total: 350000,
   inscripcion: 50000,
   kitCompleto: 300000,
-  acompanante: 100000,
+  acompanante: 150000,
   cuatrimoto: 150000,
   parapente: 200000,
 } as const;
