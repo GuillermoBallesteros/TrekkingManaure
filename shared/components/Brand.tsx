@@ -1,4 +1,4 @@
-import marca from '../assets/images/galeria/02-panoramica-serrania-del-perija.webp';
+import marca from '../assets/images/marca/logo-trekking-perija.png';
 
 export default function Brand() {
   return (

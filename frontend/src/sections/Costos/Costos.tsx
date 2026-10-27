@@ -78,8 +78,8 @@ export default function Costos() {
               <div>
                 <h3>Paga el saldo</h3>
                 <p>
-                  Paga los {formatMoney(precios.kitCompleto)} dentro del plazo. Sandra valida los
-                  pagos y confirma tu cupo.
+                  Paga el dinero dentro del plazo. La organización valida los pagos y confirma tu
+                  cupo.
                 </p>
               </div>
             </div>
