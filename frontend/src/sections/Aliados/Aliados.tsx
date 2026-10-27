@@ -4,6 +4,7 @@ import './Aliados.css';
 
 const VELOCIDAD_BASE = 38; // px por segundo hacia la izquierda
 const VELOCIDAD_MAXIMA = 4000;
+const UMBRAL_ARRASTRE = 6; // px de movimiento a partir de los cuales un gesto cuenta como arrastre
 
 export default function Aliados() {
   const cajaRef = useRef<HTMLDivElement>(null);
@@ -21,6 +22,8 @@ export default function Aliados() {
     let arrastrando = false;
     let ultimoX = 0;
     let ultimoT = 0;
+    let inicioX = 0;
+    let movido = false; // true si el gesto fue un arrastre y no un toque sobre un logo
     let cuadroId = 0;
     let previo = performance.now();
 
@@ -54,15 +57,20 @@ export default function Aliados() {
       velocidad = 0;
       ultimoX = evento.clientX;
       ultimoT = performance.now();
+      inicioX = evento.clientX;
+      movido = false;
       caja.classList.add('is-arrastrando');
-      try {
-        caja.setPointerCapture(evento.pointerId);
-      } catch {
-        // sin captura el arrastre funciona igual mientras el puntero siga encima
-      }
     };
     const alMover = (evento: PointerEvent) => {
       if (!arrastrando) return;
+      if (!movido && Math.abs(evento.clientX - inicioX) > UMBRAL_ARRASTRE) {
+        movido = true;
+        try {
+          caja.setPointerCapture(evento.pointerId);
+        } catch {
+          // sin captura el arrastre funciona igual mientras el puntero siga encima
+        }
+      }
       const ahora = performance.now();
       const dx = evento.clientX - ultimoX;
       x += dx;
@@ -75,6 +83,12 @@ export default function Aliados() {
       arrastrando = false;
       if (performance.now() - ultimoT > 90) velocidad = 0;
       caja.classList.remove('is-arrastrando');
+    };
+    const alHacerClic = (evento: MouseEvent) => {
+      if (!movido) return;
+      movido = false;
+      evento.preventDefault();
+      evento.stopPropagation();
     };
     const alRodar = (evento: WheelEvent) => {
       if (Math.abs(evento.deltaX) <= Math.abs(evento.deltaY)) return;
@@ -89,6 +103,7 @@ export default function Aliados() {
     caja.addEventListener('pointermove', alMover);
     caja.addEventListener('pointerup', alSoltar);
     caja.addEventListener('pointercancel', alSoltar);
+    caja.addEventListener('click', alHacerClic, true);
     caja.addEventListener('wheel', alRodar, { passive: false });
     cuadroId = requestAnimationFrame(cuadro);
 
@@ -99,6 +114,7 @@ export default function Aliados() {
       caja.removeEventListener('pointermove', alMover);
       caja.removeEventListener('pointerup', alSoltar);
       caja.removeEventListener('pointercancel', alSoltar);
+      caja.removeEventListener('click', alHacerClic, true);
       caja.removeEventListener('wheel', alRodar);
       pista.style.transform = '';
     };
@@ -116,20 +132,36 @@ export default function Aliados() {
       </div>
       <div className="logo-marquee reveal" ref={cajaRef}>
         <div className="logo-marquee__track" ref={pistaRef}>
-          {[...aliados, ...aliados].map((aliado, indice) => (
-            <div
-              key={indice}
-              className="logo-card"
-              aria-hidden={indice >= aliados.length ? true : undefined}
-            >
+          {[...aliados, ...aliados].map((aliado, indice) => {
+            const copia = indice >= aliados.length;
+            const logo = (
               <img
                 src={aliado.src}
-                alt={indice < aliados.length ? aliado.name : ''}
+                alt={copia ? '' : aliado.name}
                 decoding="async"
                 draggable={false}
               />
-            </div>
-          ))}
+            );
+            return aliado.instagram ? (
+              <a
+                key={indice}
+                className="logo-card"
+                href={`https://www.instagram.com/${aliado.instagram}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${aliado.name} en Instagram`}
+                aria-hidden={copia ? true : undefined}
+                tabIndex={copia ? -1 : undefined}
+                draggable={false}
+              >
+                {logo}
+              </a>
+            ) : (
+              <div key={indice} className="logo-card" aria-hidden={copia ? true : undefined}>
+                {logo}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

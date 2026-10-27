@@ -20,7 +20,11 @@ const captions: Record<string, [string, string]> = {
   '04-laguna-del-perija': ['Laguna del Perijá', 'Agua y montaña en el Perijá'],
   '05-cordillera-de-manaure': ['Cordillera de Manaure', 'Las montañas que rodean Manaure'],
   '06-sol-en-la-montana': ['El sol en la montaña', 'Luz de montaña en Manaure'],
-  '07-jardin-de-villa-adelaida': ['Villa Adelaida', 'Punto de encuentro · Villa Adelaida'],
+  '07-jardin-de-villa-adelaida': ['Villa Adelaida', 'Jardines de Villa Adelaida'],
+  '08-punto-de-encuentro-villa-adelaida': [
+    'Punto de encuentro',
+    'Entrada de Villa Adelaida · punto de encuentro de la carrera',
+  ],
 };
 
 export const galleryImages: GalleryImage[] = [

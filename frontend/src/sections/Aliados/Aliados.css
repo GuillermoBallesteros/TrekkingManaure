@@ -31,6 +31,9 @@
   overflow: hidden;
   transition: box-shadow 0.25s;
 }
+.logo-card[href] {
+  cursor: pointer;
+}
 .logo-card:hover {
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
 }

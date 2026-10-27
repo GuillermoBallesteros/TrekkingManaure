@@ -13,6 +13,29 @@
   flex-direction: column;
   gap: 0.35rem;
 }
+.extra__foto {
+  display: block;
+  width: calc(100% + 2.4rem);
+  max-width: none;
+  border-radius: 15px 15px 0 0;
+  margin: -1.2rem -1.2rem 0.8rem;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.extra__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.extra__chips span {
+  font-size: 0.62rem;
+  color: var(--dorado-claro);
+  border: 1px solid rgba(242, 193, 78, 0.3);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  background: rgba(242, 193, 78, 0.06);
+}
 .extra .ico {
   width: 26px;
   height: 26px;
