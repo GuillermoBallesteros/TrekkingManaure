@@ -1,5 +1,5 @@
 import './App.css';
-import { Dashboard, Login, Participantes, Pagos, Cupos, Galeria, Exportar } from './pages';
+import { Dashboard, Login, Participantes, Pagos, Cupos, Exportar } from './pages';
 import { useEffect, useState } from 'react';
 import Brand from '../../shared/components/Brand';
 import Icon from '../../shared/components/Icon';
@@ -10,7 +10,6 @@ const links = [
   { id: 'participantes', label: 'Participantes', icon: 'users' as const },
   { id: 'pagos', label: 'Revisión de pagos', icon: 'sheet' as const },
   { id: 'cupos', label: 'Gestión de cupos', icon: 'tent' as const },
-  { id: 'galeria', label: 'Galería del evento', icon: 'camera' as const },
   { id: 'exportar', label: 'Exportar información', icon: 'upload' as const },
 ];
 
@@ -147,8 +146,6 @@ function AdminRoutes() {
             <Pagos />
           ) : route === 'cupos' ? (
             <Cupos />
-          ) : route === 'galeria' ? (
-            <Galeria />
           ) : route === 'exportar' ? (
             <Exportar />
           ) : (
