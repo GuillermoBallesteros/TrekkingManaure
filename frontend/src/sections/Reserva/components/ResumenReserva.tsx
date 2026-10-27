@@ -6,7 +6,7 @@ import './ResumenReserva.css';
 
 type Props = {
   stay: Estadia;
-  plan: PlanTitular;
+  plan: PlanTitular | null;
   planDate: string;
   companion: boolean;
   companionDate: string;
@@ -34,8 +34,18 @@ export default function ResumenReserva({
         <span>Resumen</span>
       </div>
       <div className="sum-row">
-        <span>{plan === 'total' ? 'Inscripción + kit' : 'Inscripción (apartado)'}</span>
-        <strong>{formatMoney(plan === 'total' ? precios.total : precios.inscripcion)}</strong>
+        <span>
+          {plan === null
+            ? 'Modalidad por elegir'
+            : plan === 'total'
+              ? 'Inscripción + kit'
+              : 'Inscripción (apartado)'}
+        </span>
+        <strong>
+          {plan === null
+            ? '—'
+            : formatMoney(plan === 'total' ? precios.total : precios.inscripcion)}
+        </strong>
       </div>
       {companion && (
         <div className="sum-row sum-row--dyn">
@@ -54,7 +64,7 @@ export default function ResumenReserva({
         <strong>{stay || 'Por elegir'}</strong>
       </div>
       <div className="sum-row">
-        <span>Pagas ahora (Nequi)</span>
+        <span>Pagas ahora</span>
         <strong>{formatMoney(quote.ahora)}</strong>
       </div>
       {quote.saldoTitular > 0 && (
@@ -78,8 +88,9 @@ export default function ResumenReserva({
       <p className="summary__note">
         <Icon name="info" />
         <span>
-          El pago es por Nequi. Al finalizar te llevamos a WhatsApp con tus datos y la organización
-          te indica cómo pagar. Los saldos se pagan a más tardar el {evento.plazoTexto}.
+          El pago es por llave Bre-B. Al finalizar te llevamos a WhatsApp con tus datos y la
+          organización te indica cómo pagar. Los saldos se pagan a más tardar el {evento.plazoTexto}
+          .
         </span>
       </p>
       <button className="btn btn--gold btn--block" type="button" onClick={focusForm}>
@@ -93,7 +104,7 @@ export default function ResumenReserva({
           <Icon name="whatsapp" /> WhatsApp
         </span>
         <span>
-          <Icon name="calendar" /> Nequi
+          <Icon name="calendar" /> Bre-B
         </span>
         <span>
           <Icon name="lock" /> Datos por WhatsApp

@@ -1,16 +1,13 @@
-import Calendario from '../../../components/ui/Calendario';
 import { precios } from '../../../../../shared/config';
 import { formatMoney } from '../../../../../shared/utils/format';
 import type { PlanTitular } from '../../../types/reserva';
 
 type Props = {
-  plan: PlanTitular;
-  onPlan: (value: PlanTitular) => void;
-  date: string;
-  onDate: (value: string) => void;
+  plan: PlanTitular | null;
+  onPlan: (value: PlanTitular | null) => void;
 };
 
-export default function ModalidadInscripcion({ plan, onPlan, date, onDate }: Props) {
+export default function ModalidadInscripcion({ plan, onPlan }: Props) {
   const options = [
     {
       value: 'total' as const,
@@ -47,6 +44,10 @@ export default function ModalidadInscripcion({ plan, onPlan, date, onDate }: Pro
               value={option.value}
               required
               checked={plan === option.value}
+              onClick={() => {
+                // Un clic sobre la opción ya marcada la desmarca.
+                if (plan === option.value) onPlan(null);
+              }}
               onChange={() => onPlan(option.value)}
             />
             <span className="choice__dot" />
@@ -57,15 +58,6 @@ export default function ModalidadInscripcion({ plan, onPlan, date, onDate }: Pro
           </label>
         ))}
       </div>
-      {plan === 'apartado' && (
-        <>
-          <p className="field-hint calendar-hint">
-            Elige el día en que pagarás el saldo de {formatMoney(precios.kitCompleto)}. Si no se
-            paga en esa fecha, el cupo del kit se libera para reasignación.
-          </p>
-          <Calendario selected={date} onSelect={onDate} concepto="el saldo del kit" />
-        </>
-      )}
     </div>
   );
 }

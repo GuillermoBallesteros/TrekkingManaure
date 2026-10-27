@@ -1,8 +1,8 @@
+import { todayInColombia } from '../../../../../shared/utils/format';
 import { fieldName } from '../../../utils/reserva';
 import {
   GENEROS,
-  NACIMIENTO_MAX,
-  NACIMIENTO_MIN,
+  fechasNacimientoPermitidas,
   PATRON_DOCUMENTO,
   PATRON_NOMBRE,
   PATRON_TELEFONO,
@@ -21,6 +21,7 @@ type Props = {
 export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = false }: Props) {
   const id = (base: string) => fieldName(prefijo, base);
   const req = <span className="req">*</span>;
+  const nacimiento = fechasNacimientoPermitidas(todayInColombia());
 
   return (
     <>
@@ -91,8 +92,8 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           name={id('nacimiento')}
           type="date"
           required
-          min={NACIMIENTO_MIN}
-          max={NACIMIENTO_MAX}
+          min={nacimiento.min}
+          max={nacimiento.max}
         />
       </div>
       <div className="field">
@@ -125,33 +126,37 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           </select>
         </div>
       )}
-      <div className="field">
-        <label htmlFor={id('telefono')}>
-          Teléfono / WhatsApp{sufijo} {req}
-        </label>
-        <input
-          id={id('telefono')}
-          name={id('telefono')}
-          type="tel"
-          required
-          placeholder="300 000 0000"
-          autoComplete={prefijo ? 'off' : 'tel'}
-          maxLength={20}
-          pattern={PATRON_TELEFONO}
-          title="Entre 7 y 20 caracteres: números, espacios o +"
-        />
-      </div>
-      <div className="field">
-        <label htmlFor={id('correo')}>Correo electrónico{sufijo}</label>
-        <input
-          id={id('correo')}
-          name={id('correo')}
-          type="email"
-          placeholder="correo@ejemplo.com"
-          autoComplete={prefijo ? 'off' : 'email'}
-          maxLength={150}
-        />
-      </div>
+      {!prefijo && (
+        <>
+          <div className="field">
+            <label htmlFor={id('telefono')}>
+              Teléfono / WhatsApp{sufijo} {req}
+            </label>
+            <input
+              id={id('telefono')}
+              name={id('telefono')}
+              type="tel"
+              required
+              placeholder="300 000 0000"
+              autoComplete="tel"
+              maxLength={20}
+              pattern={PATRON_TELEFONO}
+              title="Entre 7 y 20 caracteres: números, espacios o +"
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={id('correo')}>Correo electrónico{sufijo}</label>
+            <input
+              id={id('correo')}
+              name={id('correo')}
+              type="email"
+              placeholder="correo@ejemplo.com"
+              autoComplete="email"
+              maxLength={150}
+            />
+          </div>
+        </>
+      )}
       <div className="field">
         <label htmlFor={id('ciudad')}>Ciudad{sufijo}</label>
         <input
@@ -160,35 +165,6 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           placeholder="Ciudad de residencia"
           autoComplete={prefijo ? 'off' : 'address-level2'}
           maxLength={150}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor={id('emergenciaNombre')}>
-          Contacto de emergencia, nombre{sufijo} {req}
-        </label>
-        <input
-          id={id('emergenciaNombre')}
-          name={id('emergenciaNombre')}
-          required
-          placeholder="Nombre del contacto"
-          maxLength={150}
-          pattern={PATRON_NOMBRE}
-        />
-      </div>
-      <div className="field">
-        <label htmlFor={id('emergenciaTelefono')}>
-          Contacto de emergencia, teléfono{sufijo} {req}
-        </label>
-        <input
-          id={id('emergenciaTelefono')}
-          name={id('emergenciaTelefono')}
-          type="tel"
-          required
-          placeholder="300 000 0000"
-          autoComplete="off"
-          maxLength={20}
-          pattern={PATRON_TELEFONO}
-          title="Entre 7 y 20 caracteres: números, espacios o +"
         />
       </div>
     </>

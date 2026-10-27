@@ -29,6 +29,10 @@ export default function PreguntaSiNo({ prefijo, base, pregunta, detalle }: Props
               value={option}
               required
               checked={answer === option}
+              onClick={() => {
+                // Un clic sobre la opción ya marcada la desmarca.
+                if (answer === option) setAnswer('');
+              }}
               onChange={() => setAnswer(option)}
             />
             <span className="choice__dot" />

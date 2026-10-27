@@ -10,12 +10,17 @@ type Props = {
   concepto?: string;
 };
 
-/** Meses (año, mes) desde hoy hasta la fecha límite de pago, ambos inclusive. */
-function monthsUntilLimit(today: string): Array<[number, number]> {
+const WEEKDAYS = ['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SÁ'];
+
+/** Primer día que se puede elegir: hoy, o la apertura de inscripciones si todavía no llega. */
+function firstSelectableDay(today: string): string {
+  return today > evento.fechaAperturaInscripciones ? today : evento.fechaAperturaInscripciones;
+}
+
+/** Meses (año, mes) entre el primer día elegible y la fecha límite de pago, ambos inclusive. */
+function monthsInRange(first: string): Array<[number, number]> {
   const [limitYear, limitMonth] = evento.fechaLimitePago.split('-').map(Number);
-  let [year, month] = (today < evento.fechaLimitePago ? today : evento.fechaLimitePago)
-    .split('-')
-    .map(Number);
+  let [year, month] = first.split('-').map(Number);
   const months: Array<[number, number]> = [];
   while (year < limitYear || (year === limitYear && month <= limitMonth)) {
     months.push([year, month]);
@@ -28,8 +33,12 @@ function monthsUntilLimit(today: string): Array<[number, number]> {
   return months;
 }
 
+function isoDate(year: number, month: number, day: number): string {
+  return year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+}
+
 export default function Calendario({ selected, onSelect, concepto = 'el saldo' }: Props) {
-  const today = todayInColombia();
+  const first = firstSelectableDay(todayInColombia());
 
   return (
     <>
@@ -38,50 +47,49 @@ export default function Calendario({ selected, onSelect, concepto = 'el saldo' }
           <strong>Elige una fecha</strong>
           <small>Plazo hasta el {formatDate(evento.fechaLimitePago)}</small>
         </div>
-        {monthsUntilLimit(today).map(([year, month]) => {
-          const firstDay = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
-          const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
+        {monthsInRange(first).map(([year, month]) => {
           const monthLabel = new Intl.DateTimeFormat('es-CO', {
             month: 'long',
             year: 'numeric',
             timeZone: 'UTC',
           }).format(new Date(Date.UTC(year, month - 1, 1)));
+          const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+          // Solo cuentan los días desde el primer elegible; en los demás meses, desde el día 1.
+          const firstShown = isoDate(year, month, 1) < first ? Number(first.slice(8)) : 1;
+          const weekdayOfFirst = new Date(Date.UTC(year, month - 1, firstShown)).getUTCDay();
+          const days = [];
+
+          for (let slot = 0; slot < weekdayOfFirst; slot += 1) {
+            // Celda de alineación: ocupa su columna pero no se ve.
+            days.push(<div className="cal-slot" key={'slot-' + slot} aria-hidden="true" />);
+          }
+          for (let day = firstShown; day <= daysInMonth; day += 1) {
+            const iso = isoDate(year, month, day);
+            if (iso > evento.fechaLimitePago) break;
+            days.push(
+              <button
+                key={iso}
+                type="button"
+                className={'cal-day ' + (selected === iso ? 'is-selected' : '')}
+                aria-pressed={selected === iso}
+                aria-label={'Pagar ' + concepto + ' el ' + formatDate(iso)}
+                onClick={() => onSelect(iso)}
+              >
+                {day}
+              </button>,
+            );
+          }
 
           return (
             <div key={year + '-' + month}>
               <p className="cal-month">{monthLabel}</p>
               <div className="cal-grid" role="group" aria-label={'Calendario de ' + monthLabel}>
-                {['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SÁ'].map((day) => (
+                {WEEKDAYS.map((day) => (
                   <div className="cal-dow" key={day}>
                     {day}
                   </div>
                 ))}
-                {Array.from({ length: firstDay }, (_, index) => (
-                  <div className="cal-day is-empty" key={'empty-' + index} />
-                ))}
-                {Array.from({ length: days }, (_, index) => {
-                  const day = index + 1;
-                  const iso =
-                    year +
-                    '-' +
-                    String(month).padStart(2, '0') +
-                    '-' +
-                    String(day).padStart(2, '0');
-                  const disabled = iso < today || iso > evento.fechaLimitePago;
-                  return (
-                    <button
-                      key={iso}
-                      type="button"
-                      className={'cal-day ' + (selected === iso ? 'is-selected' : '')}
-                      disabled={disabled}
-                      aria-pressed={selected === iso}
-                      aria-label={'Pagar ' + concepto + ' el ' + formatDate(iso)}
-                      onClick={() => onSelect(iso)}
-                    >
-                      {day}
-                    </button>
-                  );
-                })}
+                {days}
               </div>
             </div>
           );
@@ -90,10 +98,6 @@ export default function Calendario({ selected, onSelect, concepto = 'el saldo' }
           <span>
             <i className="legend-payment" />
             Tu fecha de pago
-          </span>
-          <span>
-            <i className="legend-unavailable" />
-            No disponible
           </span>
         </div>
       </div>

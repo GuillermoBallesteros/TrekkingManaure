@@ -1,24 +1,31 @@
 import { useState, type FormEvent } from 'react';
-import { contacto, evento, precios } from '../../../shared/config';
+import { precios } from '../../../shared/config';
 import { formatDate, formatMoney } from '../../../shared/utils/format';
-import { describePerson, getQuote, readPerson, whatsappLink } from '../utils/reserva';
-import type { Estadia, Extra, PagoKitAcompanante, PlanTitular } from '../types/reserva';
+import { getQuote, readPerson } from '../utils/reserva';
+import type {
+  Estadia,
+  Extra,
+  PagoKitAcompanante,
+  PlanTitular,
+  ResumenReservaTexto,
+} from '../types/reserva';
 
 export function useReserva(stay: Estadia) {
-  const [plan, setPlan] = useState<PlanTitular>('total');
+  // null = todavía no elegido: la persona debe marcarlo, no viene preseleccionado.
+  const [plan, setPlan] = useState<PlanTitular | null>(null);
   const [planDate, setPlanDate] = useState('');
   const [companion, setCompanion] = useState(false);
-  const [companionKit, setCompanionKit] = useState(false);
-  const [companionPago, setCompanionPago] = useState<PagoKitAcompanante>('inmediato');
+  const [companionKit, setCompanionKit] = useState<boolean | null>(null);
+  const [companionPago, setCompanionPago] = useState<PagoKitAcompanante | null>(null);
   const [companionDate, setCompanionDate] = useState('');
   const [extras, setExtras] = useState<Extra[]>([]);
   const [error, setError] = useState('');
-  const [preview, setPreview] = useState<{ text: string; link: string | null } | null>(null);
+  const [preview, setPreview] = useState<ResumenReservaTexto | null>(null);
 
   const quote = getQuote({ plan, companion, companionKit, companionPago, extras });
   const extrasTotal = extras.reduce((sum, item) => sum + precios[item], 0);
   const needsHolderDate = plan === 'apartado';
-  const needsCompanionDate = companion && companionKit && companionPago === 'diferido';
+  const needsCompanionDate = companion && companionKit === true && companionPago === 'diferido';
 
   function toggleExtra(extra: Extra) {
     setExtras((current) =>
@@ -46,38 +53,28 @@ export function useReserva(stay: Estadia) {
     }
 
     const data = new FormData(form);
-    const lines = [
-      'RESERVA · TREKKING DESAFÍO PERIJÁ 13K',
-      evento.fechasTexto + ' · Manaure, Cesar',
-      '',
-      'PARTICIPANTE',
-      ...describePerson(readPerson(data, '', true)),
-      'Estadía: ' + stay,
-      'Modalidad: ' + (plan === 'total' ? 'Inscripción + kit (pago total)' : 'Solo inscripción'),
-      ...(needsHolderDate ? ['Fecha de pago del saldo del kit: ' + formatDate(planDate)] : []),
-      '',
-      ...(companion
-        ? [
-            'ACOMPAÑANTE',
-            ...describePerson(readPerson(data, 'acomp', companionKit)),
-            'Estadía del acompañante: ' + String(data.get('acompEstadia')),
-            'Kit del acompañante: ' +
-              (companionKit
-                ? 'Sí, pago ' +
-                  (companionPago === 'diferido'
-                    ? 'diferido, saldo el ' + formatDate(companionDate)
-                    : 'inmediato')
-                : 'No'),
-            '',
-          ]
-        : ['Acompañante: No', '']),
-      'Actividades extra: ' + (extras.length ? extras.join(', ') : 'Ninguna'),
-      'A pagar ahora por Nequi: ' + formatMoney(quote.ahora),
-      'Saldo pendiente: ' + formatMoney(quote.saldoTitular + quote.saldoAcompanante),
-      'Total: ' + formatMoney(quote.total),
-    ];
-    const text = lines.join('\n');
-    setPreview({ text, link: whatsappLink(contacto.whatsapp, text) });
+    setPreview({
+      participante: readPerson(data, '', true),
+      estadia: stay,
+      modalidad: plan === 'total' ? 'Inscripción + kit (pago total)' : 'Solo inscripción',
+      fechaSaldo: needsHolderDate ? formatDate(planDate) : null,
+      acompanante: companion
+        ? {
+            persona: readPerson(data, 'acomp', companionKit === true),
+            estadia: String(data.get('acompEstadia')),
+            kit: companionKit
+              ? 'Sí, pago ' +
+                (companionPago === 'diferido'
+                  ? 'diferido, saldo el ' + formatDate(companionDate)
+                  : 'inmediato')
+              : 'No',
+          }
+        : null,
+      extras: extras.length ? extras.join(', ') : 'Ninguna',
+      ahora: formatMoney(quote.ahora),
+      saldo: formatMoney(quote.saldoTitular + quote.saldoAcompanante),
+      total: formatMoney(quote.total),
+    });
   }
 
   return {
@@ -85,6 +82,7 @@ export function useReserva(stay: Estadia) {
     setPlan,
     planDate,
     setPlanDate,
+    needsHolderDate,
     companion,
     setCompanion,
     companionKit,
@@ -93,6 +91,7 @@ export function useReserva(stay: Estadia) {
     setCompanionPago,
     companionDate,
     setCompanionDate,
+    needsCompanionDate,
     extras,
     toggleExtra,
     error,

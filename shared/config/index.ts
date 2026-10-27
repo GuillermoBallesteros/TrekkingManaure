@@ -7,10 +7,10 @@ export const evento = {
   encuentro: 'Restaurante El Sabor, Villa Adelaida',
   llegada: 'Páramo',
   // Último día para pagar saldos: 14 días antes del primer día del evento.
-  fechaLimitePago: '2026-11-01',
+  fechaLimitePago: '2026-11-09',
   fechaAperturaInscripciones: '2026-10-28',
   fechasTexto: '15 y 16 de noviembre',
-  plazoTexto: '1 de noviembre de 2026',
+  plazoTexto: '9 de noviembre de 2026',
 } as const;
 
 // El HTML adjunto es la referencia para estos valores de la primera versión visual.
@@ -34,6 +34,6 @@ export const cupos = {
 
 export const contacto = {
   encargada: 'Sandra',
-  whatsapp: '',
-  whatsappConfigurado: false,
+  whatsapp: '573137317910',
+  whatsappConfigurado: true,
 } as const;

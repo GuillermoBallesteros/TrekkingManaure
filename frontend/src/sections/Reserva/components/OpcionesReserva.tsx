@@ -40,6 +40,10 @@ export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Prop
                 value={option.value}
                 required
                 checked={stay === option.value}
+                onClick={() => {
+                  // Un clic sobre la opción ya marcada la desmarca.
+                  if (stay === option.value) onStay('');
+                }}
                 onChange={() => onStay(option.value)}
               />
               <span className="choice__dot" />

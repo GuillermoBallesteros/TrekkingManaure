@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Modal from '../../../../shared/components/Modal';
 import Icon from '../../../../shared/components/Icon';
+import { useBloquesProgresivos } from '../../hooks/useBloquesProgresivos';
 import { useReserva } from '../../hooks/useReserva';
 import type { Estadia } from '../../types/reserva';
 import DatosPersonales from './components/DatosPersonales';
@@ -8,7 +9,9 @@ import OpcionesReserva from './components/OpcionesReserva';
 import ControlSeguridad from './components/ControlSeguridad';
 import ModalidadInscripcion from './components/ModalidadInscripcion';
 import Acompanante from './components/Acompanante';
+import FechasPago from './components/FechasPago';
 import ResumenReserva from './components/ResumenReserva';
+import ResumenModal from './components/ResumenModal';
 import './Reserva.css';
 
 export default function Reserva({
@@ -20,6 +23,8 @@ export default function Reserva({
 }) {
   const state = useReserva(stay);
   const [conditionsOpen, setConditionsOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { visibles, revisar } = useBloquesProgresivos(formRef);
 
   return (
     <section className="section reserva" id="reserva">
@@ -31,70 +36,91 @@ export default function Reserva({
           </h2>
           <p className="section-sub">
             Completa tus datos, elige tu modalidad y finaliza. Te llevamos a WhatsApp con tu
-            información y el pago se hace por Nequi.
+            información. Pagas por Nequi o llave Bre-B, la vía que prefieras.
           </p>
         </div>
         <div className="reserva-grid">
-          <form className="form-card reveal" onSubmit={state.submit}>
-            <DatosPersonales />
-            <ControlSeguridad />
-            <OpcionesReserva
-              stay={stay}
-              onStay={onStay}
-              extras={state.extras}
-              onExtras={state.toggleExtra}
-            />
-            <ModalidadInscripcion
-              plan={state.plan}
-              onPlan={state.setPlan}
-              date={state.planDate}
-              onDate={state.setPlanDate}
-            />
-            <Acompanante
-              companion={state.companion}
-              onCompanion={state.setCompanion}
-              kit={state.companionKit}
-              onKit={state.setCompanionKit}
-              pago={state.companionPago}
-              onPago={state.setCompanionPago}
-              date={state.companionDate}
-              onDate={state.setCompanionDate}
-            />
-            <div className="form-block form-submit">
-              <div className="toggle-line terms-toggle">
-                <div className="toggle-line__text">
-                  <strong>He revisado las condiciones de participación</strong>
-                  <small>
-                    <button
-                      type="button"
-                      className="conditions-link"
-                      onClick={() => setConditionsOpen(true)}
-                    >
-                      Consultar condiciones
-                    </button>
-                  </small>
+          <form
+            className="form-card reveal"
+            ref={formRef}
+            onSubmit={state.submit}
+            onChange={revisar}
+            onInput={revisar}
+          >
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 0}>
+              <DatosPersonales />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 1}>
+              <ControlSeguridad />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 2}>
+              <OpcionesReserva
+                stay={stay}
+                onStay={onStay}
+                extras={state.extras}
+                onExtras={state.toggleExtra}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 3}>
+              <ModalidadInscripcion plan={state.plan} onPlan={state.setPlan} />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 4}>
+              <Acompanante
+                companion={state.companion}
+                onCompanion={state.setCompanion}
+                kit={state.companionKit}
+                onKit={state.setCompanionKit}
+                pago={state.companionPago}
+                onPago={state.setCompanionPago}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 5}>
+              <FechasPago
+                holder={state.needsHolderDate}
+                holderDate={state.planDate}
+                onHolderDate={state.setPlanDate}
+                companion={state.needsCompanionDate}
+                companionDate={state.companionDate}
+                onCompanionDate={state.setCompanionDate}
+              />
+            </div>
+            <div className="bloque-progresivo" data-bloque hidden={visibles <= 6}>
+              <div className="form-block form-submit">
+                <div className="toggle-line terms-toggle">
+                  <div className="toggle-line__text">
+                    <strong>He revisado las condiciones de participación</strong>
+                    <small>
+                      <button
+                        type="button"
+                        className="conditions-link"
+                        onClick={() => setConditionsOpen(true)}
+                      >
+                        Consultar condiciones
+                      </button>
+                    </small>
+                  </div>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      required
+                      aria-label="He revisado las condiciones de participación"
+                    />
+                    <span className="switch__track" />
+                  </label>
                 </div>
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    required
-                    aria-label="He revisado las condiciones de participación"
-                  />
-                  <span className="switch__track" />
-                </label>
-              </div>
-              <button type="submit" className="btn btn--primary btn--block">
-                Finalizar registro <Icon name="whatsapp" />
-              </button>
-              <p className="note form-preview-note">
-                Primero revisas el resumen; después se abre WhatsApp con tus datos. No se realiza
-                ningún pago desde la página.
-              </p>
-              {state.error && (
-                <p className="form-error" role="alert">
-                  {state.error}
+                <button type="submit" className="btn btn--primary btn--block">
+                  Finalizar registro <Icon name="whatsapp" />
+                </button>
+                <p className="note form-preview-note">
+                  Primero revisas el resumen; después se abre WhatsApp con tus datos. No se realiza
+                  ningún pago desde la página.
                 </p>
-              )}
+                {state.error && (
+                  <p className="form-error" role="alert">
+                    {state.error}
+                  </p>
+                )}
+              </div>
             </div>
           </form>
           <ResumenReserva
@@ -111,37 +137,12 @@ export default function Reserva({
       <Modal
         open={state.preview !== null}
         title="Resumen de tu reserva"
+        className="modal--resumen"
         onClose={() => state.setPreview(null)}
       >
-        <p>
-          Revisa la información. Al continuar se abre WhatsApp con este mensaje; la organización te
-          indica cómo pagar por Nequi y, una vez confirmado el pago, registra tu estado.
-        </p>
-        <pre className="wa-preview">{state.preview?.text}</pre>
-        <div className="modal__actions">
-          {state.preview?.link ? (
-            <a
-              className="btn btn--primary"
-              href={state.preview.link}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Continuar a WhatsApp <Icon name="whatsapp" />
-            </a>
-          ) : (
-            <>
-              <button className="btn btn--primary" disabled>
-                WhatsApp aún no configurado
-              </button>
-              <p className="note">
-                Falta el número de WhatsApp de la organización en la configuración del sitio.
-              </p>
-            </>
-          )}
-          <button type="button" className="btn btn--ghost" onClick={() => state.setPreview(null)}>
-            Volver al formulario
-          </button>
-        </div>
+        {state.preview && (
+          <ResumenModal resumen={state.preview} onBack={() => state.setPreview(null)} />
+        )}
       </Modal>
       <Modal
         open={conditionsOpen}
@@ -158,8 +159,8 @@ export default function Reserva({
           de habilitar las reservas reales.
         </p>
         <p>
-          El pago se hace por Nequi y el cupo queda confirmado cuando la organización verifica el
-          pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
+          El pago se hace por hace llave Bre-B. y el cupo queda confirmado cuando la organización
+          verifica el pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
         </p>
       </Modal>
     </section>

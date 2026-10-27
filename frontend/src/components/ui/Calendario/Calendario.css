@@ -73,9 +73,8 @@
   opacity: 0.25;
   cursor: not-allowed;
 }
-.cal-day.is-empty {
-  background: transparent;
-  cursor: default;
+.cal-slot {
+  visibility: hidden;
 }
 .cal-legend {
   display: flex;

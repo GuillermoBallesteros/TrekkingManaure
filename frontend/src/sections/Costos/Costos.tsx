@@ -66,7 +66,7 @@ export default function Costos() {
             <div className="step">
               <span className="step__n">02</span>
               <div>
-                <h3>Paga por Nequi y elige tu fecha</h3>
+                <h3>Paga por Nequi o llave Bre-B y elige tu fecha</h3>
                 <p>
                   Paga {formatMoney(precios.inscripcion)} para apartar o{' '}
                   {formatMoney(precios.total)} completo. Si apartas, eliges en el calendario el día

@@ -1,5 +1,11 @@
-import { precios } from '../../../shared/config';
-import type { Cotizacion, DatosPersona, OpcionesCotizacion } from '../types/reserva';
+import { evento, precios } from '../../../shared/config';
+import { METODO_PAGO } from '../sections/Reserva/datosFormulario';
+import type {
+  Cotizacion,
+  DatosPersona,
+  OpcionesCotizacion,
+  ResumenReservaTexto,
+} from '../types/reserva';
 
 /** Nombre del campo de formulario; prefijo '' = titular, 'acomp' = acompañante. */
 export function fieldName(prefix: string, base: string): string {
@@ -49,11 +55,8 @@ export function readPerson(data: FormData, prefix = '', withSize = false): Datos
     documento: text('documento'),
     nacimiento: text('nacimiento'),
     genero: text('genero'),
-    telefono: text('telefono'),
-    correo: text('correo'),
+    ...(prefix ? {} : { telefono: text('telefono'), correo: text('correo') }),
     ciudad: text('ciudad'),
-    emergenciaNombre: text('emergenciaNombre'),
-    emergenciaTelefono: text('emergenciaTelefono'),
     salud: {
       enfermedad: yesNo('enfermedad'),
       alergia: yesNo('alergia'),
@@ -70,10 +73,9 @@ export function describePerson(person: DatosPersona): string[] {
     'Fecha de nacimiento: ' + formatBirth(person.nacimiento),
     'Género: ' + person.genero,
     ...(person.talla ? ['Talla de camisa: ' + person.talla] : []),
-    'Teléfono: ' + person.telefono,
-    'Correo: ' + person.correo,
+    ...(person.telefono ? ['Teléfono: ' + person.telefono] : []),
+    ...(person.correo ? ['Correo: ' + person.correo] : []),
     'Ciudad: ' + person.ciudad,
-    'Contacto de emergencia: ' + person.emergenciaNombre + ' · ' + person.emergenciaTelefono,
     'Enfermedad: ' + person.salud.enfermedad,
     'Alergias: ' + person.salud.alergia,
     'Practica deporte: ' + person.salud.deporte,
@@ -84,6 +86,37 @@ export function describePerson(person: DatosPersona): string[] {
 export function formatBirth(value: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   return match ? match[3] + '/' + match[2] + '/' + match[1] : value;
+}
+
+/** Texto del mensaje de WhatsApp: los datos del formulario más el método de pago elegido. */
+export function buildMessage(resumen: ResumenReservaTexto): string {
+  const acompanante = resumen.acompanante;
+  const lines = [
+    'RESERVA · TREKKING DESAFÍO PERIJÁ 13K',
+    evento.fechasTexto + ' · Manaure, Cesar',
+    '',
+    'PARTICIPANTE',
+    ...describePerson(resumen.participante),
+    'Estadía: ' + resumen.estadia,
+    'Modalidad: ' + resumen.modalidad,
+    ...(resumen.fechaSaldo ? ['Fecha de pago del saldo del kit: ' + resumen.fechaSaldo] : []),
+    'Método de pago: ' + METODO_PAGO.label,
+    '',
+    ...(acompanante
+      ? [
+          'ACOMPAÑANTE',
+          ...describePerson(acompanante.persona),
+          'Estadía del acompañante: ' + acompanante.estadia,
+          'Kit del acompañante: ' + acompanante.kit,
+          '',
+        ]
+      : ['Acompañante: No', '']),
+    'Actividades extra: ' + resumen.extras,
+    'A pagar ahora: ' + resumen.ahora,
+    'Saldo pendiente: ' + resumen.saldo,
+    'Total: ' + resumen.total,
+  ];
+  return lines.join('\n');
 }
 
 /** Enlace de WhatsApp con el mensaje, o null si el número aún no está configurado. */
