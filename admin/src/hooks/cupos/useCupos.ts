@@ -86,7 +86,13 @@ export function useCupos() {
       {
         title: 'Experiencias',
         icon: 'flag' as const,
-        rows: extras.map((extra) => ({ label: etiquetasExtra[extra], total: countExtras(extra) })),
+        rows: [
+          ...extras.map((extra) => ({ label: etiquetasExtra[extra], total: countExtras(extra) })),
+          {
+            label: 'Reservas con hotel antes del evento',
+            total: secured.filter((summary) => summary.registration.preEventHotel).length,
+          },
+        ],
       },
       {
         title: 'Corredores',

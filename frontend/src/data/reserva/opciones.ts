@@ -14,9 +14,31 @@ export const OPCIONES_ESTADIA: readonly { value: Stay; title: string; text: stri
   },
 ];
 
-export const OPCIONES_EXTRA: readonly { id: Extra; title: string; text: string }[] = [
-  { id: 'cuatrimoto', title: 'Cuatrimoto', text: 'Por pareja · merienda incluida' },
-  { id: 'parapente', title: 'Parapente', text: 'Por persona · merienda incluida' },
+/** `conAcompanante`: la opción solo aparece si la reserva lleva acompañante. */
+export const OPCIONES_EXTRA: readonly {
+  id: Extra;
+  title: string;
+  text: string;
+  conAcompanante: boolean;
+}[] = [
+  {
+    id: 'cuatrimoto',
+    title: 'Cuatrimoto',
+    text: 'Mismo valor con o sin acompañante · merienda incluida',
+    conAcompanante: false,
+  },
+  {
+    id: 'parapente',
+    title: 'Parapente para ti',
+    text: 'Por persona · merienda incluida',
+    conAcompanante: false,
+  },
+  {
+    id: 'parapenteAcompanante',
+    title: 'Parapente para tu acompañante',
+    text: 'Por persona · merienda incluida',
+    conAcompanante: true,
+  },
 ];
 
 export const RESPUESTAS_SI_NO = ['Sí', 'No'] as const;

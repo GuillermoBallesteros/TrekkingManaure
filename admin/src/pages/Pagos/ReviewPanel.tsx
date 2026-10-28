@@ -29,6 +29,13 @@ export default function ReviewPanel({ review }: { review: PaymentReviewView }) {
         )}
       </div>
 
+      {panel.guardianWarning && (
+        <div className="review-check is-warn" role="status">
+          <Icon name="info" />
+          <span>{panel.guardianWarning}</span>
+        </div>
+      )}
+
       <dl className="review-facts">
         {panel.facts.map((fact) => (
           <div key={fact.label}>

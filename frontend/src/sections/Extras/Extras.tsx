@@ -4,7 +4,7 @@ import { useExtras } from '../../hooks';
 import './Extras.css';
 
 export default function Extras() {
-  const extras = useExtras();
+  const { actividades, hotel } = useExtras();
 
   return (
     <div style={{ marginTop: '3rem' }}>
@@ -15,7 +15,7 @@ export default function Extras() {
         </h2>
       </div>
       <div className="extras">
-        {extras.map((extra) => (
+        {actividades.map((extra) => (
           <article className="extra reveal" data-delay={extra.delay} key={extra.title}>
             <CloudImage
               className="extra__foto"
@@ -46,8 +46,29 @@ export default function Extras() {
           </article>
         ))}
       </div>
+      <article className="extra extra--hotel reveal" data-delay="1">
+        <Icon name={hotel.icon} />
+        <div className="extra--hotel__texto">
+          <h3>{hotel.title}</h3>
+          <small>{hotel.text}</small>
+          <div className="extra__chips">
+            {hotel.chips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            ))}
+          </div>
+        </div>
+        <div className="extra--hotel__precio">
+          <strong>{hotel.price}</strong>
+          <small>{hotel.unidad}</small>
+          <small>{hotel.ejemplo}</small>
+          <a href="#reserva" className="btn btn--ghost">
+            Elegir al reservar
+          </a>
+        </div>
+      </article>
       <p className="note" style={{ marginTop: '.9rem' }}>
-        Las actividades adicionales se eligen al reservar y se suman al total de tu inscripción.
+        Las actividades adicionales y el hotel previo se eligen al reservar y se suman al total de
+        tu inscripción.
       </p>
     </div>
   );

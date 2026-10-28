@@ -14,43 +14,31 @@ export type Estadia = '' | Stay;
  */
 export type PlanPago = PaymentPlan;
 
-export type SaludPersona = {
-  enfermedad: string;
-  alergia: string;
-  deporte: string;
+/** Hotel antes del evento tal como se llena en el formulario; las fechas '' sin elegir. */
+export type HotelFormulario = {
+  activo: boolean;
+  checkIn: string;
+  checkOut: string;
+  conAcompanante: boolean;
 };
 
-/** Datos de una persona tal como aparecen en el resumen (textos ya normalizados). */
-export type DatosPersona = {
-  nombre: string;
-  tipoDocumento: string;
-  documento: string;
-  nacimiento: string;
-  genero: string;
-  /** Solo el titular tiene teléfono y correo; el acompañante no los da. */
-  telefono?: string;
-  correo?: string;
-  ciudad: string;
-  salud: SaludPersona;
-  /** Solo quien compra kit tiene talla. */
-  talla?: string;
-};
+/** Una fila etiqueta/valor de la ventana de resumen y del mensaje de WhatsApp. */
+export type FilaResumen = { label: string; value: string };
 
-/** Datos del formulario ya ordenados para la ventana de resumen y para el mensaje de WhatsApp. */
+/**
+ * La reserva lista para mostrar y enviar. Se arma a partir de la reserva que se guarda, así el
+ * resumen y el mensaje de WhatsApp muestran exactamente lo mismo que queda registrado.
+ */
 export type ResumenReservaTexto = {
   /** Código asignado al registrar la reserva; null mientras se revisa antes de confirmar. */
   codigo: string | null;
-  participante: DatosPersona;
-  estadia: string;
-  modalidad: string;
-  /** Fecha en que se paga todo el restante; null si paga completo. */
-  fechaRestante: string | null;
-  acompanante: { persona: DatosPersona; estadia: string; kit: string } | null;
-  extras: string;
+  participante: FilaResumen[];
+  reserva: FilaResumen[];
+  acompanante: FilaResumen[] | null;
+  pagos: FilaResumen[];
+  /** Lo que se paga al reservar, ya formateado. */
   ahora: string;
-  saldo: string;
-  total: string;
+  /** El titular es menor: debe enviar la autorización de su responsable. */
+  menor: boolean;
+  versionTerminos: string;
 };
-
-/** Una fila etiqueta/valor de la ventana de resumen. */
-export type FilaResumen = { label: string; value: string };

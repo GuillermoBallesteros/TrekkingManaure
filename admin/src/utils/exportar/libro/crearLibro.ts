@@ -20,6 +20,8 @@ export function crearLibroGestion(contexto: LibroContexto) {
     tarifas.acompanante,
     tarifas.cuatrimoto,
     tarifas.parapente,
+    tarifas.parapente,
+    tarifas.hotelNoche,
   ];
 
   return buildXlsx({

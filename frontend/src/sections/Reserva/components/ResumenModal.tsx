@@ -56,14 +56,7 @@ export default function ResumenModal({ resumen, estado, error, onConfirm, onBack
 
       <section className="resumen-sec">
         <h4>Acompañante</h4>
-        {view.acompanante ? (
-          <>
-            <Lista filas={view.acompanante.persona} />
-            <Lista filas={view.acompanante.detalle} />
-          </>
-        ) : (
-          <p>No llevas acompañante.</p>
-        )}
+        {view.acompanante ? <Lista filas={view.acompanante} /> : <p>No llevas acompañante.</p>}
       </section>
 
       <section className="resumen-sec resumen-sec--pago">
@@ -74,6 +67,8 @@ export default function ResumenModal({ resumen, estado, error, onConfirm, onBack
       <p className="resumen-metodo__elegido" role="status">
         Método de pago: <strong>{view.metodoPago}</strong>
       </p>
+      {view.avisoMenor && <p className="form-aviso">{view.avisoMenor}</p>}
+      <p className="form-aviso">{view.avisoHoja}</p>
 
       {error && (
         <p className="form-error" role="alert">

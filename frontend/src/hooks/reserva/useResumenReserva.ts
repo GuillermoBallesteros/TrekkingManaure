@@ -13,6 +13,7 @@ export function useResumenReserva({ stay, planDate, quote }: Options) {
     titular: formatMoney(quote.titular),
     acompanante: quote.acompanante > 0 ? formatMoney(quote.acompanante) : null,
     extras: quote.extras > 0 ? formatMoney(quote.extras) : null,
+    hotel: quote.hotel > 0 ? formatMoney(quote.hotel) : null,
     stay: stay || 'Por elegir',
     ahora: formatMoney(quote.ahora),
     saldo:

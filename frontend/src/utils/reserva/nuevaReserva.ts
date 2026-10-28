@@ -1,16 +1,25 @@
-import type {
-  Companion,
-  DocumentType,
-  Extra,
-  Gender,
-  Health,
-  NewRegistration,
-  PaymentPlan,
-  Person,
-  ShirtSize,
-  Stay,
+import {
+  EPS_OTRA,
+  normalizeNumber,
+  versionTerminos,
+  type Companion,
+  type CountryCode,
+  type DocumentType,
+  type EpsEntity,
+  type Extra,
+  type Gender,
+  type Health,
+  type NewRegistration,
+  type PaymentPlan,
+  type Person,
+  type Phone,
+  type PreEventHotel,
+  type Relationship,
+  type ShirtSize,
+  type Stay,
 } from '../../../../shared/reservas';
-import { fieldName } from './formulario';
+import type { HotelFormulario } from '../../types/reserva';
+import { fieldName, limpiarTexto } from './formulario';
 
 type Seleccion = {
   stay: Stay;
@@ -19,37 +28,79 @@ type Seleccion = {
   companion: boolean;
   companionKit: boolean | null;
   extras: Extra[];
+  hotel: HotelFormulario;
 };
+
+type Lector = (base: string) => string;
 
 // Los valores de los desplegables salen de los catálogos compartidos; si llega algo distinto,
 // la validación de shared/reservas lo rechaza antes de guardar.
-function reader(data: FormData, prefix: string) {
-  return (base: string) => String(data.get(fieldName(prefix, base)) || '').trim();
+function reader(data: FormData, prefix: string): Lector {
+  return (base: string) => limpiarTexto(String(data.get(fieldName(prefix, base)) || ''));
 }
 
-/** Respuestas Sí/No de la ficha de salud: el detalle se guarda solo si respondió Sí. */
-function readHealth(read: (base: string) => string): Health {
-  const detail = (base: string) => (read(base) === 'Sí' ? read(base + 'Cual') || 'Sí' : null);
+/** Respuesta Sí/No con detalle: el detalle se guarda solo si respondió Sí. */
+function detail(read: Lector, base: string) {
+  return read(base) === 'Sí' ? read(base + 'Cual') : null;
+}
+
+function readHealth(read: Lector): Health {
   return {
-    illness: detail('enfermedad'),
-    allergies: detail('alergia'),
+    illness: detail(read, 'enfermedad'),
+    allergies: detail(read, 'alergia'),
+    disability: detail(read, 'discapacidad'),
     exercises: read('deporte') === 'Sí',
   };
 }
 
+function readPhone(read: Lector, base: string): Phone {
+  const country = read(base + 'Pais') as CountryCode;
+  return { country, number: normalizeNumber(country, read(base)) };
+}
+
 function readPerson(data: FormData, prefix: string, stay: Stay): Person {
   const read = reader(data, prefix);
+  const entity = read('eps') as EpsEntity;
   return {
     firstName: read('nombres'),
     lastName: read('apellidos'),
     documentType: read('tipoDocumento') as DocumentType,
-    document: read('documento'),
+    document: read('documento').toUpperCase(),
     birthDate: read('nacimiento'),
     gender: read('genero') as Gender,
+    phone: readPhone(read, 'telefono'),
+    email: read('correo').toLowerCase(),
     city: read('ciudad'),
+    eps: { entity, other: entity === EPS_OTRA ? read('epsOtra') : null },
+    emergencyContact: {
+      name: read('emergenciaNombre'),
+      phone: readPhone(read, 'emergenciaTelefono'),
+      relationship: read('emergenciaParentesco') as Relationship,
+    },
     health: readHealth(read),
+    commitments: {
+      protectedAreas: read('areasProtegidas') === 'Sí',
+      environment: read('medioAmbiente') === 'Sí',
+    },
+    // Sin la casilla marcada no hay fecha de aceptación y la validación lo rechaza. La fecha
+    // definitiva la pone el sistema al registrar la reserva.
+    consent: {
+      version: versionTerminos,
+      acceptedAt: read('terminos') === 'on' ? new Date().toISOString() : '',
+      imageUse: read('imagen') === 'on',
+    },
     stay,
   };
+}
+
+function readHotel(hotel: HotelFormulario, companion: boolean): PreEventHotel | null {
+  return hotel.activo
+    ? {
+        checkIn: hotel.checkIn,
+        checkOut: hotel.checkOut,
+        withCompanion: companion && hotel.conAcompanante,
+      }
+    : null;
 }
 
 /** Convierte el formulario en la reserva que recibe reservasApi.crearReserva. */
@@ -66,11 +117,10 @@ export function buildNewRegistration(data: FormData, seleccion: Seleccion): NewR
 
   return {
     ...readPerson(data, '', seleccion.stay),
-    phone: read('telefono'),
-    email: read('correo').toLowerCase(),
     shirtSize: read('talla') as ShirtSize,
     companion,
     extras: seleccion.extras,
+    preEventHotel: readHotel(seleccion.hotel, seleccion.companion),
     plan: seleccion.plan,
     commitmentDate: seleccion.plan === 'apartado' ? seleccion.planDate : null,
   };

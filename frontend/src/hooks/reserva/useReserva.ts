@@ -1,18 +1,25 @@
 import { useRef, useState, type FormEvent } from 'react';
 import {
   cotizar,
-  etiquetasExtra,
-  etiquetasPlan,
+  countHotelNights,
+  isIsoDate,
+  isMinor,
   reservasApi,
   useDisponibilidad,
   useReservas,
   validateNewRegistration,
   type NewRegistration,
+  type PreEventHotel,
 } from '../../../../shared/reservas';
-import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { readPerson } from '../../utils/reserva/formulario';
 import { buildNewRegistration } from '../../utils/reserva/nuevaReserva';
-import type { Estadia, Extra, PlanPago, ResumenReservaTexto } from '../../types/reserva';
+import { describirReserva } from '../../utils/reserva/resumen';
+import type {
+  Estadia,
+  Extra,
+  HotelFormulario,
+  PlanPago,
+  ResumenReservaTexto,
+} from '../../types/reserva';
 import { useBloquesProgresivos } from './useBloquesProgresivos';
 
 /** Pasos del envío: revisar el resumen, registrar y confirmar. */
@@ -23,13 +30,31 @@ type Envio = {
   error: string;
 };
 
+const HOTEL_VACIO: HotelFormulario = {
+  activo: false,
+  checkIn: '',
+  checkOut: '',
+  conAcompanante: true,
+};
+
+/** Hotel listo para cotizar: activo y con fechas válidas en orden; si no, null. */
+function hotelCotizable(hotel: HotelFormulario, companion: boolean): PreEventHotel | null {
+  if (!hotel.activo || !isIsoDate(hotel.checkIn) || !isIsoDate(hotel.checkOut)) return null;
+  const listo = { checkIn: hotel.checkIn, checkOut: hotel.checkOut };
+  return countHotelNights(listo) > 0
+    ? { ...listo, withCompanion: companion && hotel.conAcompanante }
+    : null;
+}
+
 export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
   // null = todavía no elegido: la persona debe marcarlo, no viene preseleccionado.
   const [plan, setPlan] = useState<PlanPago | null>(null);
   const [planDate, setPlanDate] = useState('');
-  const [companion, setCompanion] = useState(false);
+  const [companion, setCompanionState] = useState(false);
   const [companionKit, setCompanionKit] = useState<boolean | null>(null);
   const [extras, setExtras] = useState<Extra[]>([]);
+  const [hotel, setHotel] = useState<HotelFormulario>(HOTEL_VACIO);
+  const [birthDate, setBirthDate] = useState('');
   const [error, setError] = useState('');
   const [envio, setEnvio] = useState<Envio | null>(null);
   const [conditionsOpen, setConditionsOpen] = useState(false);
@@ -40,10 +65,12 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
   const { registrations, capacity, today } = useReservas();
   const availability = useDisponibilidad();
 
+  const preEventHotel = hotelCotizable(hotel, companion);
   const quote = cotizar({
     plan,
     companion: companion ? { kit: companionKit === true } : null,
     extras,
+    preEventHotel,
   });
   const needsDate = plan === 'apartado';
   const people = companion ? 2 : 1;
@@ -53,6 +80,16 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     setExtras((current) =>
       current.includes(extra) ? current.filter((item) => item !== extra) : [...current, extra],
     );
+  }
+
+  /** Sin acompañante no queda elegido su parapente. */
+  function setCompanion(value: boolean) {
+    setCompanionState(value);
+    if (!value) setExtras((current) => current.filter((item) => item !== 'parapenteAcompanante'));
+  }
+
+  function updateHotel(cambios: Partial<HotelFormulario>) {
+    setHotel((current) => ({ ...current, ...cambios }));
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -74,14 +111,14 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
       return;
     }
 
-    const data = new FormData(form);
-    const reserva = buildNewRegistration(data, {
+    const reserva = buildNewRegistration(new FormData(form), {
       stay,
       plan,
       planDate,
       companion,
       companionKit,
       extras,
+      hotel,
     });
     // Las mismas reglas que aplica el servicio: se avisan antes de abrir el resumen.
     const invalid = validateNewRegistration(reserva, registrations, capacity, today);
@@ -94,24 +131,7 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
       reserva,
       estado: 'revision',
       error: '',
-      resumen: {
-        codigo: null,
-        participante: readPerson(data, '', true),
-        estadia: stay,
-        modalidad: etiquetasPlan[plan],
-        fechaRestante: needsDate ? formatDate(planDate) : null,
-        acompanante: companion
-          ? {
-              persona: readPerson(data, 'acomp', companionKit === true),
-              estadia: String(data.get('acompEstadia')),
-              kit: companionKit ? 'Sí' : 'No',
-            }
-          : null,
-        extras: extras.length ? extras.map((extra) => etiquetasExtra[extra]).join(', ') : 'Ninguna',
-        ahora: formatMoney(quote.ahora),
-        saldo: formatMoney(quote.saldo),
-        total: formatMoney(quote.total),
-      },
+      resumen: describirReserva(reserva, quote, today),
     });
   }
 
@@ -123,10 +143,11 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
       setEnvio({ ...envio, estado: 'revision', error: result.error });
       return;
     }
+    // El resumen final sale de lo que quedó registrado: código y hora de aceptación incluidos.
     setEnvio({
       ...envio,
       estado: 'registrada',
-      resumen: { ...envio.resumen, codigo: result.data.id },
+      resumen: describirReserva(result.data, quote, today),
     });
   }
 
@@ -135,9 +156,11 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     if (envio?.estado === 'registrada') {
       setPlan(null);
       setPlanDate('');
-      setCompanion(false);
+      setCompanionState(false);
       setCompanionKit(null);
       setExtras([]);
+      setHotel(HOTEL_VACIO);
+      setBirthDate('');
       onStay('');
       reiniciar();
       setFormKey((key) => key + 1);
@@ -151,6 +174,9 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     revisar,
     /** Los bloques del formulario aparecen uno a uno; el índice empieza en 0. */
     isHidden: (bloque: number) => visibles <= bloque,
+    today,
+    setBirthDate,
+    esMenor: isMinor(birthDate, today),
     plan,
     setPlan,
     planDate,
@@ -161,6 +187,9 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     setCompanionKit,
     extras,
     toggleExtra,
+    hotel,
+    updateHotel,
+    preEventHotel,
     error,
     soldOut,
     agotado: availability.soldOut,

@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 import {
   countRunners,
   hasHealthAlerts,
+  phoneKey,
   statusOrder,
   summarize,
   useReservas,
@@ -14,12 +15,15 @@ function searchableText(registration: Registration) {
     registration.firstName,
     registration.lastName,
     registration.document,
-    registration.phone,
+    phoneKey(registration.phone),
+    registration.phone.number,
     registration.email,
     registration.city,
     registration.companion?.firstName,
     registration.companion?.lastName,
     registration.companion?.document,
+    registration.companion && phoneKey(registration.companion.phone),
+    registration.companion?.email,
   ]
     .join(' ')
     .toLowerCase();

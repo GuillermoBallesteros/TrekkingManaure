@@ -35,6 +35,12 @@ export default function ResumenReserva(props: Props) {
           <strong>{view.extras}</strong>
         </div>
       )}
+      {view.hotel && (
+        <div className="sum-row sum-row--dyn">
+          <span>Hotel antes del evento</span>
+          <strong>{view.hotel}</strong>
+        </div>
+      )}
       <div className="sum-row">
         <span>Estadía</span>
         <strong>{view.stay}</strong>

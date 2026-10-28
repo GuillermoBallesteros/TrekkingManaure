@@ -16,9 +16,15 @@ export type RepositorioReservas = {
 
 export const STORAGE_KEY = 'perija.reservas.v1';
 
+/**
+ * Copia de lo que había guardado cuando no se puede leer con el modelo actual (otra versión o
+ * JSON dañado). Se guarda antes de empezar vacío para que no se pierda ningún dato.
+ */
+export const BACKUP_KEY = 'perija.reservas.respaldo';
+
 export function initialState(): ReservasState {
   return {
-    version: 1,
+    version: 2,
     registrations: [],
     capacity: cupos.iniciales,
     counters: { registration: 0, payment: 0 },
@@ -29,7 +35,7 @@ function isState(value: unknown): value is ReservasState {
   if (!value || typeof value !== 'object') return false;
   const state = value as Partial<ReservasState>;
   return (
-    state.version === 1 &&
+    state.version === 2 &&
     Array.isArray(state.registrations) &&
     typeof state.capacity === 'number' &&
     typeof state.counters?.registration === 'number' &&
@@ -37,13 +43,22 @@ function isState(value: unknown): value is ReservasState {
   );
 }
 
-function parse(raw: string | null): ReservasState {
-  if (!raw) return initialState();
+/** null si el texto no es un estado válido del modelo actual. */
+function parse(raw: string): ReservasState | null {
   try {
     const value: unknown = JSON.parse(raw);
-    return isState(value) ? value : initialState();
+    return isState(value) ? value : null;
   } catch {
-    return initialState();
+    return null;
+  }
+}
+
+/** Guarda el texto ilegible en la clave de respaldo; si ya está respaldado, no lo repite. */
+function backup(raw: string) {
+  try {
+    if (localStorage.getItem(BACKUP_KEY) !== raw) localStorage.setItem(BACKUP_KEY, raw);
+  } catch {
+    // Sin almacenamiento no hay dónde respaldar; el estado anterior sigue intacto en su clave.
   }
 }
 
@@ -78,7 +93,9 @@ function createLocalRepository(): RepositorioReservas {
       const raw = currentRaw();
       if (raw !== cachedRaw) {
         cachedRaw = raw;
-        cached = parse(raw);
+        const parsed = raw ? parse(raw) : null;
+        if (raw && !parsed) backup(raw);
+        cached = parsed ?? initialState();
       }
       return cached;
     },

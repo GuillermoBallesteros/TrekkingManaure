@@ -54,7 +54,7 @@ export default function Inicio() {
               <Icon name="calendar" /> {evento.fechasTexto}
             </span>
             <span className="fact">
-              <Icon name="clock" /> Salida 6:00 a.m.
+              <Icon name="clock" /> Salida {evento.horaSalidaTexto}
             </span>
             <span className="fact">
               <Icon name="pin" /> Restaurante El Sabor · Villa Adelaida

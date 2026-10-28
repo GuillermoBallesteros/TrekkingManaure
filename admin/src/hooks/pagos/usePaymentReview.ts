@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import {
+  formatPhone,
   fullName,
   getExpectedAmount,
   getStatus,
   metodoPago,
+  needsGuardianAuthorization,
   reservasApi,
   summarize,
   useReservas,
@@ -104,7 +106,7 @@ function panelView(item: Item, today: string) {
             ? 'Pago total'
             : 'Separación · saldo el ' + formatDate(registration.commitmentDate || today),
       },
-      { label: 'Teléfono', value: registration.phone },
+      { label: 'Celular', value: formatPhone(registration.phone) },
       { label: 'Total de la inscripción', value: formatMoney(summary.total) },
       { label: 'Aprobado antes de este pago', value: formatMoney(paidBefore) },
       {
@@ -112,6 +114,10 @@ function panelView(item: Item, today: string) {
         value: registration.companion ? 'Titular + acompañante' : 'Solo titular',
       },
     ],
+    // Titular menor sin autorización: el servicio no deja aprobar hasta marcarla en el detalle.
+    guardianWarning: needsGuardianAuthorization(registration, today)
+      ? 'El titular es menor de edad y falta la autorización firmada de su responsable. Márcala como recibida en el detalle de la inscripción antes de aprobar.'
+      : null,
     approvedStatus: approved.status,
     approvedText:
       approved.balance > 0 ? 'Saldo ' + formatMoney(approved.balance) : 'Inscripción pagada',

@@ -1,15 +1,22 @@
+import type { PreEventHotel } from '../../../../../shared/reservas';
 import { useOpcionesReserva } from '../../../hooks';
-import type { Estadia, Extra } from '../../../types/reserva';
+import type { Estadia, Extra, HotelFormulario } from '../../../types/reserva';
 
 type Props = {
   stay: Estadia;
   onStay: (value: Estadia) => void;
   extras: Extra[];
   onExtras: (value: Extra) => void;
+  companion: boolean;
+  hotel: HotelFormulario;
+  onHotel: (cambios: Partial<HotelFormulario>) => void;
+  hotelCotizable: PreEventHotel | null;
+  today: string;
 };
 
 export default function OpcionesReserva(props: Props) {
   const view = useOpcionesReserva(props);
+  const hotel = view.hotel;
 
   return (
     <>
@@ -38,8 +45,8 @@ export default function OpcionesReserva(props: Props) {
         <div className="form-block__head">
           <span className="form-block__n">4</span>
           <div>
-            <h3>Actividades extra</h3>
-            <small>Opcionales. Incluyen merienda.</small>
+            <h3>Extras</h3>
+            <small>Opcionales. Las actividades incluyen merienda.</small>
           </div>
         </div>
         <div className="extra-choices">
@@ -53,7 +60,51 @@ export default function OpcionesReserva(props: Props) {
               <span className="mini-choice__price">{extra.price}</span>
             </label>
           ))}
+          {hotel.disponible && (
+            <label className="mini-choice">
+              <input type="checkbox" checked={hotel.activo} onChange={hotel.alternar} />
+              <span className="mini-choice__text">
+                <strong>Llegar antes: hotel previo al evento</strong>
+                <small>{hotel.texto}</small>
+              </span>
+              <span className="mini-choice__price">{hotel.precio}</span>
+            </label>
+          )}
         </div>
+        {hotel.activo && (
+          <div className="fields hotel-fields">
+            <div className="field">
+              <label htmlFor="hotelLlegada">
+                Llegada al hotel <span className="req">*</span>
+              </label>
+              <input
+                id="hotelLlegada"
+                name="hotelLlegada"
+                type="date"
+                required
+                {...hotel.llegada}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="hotelSalida">
+                Salida del hotel <span className="req">*</span>
+              </label>
+              <input id="hotelSalida" name="hotelSalida" type="date" required {...hotel.salida} />
+            </div>
+            {hotel.conAcompanante && (
+              <label className="mini-choice field--full">
+                <input type="checkbox" {...hotel.conAcompanante} />
+                <span className="mini-choice__text">
+                  <strong>Mi acompañante también llega antes</strong>
+                  <small>Se cobran las mismas noches para él o ella.</small>
+                </span>
+              </label>
+            )}
+            <p className="field-hint field--full" role="status">
+              {hotel.calculo}
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 import { useCamposPersona } from '../../../hooks';
+import CampoTelefono from './CampoTelefono';
 
 type Props = {
   /** Prefijo de name/id: vacío para el inscrito, 'acomp' para el acompañante. */
@@ -6,10 +7,17 @@ type Props = {
   /** Texto añadido a cada etiqueta para distinguirlas, p. ej. ' del acompañante'. */
   sufijo?: string;
   conTalla?: boolean;
+  /** Avisa la fecha de nacimiento elegida (el titular la usa para saber si es menor). */
+  onNacimiento?: (value: string) => void;
 };
 
-export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = false }: Props) {
-  const view = useCamposPersona(prefijo);
+export default function CamposPersona({
+  prefijo = '',
+  sufijo = '',
+  conTalla = false,
+  onNacimiento,
+}: Props) {
+  const view = useCamposPersona(prefijo, onNacimiento);
   const ids = view.ids;
   const req = <span className="req">*</span>;
 
@@ -25,8 +33,9 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           required
           placeholder="Nombres"
           autoComplete={view.autoComplete.nombres}
-          maxLength={100}
+          maxLength={60}
           pattern={view.patterns.nombre}
+          title="Solo letras, de 2 a 60 caracteres"
         />
       </div>
       <div className="field">
@@ -39,15 +48,22 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           required
           placeholder="Apellidos"
           autoComplete={view.autoComplete.apellidos}
-          maxLength={100}
+          maxLength={60}
           pattern={view.patterns.nombre}
+          title="Solo letras, de 2 a 60 caracteres"
         />
       </div>
       <div className="field">
         <label htmlFor={ids.tipoDocumento}>
           Tipo de documento{sufijo} {req}
         </label>
-        <select id={ids.tipoDocumento} name={ids.tipoDocumento} required defaultValue="">
+        <select
+          id={ids.tipoDocumento}
+          name={ids.tipoDocumento}
+          required
+          defaultValue=""
+          onChange={view.cambiarTipo}
+        >
           <option value="" disabled>
             Selecciona
           </option>
@@ -66,11 +82,12 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           id={ids.documento}
           name={ids.documento}
           required
-          placeholder="Número de documento"
           autoComplete="off"
           maxLength={20}
-          pattern={view.patterns.documento}
-          title="Entre 5 y 20 letras o números, sin espacios ni símbolos"
+          disabled={view.documento.disabled}
+          pattern={view.documento.pattern}
+          title={view.documento.title}
+          placeholder={view.documento.placeholder}
         />
       </div>
       <div className="field">
@@ -84,6 +101,7 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           required
           min={view.nacimiento.min}
           max={view.nacimiento.max}
+          onChange={view.cambiarNacimiento}
         />
       </div>
       <div className="field">
@@ -103,7 +121,9 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
       </div>
       {conTalla && (
         <div className="field">
-          <label htmlFor={ids.talla}>Talla de camisa {req}</label>
+          <label htmlFor={ids.talla}>
+            Talla de camisa{sufijo} {req}
+          </label>
           <select id={ids.talla} name={ids.talla} required defaultValue="">
             <option value="" disabled>
               Selecciona
@@ -116,45 +136,42 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           </select>
         </div>
       )}
-      {view.titular && (
-        <>
-          <div className="field">
-            <label htmlFor={ids.telefono}>
-              Teléfono / WhatsApp{sufijo} {req}
-            </label>
-            <input
-              id={ids.telefono}
-              name={ids.telefono}
-              type="tel"
-              required
-              placeholder="300 000 0000"
-              autoComplete="tel"
-              maxLength={20}
-              pattern={view.patterns.telefono}
-              title="Entre 7 y 20 caracteres: números, espacios o +"
-            />
-          </div>
-          <div className="field">
-            <label htmlFor={ids.correo}>Correo electrónico{sufijo}</label>
-            <input
-              id={ids.correo}
-              name={ids.correo}
-              type="email"
-              placeholder="correo@ejemplo.com"
-              autoComplete="email"
-              maxLength={150}
-            />
-          </div>
-        </>
-      )}
+      <CampoTelefono
+        prefijo={prefijo}
+        base="telefono"
+        etiqueta="Celular / WhatsApp"
+        sufijo={sufijo}
+        tipo="movil"
+        quien={view.quien}
+        autoComplete={view.autoComplete.telefono}
+      />
       <div className="field">
-        <label htmlFor={ids.ciudad}>Ciudad{sufijo}</label>
+        <label htmlFor={ids.correo}>
+          Correo electrónico{sufijo} {req}
+        </label>
+        <input
+          id={ids.correo}
+          name={ids.correo}
+          type="email"
+          required
+          placeholder="nombre@correo.com"
+          autoComplete={view.autoComplete.correo}
+          maxLength={254}
+        />
+      </div>
+      <div className="field">
+        <label htmlFor={ids.ciudad}>
+          Ciudad de residencia{sufijo} {req}
+        </label>
         <input
           id={ids.ciudad}
           name={ids.ciudad}
+          required
           placeholder="Ciudad de residencia"
           autoComplete={view.autoComplete.ciudad}
-          maxLength={150}
+          maxLength={60}
+          pattern={view.patterns.ciudad}
+          title="Solo letras, de 3 a 60 caracteres"
         />
       </div>
     </>

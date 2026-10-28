@@ -1,6 +1,6 @@
 import { useAcompanante } from '../../../hooks';
 import CamposPersona from './CamposPersona';
-import FichaSalud from './FichaSalud';
+import DatosSeguridad from './DatosSeguridad';
 
 type Props = {
   companion: boolean;
@@ -18,7 +18,10 @@ export default function Acompanante(props: Props) {
         <span className="form-block__n">5</span>
         <div>
           <h3>Acompañante</h3>
-          <small>Opcional. Máximo un acompañante por participante.</small>
+          <small>
+            Opcional. Máximo uno. Se le piden los mismos datos que a ti; la talla solo si compra
+            kit.
+          </small>
         </div>
       </div>
       <div className="toggle-line companion-toggle">
@@ -64,7 +67,7 @@ export default function Acompanante(props: Props) {
           {view.showPerson && (
             <>
               <CamposPersona prefijo="acomp" sufijo=" del acompañante" conTalla={view.withSize} />
-              <FichaSalud prefijo="acomp" />
+              <DatosSeguridad prefijo="acomp" sufijo=" del acompañante" />
               <div className="field field--full">
                 <label htmlFor="acompEstadia">
                   Estadía del acompañante <span className="req">*</span>

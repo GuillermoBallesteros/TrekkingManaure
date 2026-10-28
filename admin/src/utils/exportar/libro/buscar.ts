@@ -44,11 +44,21 @@ const titular: Campo[] = [
         campo('Cuatrimoto') +
         '="No",' +
         campo('Parapente') +
-        '="No"),"Ninguna",TRIM(IF(' +
+        '="No",' +
+        campo('Parapente del acompañante') +
+        '="No",' +
+        campo('Noches de hotel') +
+        '=0),"Ninguna",TRIM(IF(' +
         campo('Cuatrimoto') +
         '="Sí","Cuatrimoto ","")&IF(' +
         campo('Parapente') +
-        '="Sí","Parapente","")))',
+        '="Sí","Parapente ","")&IF(' +
+        campo('Parapente del acompañante') +
+        '="Sí","Parapente del acompañante ","")&IF(' +
+        campo('Noches de hotel') +
+        '>0,"Hotel previo "&' +
+        campo('Noches de hotel') +
+        '&" noches","")))',
     ),
     style: 'fichaValor',
   },

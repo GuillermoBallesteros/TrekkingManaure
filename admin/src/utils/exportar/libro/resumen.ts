@@ -2,6 +2,8 @@ import { evento } from '../../../../../shared/config';
 import { formatDate } from '../../../../../shared/utils/format';
 import { colores, coloresEstado, dxfEstado, hojas } from '../../../data/exportar/libro';
 import {
+  countHotelNights,
+  countHotelPeople,
   estadias,
   getRunners,
   statusOrder,
@@ -100,9 +102,19 @@ const conceptos = [
     price: 'PrecioCuatrimoto',
   },
   {
-    label: 'Vuelo en parapente',
+    label: 'Parapente del titular',
     count: 'COUNTIF(Inscripciones[Parapente],"Sí")',
     price: 'PrecioParapente',
+  },
+  {
+    label: 'Parapente del acompañante',
+    count: 'COUNTIF(Inscripciones[Parapente del acompañante],"Sí")',
+    price: 'PrecioParapente',
+  },
+  {
+    label: 'Hotel antes del evento (noches por persona)',
+    count: 'SUM(Inscripciones[Noches-persona de hotel])',
+    price: 'PrecioHotelNoche',
   },
 ];
 
@@ -263,6 +275,14 @@ function bloqueIngresos(sheet: Sheet, summaries: Summary[], start: number, price
       .length,
     summaries.filter((item) => item.registration.extras.includes('cuatrimoto')).length,
     summaries.filter((item) => item.registration.extras.includes('parapente')).length,
+    summaries.filter((item) => item.registration.extras.includes('parapenteAcompanante')).length,
+    summaries.reduce((sum, item) => {
+      const hotel = item.registration.preEventHotel;
+      return hotel
+        ? sum +
+            countHotelNights(hotel) * countHotelPeople(hotel, item.registration.companion !== null)
+        : sum;
+    }, 0),
   ];
   sheet.charts.push({
     kind: 'bar',
@@ -378,12 +398,30 @@ function bloqueEstadia(sheet: Sheet, summaries: Summary[], start: number) {
   const extras = start + 7;
   encabezadoBloque(sheet, extras, ['Experiencia', 'Reservas', 'Precio', 'Ingreso']);
   [
-    { label: 'Paseo en cuatrimoto', column: 'Cuatrimoto', price: 'PrecioCuatrimoto' },
-    { label: 'Vuelo en parapente', column: 'Parapente', price: 'PrecioParapente' },
+    {
+      label: 'Paseo en cuatrimoto',
+      count: 'COUNTIF(Inscripciones[Cuatrimoto],"Sí")',
+      price: 'PrecioCuatrimoto',
+    },
+    {
+      label: 'Parapente del titular',
+      count: 'COUNTIF(Inscripciones[Parapente],"Sí")',
+      price: 'PrecioParapente',
+    },
+    {
+      label: 'Parapente del acompañante',
+      count: 'COUNTIF(Inscripciones[Parapente del acompañante],"Sí")',
+      price: 'PrecioParapente',
+    },
+    {
+      label: 'Hotel previo (noches por persona)',
+      count: 'SUM(Inscripciones[Noches-persona de hotel])',
+      price: 'PrecioHotelNoche',
+    },
   ].forEach((item, index) => {
     const row = extras + 1 + index;
     filaBloque(sheet, row, { v: item.label, s: 'celdaTexto' }, [
-      { f: 'COUNTIF(Inscripciones[' + item.column + '],"Sí")', s: 'celdaEntero' },
+      { f: item.count, s: 'celdaEntero' },
       { f: item.price, s: 'celdaMoneda' },
       { f: ref(row, 3) + '*' + ref(row, 4), s: 'celdaMoneda' },
     ]);

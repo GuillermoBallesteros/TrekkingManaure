@@ -9,6 +9,8 @@ import Acompanante from './components/Acompanante';
 import FormaPago from './components/FormaPago';
 import ResumenReserva from './components/ResumenReserva';
 import ResumenModal from './components/ResumenModal';
+import Terminos from './components/Terminos';
+import Condiciones from './components/Condiciones';
 import './Reserva.css';
 
 export default function Reserva({
@@ -48,10 +50,10 @@ export default function Reserva({
               </p>
             )}
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(0)}>
-              <DatosPersonales />
+              <DatosPersonales onNacimiento={state.setBirthDate} />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(1)}>
-              <ControlSeguridad />
+              <ControlSeguridad esMenor={state.esMenor} />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(2)}>
               <OpcionesReserva
@@ -59,6 +61,11 @@ export default function Reserva({
                 onStay={onStay}
                 extras={state.extras}
                 onExtras={state.toggleExtra}
+                companion={state.companion}
+                hotel={state.hotel}
+                onHotel={state.updateHotel}
+                hotelCotizable={state.preEventHotel}
+                today={state.today}
               />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(3)}>
@@ -80,28 +87,7 @@ export default function Reserva({
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(5)}>
               <div className="form-block form-submit">
-                <div className="toggle-line terms-toggle">
-                  <div className="toggle-line__text">
-                    <strong>He revisado las condiciones de participación</strong>
-                    <small>
-                      <button
-                        type="button"
-                        className="conditions-link"
-                        onClick={state.openConditions}
-                      >
-                        Consultar condiciones
-                      </button>
-                    </small>
-                  </div>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      required
-                      aria-label="He revisado las condiciones de participación"
-                    />
-                    <span className="switch__track" />
-                  </label>
-                </div>
+                <Terminos companion={state.companion} onOpen={state.openConditions} />
                 {state.soldOut && (
                   <p className="form-error" role="status">
                     {state.soldOutText}
@@ -115,8 +101,9 @@ export default function Reserva({
                   Revisar y registrar <Icon name="arrow" />
                 </button>
                 <p className="note form-note">
-                  Primero revisas el resumen y confirmas. Tu reserva queda registrada y pendiente
-                  hasta que la organización verifique tu pago. No se paga desde la página.
+                  Primero revisas el resumen y confirmas. Tu reserva y la aceptación de los términos
+                  quedan registradas y pendientes hasta que la organización verifique tu pago. No se
+                  paga desde la página.
                 </p>
                 {state.error && (
                   <p className="form-error" role="alert">
@@ -147,18 +134,11 @@ export default function Reserva({
       </Modal>
       <Modal
         open={state.conditionsOpen}
-        title="Condiciones de participación"
+        title="Términos y condiciones"
+        className="modal--condiciones"
         onClose={state.closeConditions}
       >
-        <p>
-          La experiencia contempla un recorrido de montaña, bajas temperaturas y preparación
-          personal. Revisa las recomendaciones de seguridad antes de participar.
-        </p>
-        <p>La inscripción está sujeta a validación de pago por la organización.</p>
-        <p>
-          El pago se hace por llave Bre-B y el cupo queda confirmado cuando la organización verifica
-          el pago. Si un saldo no se paga en la fecha elegida, el cupo del kit se libera.
-        </p>
+        <Condiciones />
       </Modal>
     </section>
   );

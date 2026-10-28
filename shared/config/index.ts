@@ -2,7 +2,8 @@ export const evento = {
   nombre: 'Trekking Desafío Perijá 13K',
   lugar: 'Manaure, Cesar, Colombia',
   fechas: ['2026-11-15', '2026-11-16'],
-  largada: '2026-11-15T06:00:00-05:00',
+  largada: '2026-11-15T04:00:00-05:00',
+  horaSalidaTexto: '4:00 a.m.',
   distanciaKm: 13,
   encuentro: 'Restaurante El Sabor, Villa Adelaida',
   llegada: 'Páramo',
@@ -24,6 +25,8 @@ export const precios = {
   parapente: 200000,
   /** Acompañante que también compra kit. */
   acompananteConKit: 350000,
+  /** Hotel para llegar antes del evento: por noche y por persona. */
+  hotelNoche: 45000,
 } as const;
 
 export const cupos = {

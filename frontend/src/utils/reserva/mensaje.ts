@@ -1,57 +1,38 @@
 import { evento } from '../../../../shared/config';
 import { metodoPago } from '../../../../shared/reservas';
-import type { DatosPersona, ResumenReservaTexto } from '../../types/reserva';
+import { AVISO_HOJA_CONSENTIMIENTO, AVISO_MENOR } from '../../data/reserva/formulario';
+import type { FilaResumen, ResumenReservaTexto } from '../../types/reserva';
 
-/** Convierte AAAA-MM-DD a DD/MM/AAAA para el resumen. */
-export function formatBirth(value: string): string {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  return match ? match[3] + '/' + match[2] + '/' + match[1] : value;
+function lineas(filas: FilaResumen[]): string[] {
+  return filas.map((fila) => fila.label + ': ' + fila.value);
 }
 
-function describePerson(person: DatosPersona): string[] {
-  return [
-    'Nombre: ' + person.nombre,
-    'Documento: ' + person.tipoDocumento + ' ' + person.documento,
-    'Fecha de nacimiento: ' + formatBirth(person.nacimiento),
-    'Género: ' + person.genero,
-    ...(person.talla ? ['Talla de camisa: ' + person.talla] : []),
-    ...(person.telefono ? ['Teléfono: ' + person.telefono] : []),
-    ...(person.correo ? ['Correo: ' + person.correo] : []),
-    'Ciudad: ' + person.ciudad,
-    'Enfermedad: ' + person.salud.enfermedad,
-    'Alergias: ' + person.salud.alergia,
-    'Practica deporte: ' + person.salud.deporte,
-  ];
-}
-
-/** Texto del mensaje de WhatsApp: los datos del formulario más el método de pago elegido. */
+/**
+ * Texto del mensaje de WhatsApp: las mismas filas del resumen, que salen de la reserva
+ * registrada, más el método de pago y los avisos.
+ */
 export function buildMessage(resumen: ResumenReservaTexto): string {
-  const acompanante = resumen.acompanante;
   const lines = [
-    'RESERVA · TREKKING DESAFÍO PERIJÁ 13K',
-    evento.fechasTexto + ' · Manaure, Cesar',
+    'RESERVA · ' + evento.nombre.toUpperCase(),
+    evento.fechasTexto + ' · Salida ' + evento.horaSalidaTexto + ' · ' + evento.lugar,
     ...(resumen.codigo ? ['Código de reserva: ' + resumen.codigo] : []),
     '',
     'PARTICIPANTE',
-    ...describePerson(resumen.participante),
-    'Estadía: ' + resumen.estadia,
-    'Modalidad: ' + resumen.modalidad,
-    ...(resumen.fechaRestante ? ['Fecha de pago del restante: ' + resumen.fechaRestante] : []),
-    'Método de pago: ' + metodoPago.label,
+    ...lineas(resumen.participante),
     '',
-    ...(acompanante
-      ? [
-          'ACOMPAÑANTE',
-          ...describePerson(acompanante.persona),
-          'Estadía del acompañante: ' + acompanante.estadia,
-          'Kit del acompañante: ' + acompanante.kit,
-          '',
-        ]
+    'RESERVA',
+    ...lineas(resumen.reserva),
+    'Método de pago: ' + metodoPago.label,
+    ...(resumen.menor ? ['', AVISO_MENOR] : []),
+    '',
+    ...(resumen.acompanante
+      ? ['ACOMPAÑANTE', ...lineas(resumen.acompanante), '']
       : ['Acompañante: No', '']),
-    'Actividades extra: ' + resumen.extras,
-    'A pagar ahora: ' + resumen.ahora,
-    'Saldo pendiente: ' + resumen.saldo,
-    'Total: ' + resumen.total,
+    'PAGOS',
+    ...lineas(resumen.pagos),
+    '',
+    'Términos y condiciones aceptados por cada persona (versión ' + resumen.versionTerminos + ').',
+    AVISO_HOJA_CONSENTIMIENTO,
   ];
   return lines.join('\n');
 }

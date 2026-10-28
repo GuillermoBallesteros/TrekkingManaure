@@ -20,7 +20,7 @@ export const actividadesExtra = [
     icon: 'mountain',
     title: 'Cuatrimoto',
     aprox: true,
-    text: 'Por pareja. Merienda incluida.',
+    text: 'Mismo valor con o sin acompañante. Merienda incluida.',
     chips: [],
     delay: 2,
   },
@@ -36,3 +36,11 @@ export const actividadesExtra = [
     delay: 3,
   },
 ] as const;
+
+// Hotel para llegar antes del evento. El precio por noche y persona está en precios.hotelNoche.
+export const hotelPrevio = {
+  icon: 'hotel',
+  title: 'Llega antes: hotel previo al evento',
+  text: '¿Quieres venir días antes? Reserva hotel en Manaure las noches que necesites antes del evento. Se cobra por noche y por persona.',
+  chips: ['Eliges llegada y salida', 'Cálculo automático', 'Se suma a tu reserva'],
+} as const;

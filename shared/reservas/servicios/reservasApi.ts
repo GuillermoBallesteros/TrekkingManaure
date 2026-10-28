@@ -63,8 +63,15 @@ export const reservasApi = {
 
     const registrationNumber = state.counters.registration + 1;
     const paymentNumber = state.counters.payment + 1;
+    // La aceptación de los términos queda con la hora en que el sistema registra la reserva.
+    const acceptedAt = new Date().toISOString();
     const registration: Registration = {
       ...input,
+      consent: { ...input.consent, acceptedAt },
+      companion: input.companion
+        ? { ...input.companion, consent: { ...input.companion.consent, acceptedAt } }
+        : null,
+      guardianAuthorized: false,
       id: pad('PER', registrationNumber),
       createdAt: today,
       payments: [
@@ -101,7 +108,12 @@ export const reservasApi = {
     if (!registration || !payment) return fail('El pago ya no existe.');
 
     if (review === 'Aprobado') {
-      const error = validateApproval(registration, state.registrations, state.capacity);
+      const error = validateApproval(
+        registration,
+        state.registrations,
+        state.capacity,
+        todayInColombia(),
+      );
       if (error) return fail(error);
     }
     if (review === 'Rechazado') {
@@ -131,7 +143,7 @@ export const reservasApi = {
 
     const error =
       validateManualPayment(registration, amount) ||
-      validateApproval(registration, state.registrations, state.capacity);
+      validateApproval(registration, state.registrations, state.capacity, todayInColombia());
     if (error) return fail(error);
 
     const paymentNumber = state.counters.payment + 1;
@@ -152,6 +164,21 @@ export const reservasApi = {
       counters: { ...state.counters, payment: paymentNumber },
     });
     return { ok: true, data: payment };
+  },
+
+  /** La organización marca si recibió la autorización firmada del responsable de un menor. */
+  async fijarAutorizacionMenor(
+    registrationId: string,
+    received: boolean,
+  ): Promise<Result<Registration>> {
+    await wait();
+    const state = repositorio.read();
+    const registration = findRegistration(state, registrationId);
+    if (!registration) return fail('La inscripción ya no existe.');
+
+    const next: Registration = { ...registration, guardianAuthorized: received };
+    repositorio.write(replaceRegistration(state, next));
+    return { ok: true, data: next };
   },
 
   async fijarCapacidad(value: number): Promise<Result<number>> {

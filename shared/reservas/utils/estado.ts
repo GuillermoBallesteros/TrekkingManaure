@@ -1,5 +1,7 @@
 import { precios } from '../../config';
+import { EPS_OTRA } from '../data/catalogos';
 import type {
+  Eps,
   Health,
   Payment,
   PaymentConcept,
@@ -20,6 +22,10 @@ export type Runner = {
   health: Health;
   kit: boolean;
   shirtSize: ShirtSize | null;
+  /** Vuela en parapente: el titular con 'parapente' y el acompañante con 'parapenteAcompanante'. */
+  paragliding: boolean;
+  /** Todos los datos de la persona: contacto, EPS, emergencia, compromisos y consentimiento. */
+  person: Person;
 };
 
 export type Summary = {
@@ -45,6 +51,11 @@ export function fullName(person: Pick<Person, 'firstName' | 'lastName'>) {
 
 export function documentLabel(person: Pick<Person, 'documentType' | 'document'>) {
   return person.documentType + ' ' + person.document;
+}
+
+/** Nombre de la EPS: la de la lista o la que escribió la persona en "Otra". */
+export function epsLabel(eps: Eps) {
+  return eps.entity === EPS_OTRA ? 'Otra: ' + (eps.other ?? '') : eps.entity;
 }
 
 /** Solo cuentan los pagos que la organización aprobó tras verificar que llegaron. */
@@ -137,6 +148,8 @@ export function getRunners(registration: Registration): Runner[] {
       health: registration.health,
       kit: true,
       shirtSize: registration.shirtSize,
+      paragliding: registration.extras.includes('parapente'),
+      person: registration,
     },
   ];
   const { companion } = registration;
@@ -151,6 +164,8 @@ export function getRunners(registration: Registration): Runner[] {
       health: companion.health,
       kit: companion.kit,
       shirtSize: companion.shirtSize,
+      paragliding: registration.extras.includes('parapenteAcompanante'),
+      person: companion,
     });
   }
 
@@ -162,6 +177,7 @@ export function getHealthAlerts(health: Health) {
 
   if (health.illness) alerts.push('Enfermedad: ' + health.illness);
   if (health.allergies) alerts.push('Alergia: ' + health.allergies);
+  if (health.disability) alerts.push('Discapacidad: ' + health.disability);
   if (!health.exercises) alerts.push('No practica deporte con regularidad');
 
   return alerts;

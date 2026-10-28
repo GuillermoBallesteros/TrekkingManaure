@@ -28,7 +28,7 @@ function RunnerCard({ runner }: { runner: RunnerView }) {
             ))}
           </ul>
         ) : (
-          <span>Sin enfermedades ni alergias · practica deporte</span>
+          <span>Sin enfermedades, alergias ni discapacidad · practica deporte</span>
         )}
       </div>
     </article>
@@ -70,6 +70,26 @@ export default function RegistrationDetail({
           {detail.plan.deadline && <em className={detail.deadlineClass}>{detail.plan.deadline}</em>}
         </span>
       </p>
+      {detail.hotel && (
+        <p className="reg-plan">
+          <Icon name="hotel" />
+          <span>{detail.hotel}</span>
+        </p>
+      )}
+      {detail.guardian && (
+        <label className={detail.guardian.className}>
+          <input
+            type="checkbox"
+            checked={detail.guardian.checked}
+            onChange={detail.guardian.toggle}
+            disabled={detail.guardian.disabled}
+          />
+          <span>
+            <strong>Autorización del responsable recibida</strong>
+            <small>{detail.guardian.text}</small>
+          </span>
+        </label>
+      )}
       {detail.overdue && (
         <p className="reg-alert">
           No se registró el saldo en la fecha acordada. El kit puede liberarse para otra persona.

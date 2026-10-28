@@ -1,8 +1,14 @@
+import { formatDateTime } from '../../../../../shared/utils/format';
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
 import {
+  countHotelNights,
+  countHotelPeople,
+  epsLabel,
   estadias,
   etiquetasPlan,
+  formatPhone,
   fullName,
+  isMinor,
   generos,
   statusOrder,
   tallas,
@@ -40,7 +46,7 @@ const columnas: Columna[] = [
     value: ({ registration }) => registration.documentType,
   },
   { name: 'Documento', width: 13, value: ({ registration }) => registration.document },
-  { name: 'Teléfono', width: 13, value: ({ registration }) => registration.phone },
+  { name: 'Teléfono', width: 17, value: ({ registration }) => formatPhone(registration.phone) },
   { name: 'Correo', width: 24, value: ({ registration }) => registration.email },
   { name: 'Género', width: 11, value: ({ registration }) => registration.gender },
   { name: 'Ciudad', width: 16, value: ({ registration }) => registration.city },
@@ -57,6 +63,54 @@ const columnas: Columna[] = [
     formula: 'INT(YEARFRAC(' + r('Nacimiento') + ',TODAY()))',
   },
   { name: 'Talla', width: 9, style: 'centro', value: ({ registration }) => registration.shirtSize },
+  { name: 'EPS', width: 18, value: ({ registration }) => epsLabel(registration.eps) },
+  {
+    name: 'Contacto de emergencia',
+    width: 22,
+    value: ({ registration }) => registration.emergencyContact.name,
+  },
+  {
+    name: 'Parentesco',
+    width: 16,
+    value: ({ registration }) => registration.emergencyContact.relationship,
+  },
+  {
+    name: 'Teléfono de emergencia',
+    width: 17,
+    value: ({ registration }) => formatPhone(registration.emergencyContact.phone),
+  },
+  {
+    name: 'Menor de edad',
+    width: 11,
+    style: 'centro',
+    value: ({ registration }) => siNo(isMinor(registration.birthDate, registration.createdAt)),
+  },
+  {
+    name: 'Autorización del responsable',
+    width: 15,
+    style: 'centro',
+    value: ({ registration }) =>
+      isMinor(registration.birthDate, registration.createdAt)
+        ? siNo(registration.guardianAuthorized)
+        : 'No aplica',
+  },
+  {
+    name: 'Términos aceptados',
+    width: 19,
+    value: ({ registration }) =>
+      registration.consent.acceptedAt ? formatDateTime(registration.consent.acceptedAt) : '',
+  },
+  {
+    name: 'Versión de términos',
+    width: 16,
+    value: ({ registration }) => registration.consent.version,
+  },
+  {
+    name: 'Uso de imagen',
+    width: 11,
+    style: 'centro',
+    value: ({ registration }) => siNo(registration.consent.imageUse),
+  },
   { name: 'Estadía', width: 17, value: ({ registration }) => registration.stay },
   {
     name: 'Acompañante',
@@ -84,6 +138,17 @@ const columnas: Columna[] = [
         : '',
   },
   {
+    name: 'Teléfono del acompañante',
+    width: 17,
+    value: ({ registration }) =>
+      registration.companion ? formatPhone(registration.companion.phone) : '',
+  },
+  {
+    name: 'Correo del acompañante',
+    width: 24,
+    value: ({ registration }) => registration.companion?.email ?? '',
+  },
+  {
     name: 'Cuatrimoto',
     width: 13,
     style: 'centro',
@@ -94,6 +159,50 @@ const columnas: Columna[] = [
     width: 13,
     style: 'centro',
     value: ({ registration }) => siNo(registration.extras.includes('parapente')),
+  },
+  {
+    name: 'Parapente del acompañante',
+    width: 15,
+    style: 'centro',
+    value: ({ registration }) => siNo(registration.extras.includes('parapenteAcompanante')),
+  },
+  {
+    name: 'Llegada al hotel',
+    width: 12,
+    style: 'fecha',
+    value: ({ registration }) =>
+      registration.preEventHotel ? excelDate(registration.preEventHotel.checkIn) : null,
+  },
+  {
+    name: 'Salida del hotel',
+    width: 12,
+    style: 'fecha',
+    value: ({ registration }) =>
+      registration.preEventHotel ? excelDate(registration.preEventHotel.checkOut) : null,
+  },
+  {
+    name: 'Noches de hotel',
+    width: 10,
+    style: 'entero',
+    total: 'sum',
+    value: ({ registration }) =>
+      registration.preEventHotel ? countHotelNights(registration.preEventHotel) : 0,
+  },
+  {
+    name: 'Personas en hotel',
+    width: 10,
+    style: 'entero',
+    value: ({ registration }) =>
+      registration.preEventHotel
+        ? countHotelPeople(registration.preEventHotel, registration.companion !== null)
+        : 0,
+  },
+  {
+    name: 'Noches-persona de hotel',
+    width: 12,
+    style: 'entero',
+    total: 'sum',
+    formula: r('Noches de hotel') + '*' + r('Personas en hotel'),
   },
   { name: 'Plan', width: 22, value: ({ registration }) => etiquetasPlan[registration.plan] },
   {
@@ -117,7 +226,11 @@ const columnas: Columna[] = [
       r('Cuatrimoto') +
       '="Sí",PrecioCuatrimoto,0)+IF(' +
       r('Parapente') +
-      '="Sí",PrecioParapente,0)',
+      '="Sí",PrecioParapente,0)+IF(' +
+      r('Parapente del acompañante') +
+      '="Sí",PrecioParapente,0)+' +
+      r('Noches-persona de hotel') +
+      '*PrecioHotelNoche',
   },
   {
     name: 'Pagado',
@@ -217,6 +330,9 @@ const listas: Record<string, string> = {
   'Kit del acompañante': '"Sí,No"',
   Cuatrimoto: '"Sí,No"',
   Parapente: '"Sí,No"',
+  'Parapente del acompañante': '"Sí,No"',
+  'Menor de edad': '"Sí,No"',
+  'Uso de imagen': '"Sí,No"',
   Plan: listaExcel(Object.values(etiquetasPlan)),
 };
 

@@ -1,5 +1,13 @@
+import { formatDateTime } from '../../../../../shared/utils/format';
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
-import { estadias, getRunners, tallas, type Runner } from '../../../../../shared/reservas';
+import {
+  epsLabel,
+  estadias,
+  formatPhone,
+  getRunners,
+  tallas,
+  type Runner,
+} from '../../../../../shared/reservas';
 import { addTable, tableColumnRange, thisRow, type CellValue } from '../xlsx/hoja';
 import { columnName, rangeRef } from '../xlsx/referencias';
 import { filaTabla, hojaConTitulo, listaExcel, siNo, type LibroContexto } from './comun';
@@ -23,12 +31,31 @@ const columnas: {
   { name: 'Rol', width: 13, value: ({ runner }) => runner.role },
   { name: 'Nombre', width: 24, value: ({ runner }) => runner.name },
   { name: 'Documento', width: 20, value: ({ runner }) => runner.document },
+  { name: 'Celular', width: 17, value: ({ runner }) => formatPhone(runner.person.phone) },
+  { name: 'Correo', width: 24, value: ({ runner }) => runner.person.email },
   { name: 'Ciudad', width: 16, value: ({ runner }) => runner.city },
+  { name: 'EPS', width: 18, value: ({ runner }) => epsLabel(runner.person.eps) },
+  {
+    name: 'Contacto de emergencia',
+    width: 22,
+    value: ({ runner }) => runner.person.emergencyContact.name,
+  },
+  {
+    name: 'Parentesco',
+    width: 16,
+    value: ({ runner }) => runner.person.emergencyContact.relationship,
+  },
+  {
+    name: 'Teléfono de emergencia',
+    width: 17,
+    value: ({ runner }) => formatPhone(runner.person.emergencyContact.phone),
+  },
   { name: 'Estadía', width: 17, value: ({ runner }) => runner.stay },
   { name: 'Kit', width: 8, style: 'centro', value: ({ runner }) => siNo(runner.kit) },
   { name: 'Talla', width: 9, style: 'centro', value: ({ runner }) => runner.shirtSize ?? '' },
   { name: 'Enfermedad', width: 22, value: ({ runner }) => runner.health.illness ?? 'No' },
   { name: 'Alergias', width: 20, value: ({ runner }) => runner.health.allergies ?? 'No' },
+  { name: 'Discapacidad', width: 20, value: ({ runner }) => runner.health.disability ?? 'No' },
   {
     name: 'Practica deporte',
     width: 14,
@@ -46,8 +73,40 @@ const columnas: {
       '<>"No")+(' +
       r('Alergias') +
       '<>"No")+(' +
+      r('Discapacidad') +
+      '<>"No")+(' +
       r('Practica deporte') +
       '="No")',
+  },
+  {
+    name: 'Parapente',
+    width: 11,
+    style: 'centro',
+    value: ({ runner }) => siNo(runner.paragliding),
+  },
+  {
+    name: 'Áreas protegidas',
+    width: 12,
+    style: 'centro',
+    value: ({ runner }) => siNo(runner.person.commitments.protectedAreas),
+  },
+  {
+    name: 'Medio ambiente',
+    width: 12,
+    style: 'centro',
+    value: ({ runner }) => siNo(runner.person.commitments.environment),
+  },
+  {
+    name: 'Términos aceptados',
+    width: 19,
+    value: ({ runner }) =>
+      runner.person.consent.acceptedAt ? formatDateTime(runner.person.consent.acceptedAt) : '',
+  },
+  {
+    name: 'Uso de imagen',
+    width: 11,
+    style: 'centro',
+    value: ({ runner }) => siNo(runner.person.consent.imageUse),
   },
   {
     name: 'Cupo asegurado',
