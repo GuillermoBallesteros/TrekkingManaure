@@ -37,6 +37,17 @@ El acceso al panel es simulado: entra con cualquier correo y contraseña de form
 
 Al publicar, el hosting debe responder `index.html` también para `/admin` (reescritura de SPA).
 
+## Ejecutar con Docker
+
+El sitio y el panel también se empaquetan en una imagen (nginx + archivos compilados), con un servicio PostgreSQL opcional para quien conecte la base de datos. Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+
+```bash
+docker compose up -d --build                 # sitio en http://localhost:8080
+docker compose --profile db up -d --build    # sitio + PostgreSQL
+```
+
+Por qué, cómo y cómo conectar la base de datos: [docs/DOCKER.md](docs/DOCKER.md).
+
 ## Comprobar y dar formato
 
 ```powershell
@@ -58,8 +69,8 @@ El sitio y el panel comparten un único sistema de reservas (`shared/reservas/`)
 
 1. La persona completa el formulario, revisa el resumen y confirma. La reserva se registra con un código (`PER-0001`…) y con su primer pago esperado en «Por revisar».
 2. Paga por llave Bre-B. En el panel, la organización verifica que el dinero llegó y aprueba o rechaza ese pago. No hay comprobantes: la decisión del panel es la única fuente de verdad.
-3. Al aprobar el primer pago, el titular y su acompañante ocupan cupo. El contador del sitio, el panel y las demás pestañas abiertas se actualizan al instante.
-4. Los saldos se registran desde el detalle de cada participante. La capacidad (60 al inicio, hasta 70) solo cambia desde «Gestión de cupos».
+3. Al aprobar el primer pago, quien se queda en el páramo (titular o acompañante) ocupa cupo; hotel en Manaure y regreso a casa no gastan cupo. Si se agotan los cupos del páramo, el formulario deshabilita esa estadía y la inscripción sigue abierta. El contador del sitio, el panel y las demás pestañas abiertas se actualizan al instante.
+4. Los saldos se registran desde el detalle de cada participante. Los cupos del páramo (60 al inicio) y la fecha de cierre (9 de noviembre de 2026 al inicio; último día para inscribirse y para pagar el restante) solo cambian desde «Gestión de cupos».
 
 El sistema arranca vacío: no hay datos ni cuentas de ejemplo. Como los datos viven en cada navegador, lo que se reserva en un equipo no aparece en otro hasta conectar el backend.
 

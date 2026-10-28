@@ -1,0 +1,31 @@
+# Lo que NO entra al contexto de construcción de la imagen.
+# Menos contexto = build más rápido, imagen más limpia y ningún secreto filtrado.
+
+# Dependencias y compilaciones locales: la imagen las genera por su cuenta.
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+
+# Git y automatización del repositorio.
+.git
+.github
+.gitattributes
+
+# Secretos y configuración local (solo se conserva la plantilla).
+.env
+.env.*
+!.env.example
+
+# Documentación y archivos que la web no usa.
+docs
+*.md
+state
+
+# La API vive en su propio contexto (./backend); la imagen web no la necesita.
+backend
+
+# Archivos de Docker (no se copian dentro de la imagen).
+Dockerfile
+docker-compose*.yml
+.dockerignore
+db
