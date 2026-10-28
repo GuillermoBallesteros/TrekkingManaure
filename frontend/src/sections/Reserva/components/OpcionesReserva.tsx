@@ -1,5 +1,4 @@
-import { precios } from '../../../../../shared/config';
-import { formatMoney } from '../../../../../shared/utils/format';
+import { useOpcionesReserva } from '../../../hooks';
 import type { Estadia, Extra } from '../../../types/reserva';
 
 type Props = {
@@ -9,7 +8,9 @@ type Props = {
   onExtras: (value: Extra) => void;
 };
 
-export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Props) {
+export default function OpcionesReserva(props: Props) {
+  const view = useOpcionesReserva(props);
+
   return (
     <>
       <div className="form-block">
@@ -21,31 +22,9 @@ export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Prop
           </div>
         </div>
         <div className="choice-grid" role="radiogroup" aria-label="Opción de estadía">
-          {[
-            {
-              value: 'Páramo' as const,
-              title: 'Quedarse en el páramo',
-              text: 'Fogata, camping o habitación rural y experiencia completa.',
-            },
-            {
-              value: 'Hotel en Manaure' as const,
-              title: 'Hotel en Manaure',
-              text: 'Subes al páramo, cumples el recorrido y regresas a dormir.',
-            },
-          ].map((option) => (
+          {view.stays.map((option) => (
             <label className="choice" key={option.value}>
-              <input
-                type="radio"
-                name="estadia"
-                value={option.value}
-                required
-                checked={stay === option.value}
-                onClick={() => {
-                  // Un clic sobre la opción ya marcada la desmarca.
-                  if (stay === option.value) onStay('');
-                }}
-                onChange={() => onStay(option.value)}
-              />
+              <input type="radio" name="estadia" value={option.value} required {...option.input} />
               <span className="choice__dot" />
               <span className="choice__text">
                 <strong>{option.title}</strong>
@@ -64,29 +43,14 @@ export default function OpcionesReserva({ stay, onStay, extras, onExtras }: Prop
           </div>
         </div>
         <div className="extra-choices">
-          {[
-            {
-              id: 'cuatrimoto' as const,
-              title: 'Cuatrimoto',
-              text: 'Por pareja · merienda incluida',
-            },
-            {
-              id: 'parapente' as const,
-              title: 'Parapente',
-              text: 'Por persona · merienda incluida',
-            },
-          ].map((extra) => (
+          {view.extras.map((extra) => (
             <label className="mini-choice" key={extra.id}>
-              <input
-                type="checkbox"
-                checked={extras.includes(extra.id)}
-                onChange={() => onExtras(extra.id)}
-              />
+              <input type="checkbox" checked={extra.checked} onChange={extra.toggle} />
               <span className="mini-choice__text">
                 <strong>{extra.title}</strong>
                 <small>{extra.text}</small>
               </span>
-              <span className="mini-choice__price">{formatMoney(precios[extra.id])}</span>
+              <span className="mini-choice__price">{extra.price}</span>
             </label>
           ))}
         </div>

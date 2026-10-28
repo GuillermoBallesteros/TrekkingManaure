@@ -130,13 +130,24 @@
   padding-top: 30px;
 }
 
-.admin-sidebar-bottom > a {
+.admin-sidebar-bottom > button {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  font: inherit;
   font-size: 0.7rem;
   padding: 12px;
+  border: 0;
+  background: none;
   color: rgba(253, 248, 223, 0.6);
+  cursor: pointer;
+  text-align: left;
+}
+
+.admin-sidebar-bottom > button:hover,
+.admin-sidebar-bottom > button:focus-visible {
+  color: var(--dorado-claro);
 }
 
 .admin-sidebar-bottom > span {

@@ -6,4 +6,6 @@ export const adminLinks = [
   { id: 'exportar', label: 'Exportar información', icon: 'upload' },
 ] as const;
 
-export type AdminRoute = (typeof adminLinks)[number]['id'] | 'acceso';
+export type AdminRoute = (typeof adminLinks)[number]['id'];
+
+export const rutaInicial: AdminRoute = 'resumen';

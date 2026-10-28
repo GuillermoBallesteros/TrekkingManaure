@@ -1,11 +1,20 @@
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
-import { statusOrder } from '../../comun/inscripcion';
+import {
+  estadias,
+  etiquetasPlan,
+  fullName,
+  generos,
+  statusOrder,
+  tallas,
+  tiposDocumento,
+} from '../../../../../shared/reservas';
 import { addTable, tableColumnRange, thisRow } from '../xlsx/hoja';
 import { columnName, excelDate } from '../xlsx/referencias';
 import {
   filaTabla,
   filasDeTabla,
   hojaConTitulo,
+  listaExcel,
   siNo,
   type Columna,
   type LibroContexto,
@@ -34,6 +43,7 @@ const columnas: Columna[] = [
   { name: 'Teléfono', width: 13, value: ({ registration }) => registration.phone },
   { name: 'Correo', width: 24, value: ({ registration }) => registration.email },
   { name: 'Género', width: 11, value: ({ registration }) => registration.gender },
+  { name: 'Ciudad', width: 16, value: ({ registration }) => registration.city },
   {
     name: 'Nacimiento',
     width: 12,
@@ -57,7 +67,7 @@ const columnas: Columna[] = [
   {
     name: 'Nombre del acompañante',
     width: 22,
-    value: ({ registration }) => registration.companion?.name ?? '',
+    value: ({ registration }) => (registration.companion ? fullName(registration.companion) : ''),
   },
   {
     name: 'Kit del acompañante',
@@ -66,18 +76,26 @@ const columnas: Columna[] = [
     value: ({ registration }) => (registration.companion ? siNo(registration.companion.kit) : ''),
   },
   {
+    name: 'Documento del acompañante',
+    width: 20,
+    value: ({ registration }) =>
+      registration.companion
+        ? registration.companion.documentType + ' ' + registration.companion.document
+        : '',
+  },
+  {
     name: 'Cuatrimoto',
     width: 13,
     style: 'centro',
-    value: ({ registration }) => siNo(registration.extras.cuatrimoto),
+    value: ({ registration }) => siNo(registration.extras.includes('cuatrimoto')),
   },
   {
     name: 'Parapente',
     width: 13,
     style: 'centro',
-    value: ({ registration }) => siNo(registration.extras.parapente),
+    value: ({ registration }) => siNo(registration.extras.includes('parapente')),
   },
-  { name: 'Plan', width: 12, value: ({ registration }) => registration.plan },
+  { name: 'Plan', width: 22, value: ({ registration }) => etiquetasPlan[registration.plan] },
   {
     name: 'Compromiso',
     width: 12,
@@ -191,15 +209,15 @@ const columnas: Columna[] = [
 ];
 
 const listas: Record<string, string> = {
-  'Tipo de documento': '"CC,TI,CE,Pasaporte"',
-  Género: '"Femenino,Masculino,Otro"',
-  Talla: '"XS,S,M,L,XL,XXL"',
-  Estadía: '"Páramo,Hotel en Manaure"',
+  'Tipo de documento': listaExcel(tiposDocumento),
+  Género: listaExcel(generos),
+  Talla: listaExcel(tallas),
+  Estadía: listaExcel(estadias),
   Acompañante: '"Sí,No"',
   'Kit del acompañante': '"Sí,No"',
   Cuatrimoto: '"Sí,No"',
   Parapente: '"Sí,No"',
-  Plan: '"Completo,Separación"',
+  Plan: listaExcel(Object.values(etiquetasPlan)),
 };
 
 export function crearInscripciones(contexto: LibroContexto) {

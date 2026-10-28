@@ -108,7 +108,7 @@ export default function RegistrationDetail({
       </section>
 
       <section className="reg-section">
-        <h3>Pagos por Nequi</h3>
+        <h3>{detail.paymentsTitle}</h3>
         {detail.hasPayments ? (
           <ul className="reg-payments">
             {detail.payments.map((payment) => (
@@ -141,7 +141,7 @@ export default function RegistrationDetail({
 
       {detail.form.visible && (
         <form className="reg-register" onSubmit={detail.form.submit}>
-          <h3>Registrar pago verificado en Nequi</h3>
+          <h3>{detail.form.title}</h3>
           <div>
             <label>
               Monto recibido
@@ -156,25 +156,20 @@ export default function RegistrationDetail({
                 onChange={detail.form.changeAmount}
               />
             </label>
-            <label>
-              Referencia Nequi
-              <input
-                required
-                maxLength={30}
-                value={detail.form.reference}
-                onChange={detail.form.changeReference}
-                placeholder="Ej. M1234567"
-              />
-            </label>
           </div>
-          <button type="submit" className="btn btn--primary">
-            <Icon name="check" /> Registrar pago
+          <button type="submit" className="btn btn--primary" disabled={detail.form.saving}>
+            <Icon name="check" /> {detail.form.saving ? 'Registrando…' : 'Registrar pago'}
           </button>
         </form>
       )}
       <p role="status" className="admin-feedback">
         {detail.feedback}
       </p>
+      {detail.error && (
+        <p role="alert" className="admin-error">
+          {detail.error}
+        </p>
+      )}
     </div>
   );
 }

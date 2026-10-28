@@ -1,44 +1,68 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import { tallas } from '../../data/cupos/tallas';
-import { getRunners, summarize } from '../../utils/comun/inscripcion';
-import { getAvailability } from '../../utils/cupos/disponibilidad';
+import { plural } from '../../utils/comun/texto';
+import {
+  capacityRange,
+  etiquetasExtra,
+  extras,
+  estadias,
+  getAvailability,
+  getRunners,
+  reservasApi,
+  summarize,
+  tallas,
+  useReservas,
+  type Extra,
+} from '../../../../shared/reservas';
 
 export function useCupos() {
-  const { registrations, today, capacity, setCapacity } = useAdminPreview();
-  const [value, setValue] = useState(capacity);
+  const { registrations, today, capacity } = useReservas();
+  const [value, setValue] = useState<number | ''>(capacity);
   const [feedback, setFeedback] = useState('');
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
   const secured = registrations
     .map((registration) => summarize(registration, today))
     .filter((summary) => summary.paid > 0);
   const runners = secured.flatMap((summary) =>
     getRunners(summary.registration).map((runner) => ({ ...runner, status: summary.status })),
   );
-  const availability = getAvailability(runners.length, capacity);
-  const minCapacity = Math.max(1, availability.occupied);
+  const availability = getAvailability(registrations, capacity);
+  const range = capacityRange(availability.occupied);
   const kits = runners.filter((runner) => runner.kit);
   const atRisk = kits.filter((runner) => runner.status === 'Vencido').length;
   const countRunners = (match: (runner: (typeof runners)[number]) => boolean) =>
     runners.filter(match).length;
-  const countExtras = (extra: 'cuatrimoto' | 'parapente') =>
-    secured.filter((summary) => summary.registration.extras[extra]).length;
+  const countExtras = (extra: Extra) =>
+    secured.filter((summary) => summary.registration.extras.includes(extra)).length;
 
-  function applyCapacity(event: FormEvent<HTMLFormElement>) {
+  async function applyCapacity(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setCapacity(value);
-    setFeedback('Capacidad actualizada solo en la vista previa.');
+    if (value === '' || saving) return;
+    setSaving(true);
+    setFeedback('');
+    setError('');
+    const result = await reservasApi.fijarCapacidad(value);
+    setSaving(false);
+    if (result.ok)
+      setFeedback('Capacidad actualizada a ' + plural(result.data, 'cupo', 'cupos') + '.');
+    else setError(result.error);
   }
 
   return {
     availability,
     barStyle: { width: availability.percentage + '%' },
     value,
-    minCapacity,
-    limitText: 'Mínimo ' + minCapacity + ' cupos: los ya ocupados.',
+    range,
+    limitText: 'Entre ' + range.min + ' (cupos ya ocupados) y ' + range.max + ' cupos.',
     policyText:
-      'La capacidad del evento es de ' + capacity + ' cupos y solo cambia desde este panel.',
+      'La capacidad del evento es de ' +
+      capacity +
+      ' cupos. Solo cambia desde este panel y el sitio público la muestra al instante.',
     feedback,
-    changeValue: (event: ChangeEvent<HTMLInputElement>) => setValue(Number(event.target.value)),
+    error,
+    saving,
+    changeValue: (event: ChangeEvent<HTMLInputElement>) =>
+      setValue(event.target.value === '' ? '' : Number(event.target.value)),
     applyCapacity,
     kitsLabel: kits.length + ' kits',
     sizes: tallas.map((size) => ({
@@ -54,21 +78,15 @@ export function useCupos() {
       {
         title: 'Estadía',
         icon: 'hotel' as const,
-        rows: [
-          { label: 'Páramo', total: countRunners((runner) => runner.stay === 'Páramo') },
-          {
-            label: 'Hotel en Manaure',
-            total: countRunners((runner) => runner.stay === 'Hotel en Manaure'),
-          },
-        ],
+        rows: estadias.map((stay) => ({
+          label: stay,
+          total: countRunners((runner) => runner.stay === stay),
+        })),
       },
       {
         title: 'Experiencias',
         icon: 'flag' as const,
-        rows: [
-          { label: 'Cuatrimoto', total: countExtras('cuatrimoto') },
-          { label: 'Parapente', total: countExtras('parapente') },
-        ],
+        rows: extras.map((extra) => ({ label: etiquetasExtra[extra], total: countExtras(extra) })),
       },
       {
         title: 'Corredores',

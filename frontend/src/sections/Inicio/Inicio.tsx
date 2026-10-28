@@ -2,7 +2,7 @@ import CloudImage from '../../../../shared/components/CloudImage';
 import Icon from '../../../../shared/components/Icon';
 import { evento } from '../../../../shared/config';
 import { imagenes, presets } from '../../../../shared/data/imagenes';
-import ContadorCupos from '../../components/ui/ContadorCupos';
+import { ContadorCupos } from '../../components';
 import './Inicio.css';
 
 export default function Inicio() {

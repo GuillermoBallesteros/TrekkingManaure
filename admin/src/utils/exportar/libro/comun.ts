@@ -6,7 +6,7 @@ import {
   type Sheet,
   type TableColumn,
 } from '../xlsx/hoja';
-import type { Summary } from '../../comun/inscripcion';
+import type { Summary } from '../../../../../shared/reservas';
 
 export type LibroContexto = {
   summaries: Summary[];
@@ -21,6 +21,9 @@ export type Columna = TableColumn & { value?: (summary: Summary) => CellValue };
 export const filaTabla = 3;
 
 export const siNo = (value: boolean) => (value ? 'Sí' : 'No');
+
+/** Lista de validación de Excel a partir de un catálogo: "A,B,C". */
+export const listaExcel = (values: readonly string[]) => '"' + values.join(',') + '"';
 
 export function hojaConTitulo(
   name: string,

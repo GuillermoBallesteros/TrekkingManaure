@@ -1,78 +1,65 @@
 import Icon from '../../../../../shared/components/Icon';
-import { contacto } from '../../../../../shared/config';
-import type { DatosPersona, ResumenReservaTexto } from '../../../types/reserva';
-import { buildMessage, formatBirth, whatsappLink } from '../../../utils/reserva';
-import { METODO_PAGO } from '../datosFormulario';
+import { useResumenModal } from '../../../hooks';
+import type { FilaResumen, ResumenReservaTexto } from '../../../types/reserva';
 import './ResumenModal.css';
 
 type Props = {
   resumen: ResumenReservaTexto;
+  estado: 'revision' | 'enviando' | 'registrada';
+  error: string;
+  onConfirm: () => void;
   onBack: () => void;
 };
 
-function Fila({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="resumen-fila">
-      <dt>{label}</dt>
-      <dd>{value}</dd>
-    </div>
-  );
-}
-
-function Persona({ persona }: { persona: DatosPersona }) {
+function Lista({ filas }: { filas: FilaResumen[] }) {
   return (
     <dl className="resumen-lista">
-      <Fila label="Nombre" value={persona.nombre} />
-      <Fila label="Documento" value={persona.tipoDocumento + ' ' + persona.documento} />
-      <Fila label="Nacimiento" value={formatBirth(persona.nacimiento)} />
-      <Fila label="Género" value={persona.genero} />
-      {persona.talla && <Fila label="Talla de camisa" value={persona.talla} />}
-      {persona.telefono && <Fila label="Teléfono" value={persona.telefono} />}
-      {persona.correo && <Fila label="Correo" value={persona.correo} />}
-      <Fila label="Ciudad" value={persona.ciudad} />
-      <Fila label="Enfermedad" value={persona.salud.enfermedad} />
-      <Fila label="Alergias" value={persona.salud.alergia} />
-      <Fila label="Practica deporte" value={persona.salud.deporte} />
+      {filas.map((fila) => (
+        <div className="resumen-fila" key={fila.label}>
+          <dt>{fila.label}</dt>
+          <dd>{fila.value}</dd>
+        </div>
+      ))}
     </dl>
   );
 }
 
-export default function ResumenModal({ resumen, onBack }: Props) {
-  const link = whatsappLink(contacto.whatsapp, buildMessage(resumen));
-  const acompanante = resumen.acompanante;
+export default function ResumenModal({ resumen, estado, error, onConfirm, onBack }: Props) {
+  const view = useResumenModal(resumen);
 
   return (
     <div className="resumen-modal">
-      <p className="resumen-modal__intro">
-        Revisa tu información. Al continuar se abre WhatsApp con estos datos.
-      </p>
+      {view.codigo ? (
+        <div className="resumen-exito" role="status">
+          <Icon name="check" />
+          <div>
+            <small>Código de reserva</small>
+            <strong>{view.codigo}</strong>
+            <p>{view.confirmacion}</p>
+          </div>
+        </div>
+      ) : (
+        <p className="resumen-modal__intro">
+          Revisa tu información. Al confirmar, tu reserva queda registrada y pendiente de pago.
+        </p>
+      )}
 
       <section className="resumen-sec">
         <h4>Participante</h4>
-        <Persona persona={resumen.participante} />
+        <Lista filas={view.participante} />
       </section>
 
       <section className="resumen-sec">
         <h4>Reserva</h4>
-        <dl className="resumen-lista">
-          <Fila label="Estadía" value={resumen.estadia} />
-          <Fila label="Modalidad" value={resumen.modalidad} />
-          {resumen.fechaRestante && (
-            <Fila label="Pago del restante" value={resumen.fechaRestante} />
-          )}
-          <Fila label="Actividades extra" value={resumen.extras} />
-        </dl>
+        <Lista filas={view.reserva} />
       </section>
 
       <section className="resumen-sec">
         <h4>Acompañante</h4>
-        {acompanante ? (
+        {view.acompanante ? (
           <>
-            <Persona persona={acompanante.persona} />
-            <dl className="resumen-lista">
-              <Fila label="Estadía" value={acompanante.estadia} />
-              <Fila label="Kit" value={acompanante.kit} />
-            </dl>
+            <Lista filas={view.acompanante.persona} />
+            <Lista filas={view.acompanante.detalle} />
           </>
         ) : (
           <p>No llevas acompañante.</p>
@@ -81,31 +68,51 @@ export default function ResumenModal({ resumen, onBack }: Props) {
 
       <section className="resumen-sec resumen-sec--pago">
         <h4>Pagos</h4>
-        <dl className="resumen-lista">
-          <Fila label="A pagar ahora" value={resumen.ahora} />
-          <Fila label="Saldo pendiente" value={resumen.saldo} />
-          <Fila label="Total" value={resumen.total} />
-        </dl>
+        <Lista filas={view.pagos} />
       </section>
 
       <p className="resumen-metodo__elegido" role="status">
-        Método de pago: <strong>{METODO_PAGO.label}</strong>
+        Método de pago: <strong>{view.metodoPago}</strong>
       </p>
 
-      <div className="resumen-acciones">
-        {link ? (
-          <a className="btn btn--primary" href={link} target="_blank" rel="noreferrer">
-            Continuar a WhatsApp <Icon name="whatsapp" />
-          </a>
-        ) : (
-          <button className="btn btn--primary" type="button" disabled>
-            WhatsApp aún no configurado
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+
+      {estado === 'registrada' ? (
+        <div className="resumen-acciones">
+          {view.whatsapp && (
+            <a className="btn btn--primary" href={view.whatsapp} target="_blank" rel="noreferrer">
+              Enviar mis datos por WhatsApp <Icon name="whatsapp" />
+            </a>
+          )}
+          <button type="button" className="btn btn--ghost" onClick={onBack}>
+            Cerrar
           </button>
-        )}
-        <button type="button" className="btn btn--ghost" onClick={onBack}>
-          Volver al formulario
-        </button>
-      </div>
+        </div>
+      ) : (
+        <div className="resumen-acciones">
+          <button
+            className="btn btn--primary"
+            type="button"
+            onClick={onConfirm}
+            disabled={estado === 'enviando'}
+            aria-busy={estado === 'enviando'}
+          >
+            {estado === 'enviando' ? 'Registrando…' : 'Confirmar reserva'} <Icon name="check" />
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={onBack}
+            disabled={estado === 'enviando'}
+          >
+            Volver al formulario
+          </button>
+        </div>
+      )}
     </div>
   );
 }

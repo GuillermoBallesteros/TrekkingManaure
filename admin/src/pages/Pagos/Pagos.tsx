@@ -17,7 +17,7 @@ export default function Pagos() {
           <h1>
             Revisión de <em>pagos</em>
           </h1>
-          <p>Compara cada comprobante de Nequi con lo que la persona debe pagar y decide.</p>
+          <p>Confirma en la llave Bre-B que llegó cada pago esperado y apruébalo o recházalo.</p>
         </div>
         <span className="admin-pill admin-pill--warm">{review.pendingLabel}</span>
       </div>

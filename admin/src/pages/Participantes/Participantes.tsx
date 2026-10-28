@@ -26,7 +26,7 @@ export default function Participantes() {
               aria-label="Buscar participante"
               value={participantes.search}
               onChange={participantes.changeSearch}
-              placeholder="Nombre, documento, teléfono o acompañante…"
+              placeholder="Nombre, documento, teléfono, ciudad o acompañante…"
             />
           </label>
           <div className="admin-filter-group">
@@ -48,10 +48,10 @@ export default function Participantes() {
             </label>
           </div>
         </div>
-        <ParticipantTable rows={participantes.rows} />
+        <ParticipantTable rows={participantes.rows} empty={participantes.empty} />
         <div className="admin-panel-foot">
           <span>{participantes.resultLabel}</span>
-          <span>Información ficticia</span>
+          <span>Guardado en este navegador</span>
         </div>
       </article>
     </>

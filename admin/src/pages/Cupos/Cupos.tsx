@@ -28,13 +28,13 @@ export default function Cupos() {
           <div className="admin-capacity-number">
             <strong>{view.availability.available}</strong>
             <span>
-              Cupos disponibles<small>de {view.availability.capacity} en el ejemplo</small>
+              Cupos disponibles<small>de {view.availability.capacity} en total</small>
             </span>
           </div>
           <div
             className="bar"
             role="meter"
-            aria-label="Cupos ocupados en el ejemplo"
+            aria-label="Cupos ocupados"
             aria-valuemin={0}
             aria-valuemax={view.availability.capacity}
             aria-valuenow={view.availability.occupied}
@@ -48,26 +48,33 @@ export default function Cupos() {
           <p className="admin-notice">{view.policyText}</p>
         </article>
         <article className="admin-panel admin-settings">
-          <h2>Probar capacidad</h2>
-          <p>Ajusta el escenario para explorar cómo se presenta la disponibilidad.</p>
+          <h2>Capacidad del evento</h2>
+          <p>Amplía o reduce los cupos. El cambio se refleja de inmediato en el sitio público.</p>
           <form onSubmit={view.applyCapacity}>
-            <label htmlFor="capacity">Capacidad de ejemplo</label>
+            <label htmlFor="capacity">Capacidad total</label>
             <input
               id="capacity"
               required
               type="number"
-              min={view.minCapacity}
+              min={view.range.min}
+              max={view.range.max}
+              step={1}
               value={view.value}
               onChange={view.changeValue}
             />
             <small>{view.limitText}</small>
-            <button className="btn btn--primary" type="submit">
-              Aplicar al ejemplo <Icon name="check" />
+            <button className="btn btn--primary" type="submit" disabled={view.saving}>
+              {view.saving ? 'Guardando…' : 'Guardar capacidad'} <Icon name="check" />
             </button>
           </form>
           <p role="status" className="admin-feedback">
             {view.feedback}
           </p>
+          {view.error && (
+            <p role="alert" className="admin-error">
+              {view.error}
+            </p>
+          )}
         </article>
       </div>
 

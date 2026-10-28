@@ -4,12 +4,6 @@ function toDate(value: string) {
   return new Date(value + 'T12:00:00Z');
 }
 
-export function subtractDays(value: string, days: number) {
-  const date = toDate(value);
-  date.setUTCDate(date.getUTCDate() - days);
-  return date.toISOString().slice(0, 10);
-}
-
 export function daysBetween(from: string, to: string) {
   return Math.round((toDate(to).getTime() - toDate(from).getTime()) / 86400000);
 }

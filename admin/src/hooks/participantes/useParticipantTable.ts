@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
+import {
+  documentLabel,
+  fullName,
+  hasHealthAlerts,
+  useReservas,
+  type Summary,
+} from '../../../../shared/reservas';
+import { useAdminUi } from '../../context/AdminUiContext';
 import { classNames } from '../../utils/comun/classNames';
-import { fullName, hasHealthAlerts, type Summary } from '../../utils/comun/inscripcion';
 
 export function useParticipantTable(rows: Summary[]) {
-  const { registrations, setFocusPaymentId } = useAdminPreview();
+  const { registrations } = useReservas();
+  const { setFocusPaymentId } = useAdminUi();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = registrations.find((registration) => registration.id === selectedId);
 
@@ -20,7 +27,7 @@ export function useParticipantTable(rows: Summary[]) {
       id: registration.id,
       initials: registration.firstName[0] + registration.lastName[0],
       name: fullName(registration),
-      document: registration.documentType + ' ' + registration.document + ' · ' + registration.id,
+      document: documentLabel(registration) + ' · ' + registration.id,
       healthAlert: hasHealthAlerts(registration),
       hasCompanion: registration.companion !== null,
       total: formatMoney(total),

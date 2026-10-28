@@ -164,9 +164,7 @@
   padding: 0.75rem;
 }
 .gallery-modal .modal__card {
-  width: fit-content;
-  min-width: min(100%, 300px);
-  max-width: 100%;
+  width: min(100%, 1100px);
   max-height: 94dvh;
   padding: 0.9rem;
   display: flex;
@@ -195,7 +193,8 @@
   position: relative;
   min-width: 0;
   margin: 0 auto;
-  width: min(calc(100vw - 3.4rem), 1040px, calc(min(66dvh, 680px) * 1.5));
+  width: 100%;
+  max-width: calc(min(66dvh, 680px) * 1.5);
 }
 .visor__pista {
   position: relative;
@@ -253,6 +252,13 @@
   padding: 0.2rem 0.1rem;
   scrollbar-width: none;
 }
+/* Centradas bajo la foto; si no caben, la tira se desplaza desde el primer elemento */
+.visor__mini:first-child {
+  margin-left: auto;
+}
+.visor__mini:last-child {
+  margin-right: auto;
+}
 .visor__tira::-webkit-scrollbar {
   display: none;
 }
@@ -304,7 +310,7 @@
     border-radius: 18px;
   }
   .visor__foto {
-    width: min(calc(100vw - 2.4rem), calc(min(70dvh, 560px) * 1.34));
+    max-width: calc(min(70dvh, 560px) * 1.34);
   }
   .visor__pista {
     aspect-ratio: 4 / 3;
@@ -312,5 +318,33 @@
   .visor__mini {
     width: 60px;
     height: 46px;
+  }
+}
+
+/* Pantallas bajas (móvil en apaisado): la foto cede altura para que quepan la tira y el pie */
+@media (max-height: 520px) {
+  .gallery-modal .modal__card {
+    gap: 0.4rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .gallery-modal .modal__head h2 {
+    font-size: 1.1rem;
+  }
+  .gallery-modal .modal__close {
+    width: 36px;
+    height: 36px;
+  }
+  .visor {
+    gap: 0.4rem;
+  }
+  .visor__foto {
+    max-width: calc(38dvh * 1.5);
+  }
+  .visor__pista {
+    aspect-ratio: 3 / 2;
+  }
+  .visor__mini {
+    width: 52px;
+    height: 38px;
   }
 }

@@ -1,8 +1,8 @@
+// Motivos para rechazar un pago esperado tras revisar la llave Bre-B.
 export const motivosRechazo = [
-  'El monto no coincide con lo esperado',
-  'La transferencia no aparece en Nequi',
-  'Comprobante ilegible o incompleto',
-  'Comprobante repetido de otro pago',
+  'El pago no aparece en la llave Bre-B',
+  'El monto recibido no coincide con lo esperado',
+  'La persona canceló la reserva',
 ] as const;
 
 export const otroMotivo = 'Otro motivo';

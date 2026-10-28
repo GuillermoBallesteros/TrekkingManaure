@@ -1,6 +1,5 @@
-import Calendario from '../../../components/ui/Calendario';
-import { precios } from '../../../../../shared/config';
-import { formatMoney } from '../../../../../shared/utils/format';
+import { Calendario } from '../../../components';
+import { useFormaPago } from '../../../hooks';
 import type { Cotizacion, PlanPago } from '../../../types/reserva';
 
 type Props = {
@@ -12,22 +11,7 @@ type Props = {
 };
 
 export default function FormaPago({ plan, onPlan, date, onDate, quote }: Props) {
-  const restante = quote.total - precios.inscripcion;
-  const options = [
-    {
-      value: 'total' as const,
-      title: 'Pagar todo ahora',
-      text: 'Pagas ' + formatMoney(quote.total) + ' y tu reserva queda completa.',
-    },
-    {
-      value: 'apartado' as const,
-      title: 'Apartar mi cupo',
-      text:
-        'Pagas ' +
-        formatMoney(precios.inscripcion) +
-        ' ahora para apartar el cupo y eliges la fecha en que pagarás el restante.',
-    },
-  ];
+  const view = useFormaPago({ plan, onPlan, quote });
 
   return (
     <div className="form-block">
@@ -39,20 +23,9 @@ export default function FormaPago({ plan, onPlan, date, onDate, quote }: Props) 
         </div>
       </div>
       <div className="choice-grid" role="radiogroup" aria-label="Forma de pago">
-        {options.map((option) => (
+        {view.options.map((option) => (
           <label className="choice" key={option.value}>
-            <input
-              type="radio"
-              name="formaPago"
-              value={option.value}
-              required
-              checked={plan === option.value}
-              onClick={() => {
-                // Un clic sobre la opción ya marcada la desmarca.
-                if (plan === option.value) onPlan(null);
-              }}
-              onChange={() => onPlan(option.value)}
-            />
+            <input type="radio" name="formaPago" value={option.value} required {...option.input} />
             <span className="choice__dot" />
             <span className="choice__text">
               <strong>{option.title}</strong>
@@ -61,11 +34,9 @@ export default function FormaPago({ plan, onPlan, date, onDate, quote }: Props) 
           </label>
         ))}
       </div>
-      {plan === 'apartado' && (
+      {view.showCalendar && (
         <>
-          <p className="field-hint calendar-hint">
-            Elige el día en que pagarás el restante de {formatMoney(restante)}.
-          </p>
+          <p className="field-hint calendar-hint">{view.calendarHint}</p>
           <Calendario selected={date} onSelect={onDate} concepto="el restante" />
         </>
       )}

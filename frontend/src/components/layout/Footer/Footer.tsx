@@ -1,27 +1,12 @@
 import Brand from '../../../../../shared/components/Brand';
 import Icon from '../../../../../shared/components/Icon';
 import { evento } from '../../../../../shared/config';
+import { useFooter } from '../../../hooks';
 import './Footer.css';
 
-const eventLinks = [
-  ['evento', 'La experiencia'],
-  ['incluye', 'Qué incluye'],
-  ['costos', 'Costos y pagos'],
-  ['estadia', 'Estadía'],
-  ['galeria', 'Galería del evento'],
-] as const;
-
-const joinLinks = [
-  ['cupos', 'Cupos'],
-  ['reserva', 'Reservar cupo'],
-  ['seguridad', 'Seguridad y preparación'],
-  ['aliados', 'Aliados'],
-] as const;
-
-const adminUrl =
-  import.meta.env.VITE_ADMIN_URL || location.protocol + '//' + location.hostname + ':5174';
-
 export default function Footer() {
+  const footer = useFooter();
+
   return (
     <footer>
       <div className="container">
@@ -38,9 +23,9 @@ export default function Footer() {
           <div className="footer-col">
             <h2>Evento</h2>
             <ul>
-              {eventLinks.map(([id, label]) => (
-                <li key={id}>
-                  <a href={'#' + id}>{label}</a>
+              {footer.eventLinks.map((link) => (
+                <li key={link.id}>
+                  <a href={link.href}>{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -48,14 +33,11 @@ export default function Footer() {
           <div className="footer-col">
             <h2>Participa</h2>
             <ul>
-              {joinLinks.map(([id, label]) => (
-                <li key={id}>
-                  <a href={'#' + id}>{label}</a>
+              {footer.joinLinks.map((link) => (
+                <li key={link.id}>
+                  <a href={link.href}>{link.label}</a>
                 </li>
               ))}
-              <li>
-                <a href={adminUrl}>Administración</a>
-              </li>
             </ul>
           </div>
           <div className="footer-col">

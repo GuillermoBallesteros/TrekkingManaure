@@ -1,5 +1,6 @@
-import { tarifas } from '../../../data/comun/tarifas';
+import { precios as tarifas } from '../../../../../shared/config';
 import { dxfLibro, estilosLibro, hojas } from '../../../data/exportar/libro';
+import { evento } from '../../../../../shared/config';
 import { buildXlsx } from '../xlsx/paquete';
 import { crearBuscar } from './buscar';
 import type { LibroContexto } from './comun';
@@ -14,15 +15,15 @@ export function crearLibroGestion(contexto: LibroContexto) {
   const tarifasHoja = crearTarifas(contexto);
   const inscripciones = crearInscripciones(contexto);
   const precios = [
-    tarifas.titular,
+    tarifas.total,
     tarifas.acompananteConKit,
-    tarifas.acompananteSinKit,
+    tarifas.acompanante,
     tarifas.cuatrimoto,
     tarifas.parapente,
   ];
 
   return buildXlsx({
-    title: 'Trekking Desafío Perijá 13K · Gestión',
+    title: evento.nombre + ' · Gestión',
     styles: estilosLibro,
     dxfs: dxfLibro,
     sheets: [

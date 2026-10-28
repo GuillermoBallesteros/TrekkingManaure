@@ -1,13 +1,18 @@
-export type Estadia = '' | 'Páramo' | 'Hotel en Manaure';
-export type Extra = 'cuatrimoto' | 'parapente';
+import type { Cotizacion, Extra, PaymentPlan, Stay } from '../../../shared/reservas';
+
+// Tipos de presentación del formulario. El modelo de la reserva que se guarda y comparte con
+// el panel está en shared/reservas/tipos.ts.
+
+export type { Cotizacion, Extra };
+
+/** Estadía elegida en el formulario; '' mientras no se elige. */
+export type Estadia = '' | Stay;
 
 /**
  * Forma de pago de toda la reserva: 'total' paga todo ahora; 'apartado' paga la inscripción
  * ahora y elige una sola fecha para pagar el restante.
  */
-export type PlanPago = 'total' | 'apartado';
-/** Preferencia de pago de quien reserva; el pago se hace por una de estas dos vías. */
-export type MetodoPago = 'nequi' | 'llave-bre-b';
+export type PlanPago = PaymentPlan;
 
 export type SaludPersona = {
   enfermedad: string;
@@ -31,15 +36,10 @@ export type DatosPersona = {
   talla?: string;
 };
 
-export type OpcionesCotizacion = {
-  plan: PlanPago | null;
-  companion: boolean;
-  companionKit: boolean | null;
-  extras: Extra[];
-};
-
 /** Datos del formulario ya ordenados para la ventana de resumen y para el mensaje de WhatsApp. */
 export type ResumenReservaTexto = {
+  /** Código asignado al registrar la reserva; null mientras se revisa antes de confirmar. */
+  codigo: string | null;
   participante: DatosPersona;
   estadia: string;
   modalidad: string;
@@ -52,13 +52,5 @@ export type ResumenReservaTexto = {
   total: string;
 };
 
-export type Cotizacion = {
-  titular: number;
-  acompanante: number;
-  extras: number;
-  total: number;
-  /** Lo que se paga ahora: todo, o solo la inscripción si aparta. */
-  ahora: number;
-  /** Lo que queda por pagar en la fecha elegida; 0 si paga completo. */
-  saldo: number;
-};
+/** Una fila etiqueta/valor de la ventana de resumen. */
+export type FilaResumen = { label: string; value: string };

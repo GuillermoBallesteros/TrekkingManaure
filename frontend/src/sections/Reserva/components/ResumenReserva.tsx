@@ -1,6 +1,6 @@
 import Icon from '../../../../../shared/components/Icon';
 import { evento } from '../../../../../shared/config';
-import { formatDate, formatMoney } from '../../../../../shared/utils/format';
+import { useResumenReserva } from '../../../hooks';
 import type { Cotizacion, Estadia } from '../../../types/reserva';
 import './ResumenReserva.css';
 
@@ -10,10 +10,8 @@ type Props = {
   quote: Cotizacion;
 };
 
-export default function ResumenReserva({ stay, planDate, quote }: Props) {
-  function focusForm() {
-    document.getElementById('nombres')?.focus();
-  }
+export default function ResumenReserva(props: Props) {
+  const view = useResumenReserva(props);
 
   return (
     <aside className="summary reveal" data-delay="1" aria-label="Resumen de la reserva">
@@ -23,47 +21,47 @@ export default function ResumenReserva({ stay, planDate, quote }: Props) {
       </div>
       <div className="sum-row">
         <span>Inscripción + kit</span>
-        <strong>{formatMoney(quote.titular)}</strong>
+        <strong>{view.titular}</strong>
       </div>
-      {quote.acompanante > 0 && (
+      {view.acompanante && (
         <div className="sum-row sum-row--dyn">
           <span>Acompañante</span>
-          <strong>{formatMoney(quote.acompanante)}</strong>
+          <strong>{view.acompanante}</strong>
         </div>
       )}
-      {quote.extras > 0 && (
+      {view.extras && (
         <div className="sum-row sum-row--dyn">
           <span>Actividades extra</span>
-          <strong>{formatMoney(quote.extras)}</strong>
+          <strong>{view.extras}</strong>
         </div>
       )}
       <div className="sum-row">
         <span>Estadía</span>
-        <strong>{stay || 'Por elegir'}</strong>
+        <strong>{view.stay}</strong>
       </div>
       <div className="sum-row">
         <span>Pagas ahora</span>
-        <strong>{formatMoney(quote.ahora)}</strong>
+        <strong>{view.ahora}</strong>
       </div>
-      {quote.saldo > 0 && (
+      {view.saldo && (
         <div className="sum-row">
-          <span>Restante · {planDate ? formatDate(planDate) : 'fecha por elegir'}</span>
-          <strong>{formatMoney(quote.saldo)}</strong>
+          <span>{view.saldo.label}</span>
+          <strong>{view.saldo.amount}</strong>
         </div>
       )}
       <div className="sum-total">
         <span>Total</span>
-        <strong>{formatMoney(quote.total)}</strong>
+        <strong>{view.total}</strong>
       </div>
       <p className="summary__note">
         <Icon name="info" />
         <span>
-          El pago es por llave Bre-B. Al finalizar te llevamos a WhatsApp con tus datos y la
-          organización te indica cómo pagar. El restante se paga a más tardar el {evento.plazoTexto}
-          .
+          El pago es por llave Bre-B. Al registrar tu reserva recibes un código; la organización
+          confirma tu cupo cuando verifica el pago. El restante se paga a más tardar el{' '}
+          {evento.plazoTexto}.
         </span>
       </p>
-      <button className="btn btn--gold btn--block" type="button" onClick={focusForm}>
+      <button className="btn btn--gold btn--block" type="button" onClick={view.focusForm}>
         Reservar cupo
       </button>
       <a href="#costos" className="btn btn--ghost btn--block summary__payments">

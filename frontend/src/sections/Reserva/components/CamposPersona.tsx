@@ -1,14 +1,4 @@
-import { todayInColombia } from '../../../../../shared/utils/format';
-import { fieldName } from '../../../utils/reserva';
-import {
-  GENEROS,
-  fechasNacimientoPermitidas,
-  PATRON_DOCUMENTO,
-  PATRON_NOMBRE,
-  PATRON_TELEFONO,
-  TALLAS,
-  TIPOS_DOCUMENTO,
-} from '../datosFormulario';
+import { useCamposPersona } from '../../../hooks';
 
 type Props = {
   /** Prefijo de name/id: vacío para el inscrito, 'acomp' para el acompañante. */
@@ -19,49 +9,49 @@ type Props = {
 };
 
 export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = false }: Props) {
-  const id = (base: string) => fieldName(prefijo, base);
+  const view = useCamposPersona(prefijo);
+  const ids = view.ids;
   const req = <span className="req">*</span>;
-  const nacimiento = fechasNacimientoPermitidas(todayInColombia());
 
   return (
     <>
       <div className="field">
-        <label htmlFor={id('nombres')}>
+        <label htmlFor={ids.nombres}>
           Nombres{sufijo} {req}
         </label>
         <input
-          id={id('nombres')}
-          name={id('nombres')}
+          id={ids.nombres}
+          name={ids.nombres}
           required
           placeholder="Nombres"
-          autoComplete={prefijo ? 'off' : 'given-name'}
+          autoComplete={view.autoComplete.nombres}
           maxLength={100}
-          pattern={PATRON_NOMBRE}
+          pattern={view.patterns.nombre}
         />
       </div>
       <div className="field">
-        <label htmlFor={id('apellidos')}>
+        <label htmlFor={ids.apellidos}>
           Apellidos{sufijo} {req}
         </label>
         <input
-          id={id('apellidos')}
-          name={id('apellidos')}
+          id={ids.apellidos}
+          name={ids.apellidos}
           required
           placeholder="Apellidos"
-          autoComplete={prefijo ? 'off' : 'family-name'}
+          autoComplete={view.autoComplete.apellidos}
           maxLength={100}
-          pattern={PATRON_NOMBRE}
+          pattern={view.patterns.nombre}
         />
       </div>
       <div className="field">
-        <label htmlFor={id('tipoDocumento')}>
+        <label htmlFor={ids.tipoDocumento}>
           Tipo de documento{sufijo} {req}
         </label>
-        <select id={id('tipoDocumento')} name={id('tipoDocumento')} required defaultValue="">
+        <select id={ids.tipoDocumento} name={ids.tipoDocumento} required defaultValue="">
           <option value="" disabled>
             Selecciona
           </option>
-          {TIPOS_DOCUMENTO.map((tipo) => (
+          {view.tiposDocumento.map((tipo) => (
             <option key={tipo} value={tipo}>
               {tipo}
             </option>
@@ -69,42 +59,42 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
         </select>
       </div>
       <div className="field">
-        <label htmlFor={id('documento')}>
+        <label htmlFor={ids.documento}>
           Número de documento{sufijo} {req}
         </label>
         <input
-          id={id('documento')}
-          name={id('documento')}
+          id={ids.documento}
+          name={ids.documento}
           required
           placeholder="Número de documento"
           autoComplete="off"
           maxLength={20}
-          pattern={PATRON_DOCUMENTO}
+          pattern={view.patterns.documento}
           title="Entre 5 y 20 letras o números, sin espacios ni símbolos"
         />
       </div>
       <div className="field">
-        <label htmlFor={id('nacimiento')}>
+        <label htmlFor={ids.nacimiento}>
           Fecha de nacimiento{sufijo} {req}
         </label>
         <input
-          id={id('nacimiento')}
-          name={id('nacimiento')}
+          id={ids.nacimiento}
+          name={ids.nacimiento}
           type="date"
           required
-          min={nacimiento.min}
-          max={nacimiento.max}
+          min={view.nacimiento.min}
+          max={view.nacimiento.max}
         />
       </div>
       <div className="field">
-        <label htmlFor={id('genero')}>
+        <label htmlFor={ids.genero}>
           Género{sufijo} {req}
         </label>
-        <select id={id('genero')} name={id('genero')} required defaultValue="">
+        <select id={ids.genero} name={ids.genero} required defaultValue="">
           <option value="" disabled>
             Selecciona
           </option>
-          {GENEROS.map((genero) => (
+          {view.generos.map((genero) => (
             <option key={genero} value={genero}>
               {genero}
             </option>
@@ -113,12 +103,12 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
       </div>
       {conTalla && (
         <div className="field">
-          <label htmlFor={id('talla')}>Talla de camisa {req}</label>
-          <select id={id('talla')} name={id('talla')} required defaultValue="">
+          <label htmlFor={ids.talla}>Talla de camisa {req}</label>
+          <select id={ids.talla} name={ids.talla} required defaultValue="">
             <option value="" disabled>
               Selecciona
             </option>
-            {TALLAS.map((talla) => (
+            {view.tallas.map((talla) => (
               <option key={talla} value={talla}>
                 {talla}
               </option>
@@ -126,29 +116,29 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
           </select>
         </div>
       )}
-      {!prefijo && (
+      {view.titular && (
         <>
           <div className="field">
-            <label htmlFor={id('telefono')}>
+            <label htmlFor={ids.telefono}>
               Teléfono / WhatsApp{sufijo} {req}
             </label>
             <input
-              id={id('telefono')}
-              name={id('telefono')}
+              id={ids.telefono}
+              name={ids.telefono}
               type="tel"
               required
               placeholder="300 000 0000"
               autoComplete="tel"
               maxLength={20}
-              pattern={PATRON_TELEFONO}
+              pattern={view.patterns.telefono}
               title="Entre 7 y 20 caracteres: números, espacios o +"
             />
           </div>
           <div className="field">
-            <label htmlFor={id('correo')}>Correo electrónico{sufijo}</label>
+            <label htmlFor={ids.correo}>Correo electrónico{sufijo}</label>
             <input
-              id={id('correo')}
-              name={id('correo')}
+              id={ids.correo}
+              name={ids.correo}
               type="email"
               placeholder="correo@ejemplo.com"
               autoComplete="email"
@@ -158,12 +148,12 @@ export default function CamposPersona({ prefijo = '', sufijo = '', conTalla = fa
         </>
       )}
       <div className="field">
-        <label htmlFor={id('ciudad')}>Ciudad{sufijo}</label>
+        <label htmlFor={ids.ciudad}>Ciudad{sufijo}</label>
         <input
-          id={id('ciudad')}
-          name={id('ciudad')}
+          id={ids.ciudad}
+          name={ids.ciudad}
           placeholder="Ciudad de residencia"
-          autoComplete={prefijo ? 'off' : 'address-level2'}
+          autoComplete={view.autoComplete.ciudad}
           maxLength={150}
         />
       </div>

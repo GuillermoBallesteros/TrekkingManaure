@@ -25,7 +25,7 @@ El mapa comprobable está en `docs/responsables.json`. Los nombres Santiago y Da
 - `frontend/src/components/layout/`: Navbar y Footer, con sus CSS e índices.
 - `frontend/src/sections/Inicio/`, `Evento/`, `Kit/`, `Alojamiento/`, `Seguridad/`, `Galeria/` y `Aliados/`.
 - `frontend/src/components/ui/Marquee/`.
-- `frontend/src/hooks/useReveal.ts`.
+- Los hooks y datos de presentación: `frontend/src/hooks/{comun,contacto,navegacion,home,aliados,galeria}/` y `frontend/src/data/{navegacion,home,aliados,evento,kit,alojamiento,seguridad}/`.
 - `frontend/src/App.tsx`, `main.tsx`, `pages/` y `styles/`.
 - Los índices generales de `frontend/src/sections/`, `components/`, `components/ui/` y `hooks/`.
 - `frontend/index.html`, `public/`, configuración Vite/TypeScript y `.env.example`.
@@ -55,13 +55,13 @@ Santiago no cambia la lógica interna de Reserva, Calendario o Cupos. Para incor
 - `frontend/src/sections/Reserva/`, incluidos sus componentes y CSS.
 - `frontend/src/sections/Costos/`, `Extras/` y `Cupos/`.
 - `frontend/src/components/ui/Calendario/`, `ContadorCupos/` y `CuentaRegresiva/`.
-- `frontend/src/hooks/useReserva.ts`; nuevos hooks de esta área en `frontend/src/hooks/reserva/`.
+- Los hooks de esta área en `frontend/src/hooks/{reserva,calendario,cupos,costos,extras}/` y sus catálogos en `frontend/src/data/{reserva,calendario,cupos,extras}/`.
 - `frontend/src/types/`, `utils/` y `services/`.
 - `shared/config/` y `shared/utils/`.
 
 ### Trabajo a realizar
 
-1. Completar el flujo de reserva: datos, estadía, acompañante, extras, comprobante y fecha de pago.
+1. Completar el flujo de reserva: datos, estadía, acompañante, extras y fecha de pago.
 2. Mantener un único cálculo de precios y un comportamiento coherente entre formulario, costos, cupos y resumen.
 3. Implementar estados de espera, error, envío y confirmación del frontend cuando el backend esté disponible.
 4. Conectar el cliente de API pública, la disponibilidad real y la creación de reservas según el contrato acordado.
@@ -83,7 +83,7 @@ Orden de trabajo:
 
 1. Acceso administrativo y conexión a la autenticación del backend.
 2. Listado, filtros y detalle de participantes.
-3. Consulta de comprobantes y aceptación/rechazo de pagos.
+3. Verificación de pagos por llave Bre-B y aceptación/rechazo.
 4. Gestión de cupos y seguimiento de saldos y fechas.
 5. Galería administrativa y exportación de información real.
 

@@ -1,28 +1,27 @@
-import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import { fechaLimiteSaldo } from '../../data/comun/tarifas';
-import type { RegistrationStatus } from '../../types/participante';
-import { classNames } from '../../utils/comun/classNames';
-import { getAvailability } from '../../utils/cupos/disponibilidad';
-import { daysBetween, describeDeadline } from '../../utils/comun/fechas';
+import { evento } from '../../../../shared/config';
 import {
   countRunners,
   fullName,
-  statusClass,
+  getAvailability,
   statusOrder,
   summarize,
-} from '../../utils/comun/inscripcion';
+  useReservas,
+  type RegistrationStatus,
+} from '../../../../shared/reservas';
+import { formatDate, formatMoney } from '../../../../shared/utils/format';
+import { useAdminUi } from '../../context/AdminUiContext';
+import { classNames } from '../../utils/comun/classNames';
+import { statusClass } from '../../utils/comun/estados';
+import { daysBetween, describeDeadline } from '../../utils/comun/fechas';
 import { padCount, plural } from '../../utils/comun/texto';
 
 export function useDashboard() {
-  const { registrations, today, capacity, setFocusPaymentId } = useAdminPreview();
+  const { registrations, today, capacity } = useReservas();
+  const { setFocusPaymentId } = useAdminUi();
   const summaries = registrations.map((registration) => summarize(registration, today));
   const count = (status: RegistrationStatus) =>
     summaries.filter((summary) => summary.status === status).length;
-  const secured = countRunners(
-    summaries.filter((summary) => summary.paid > 0).map((summary) => summary.registration),
-  );
-  const availability = getAvailability(secured, capacity);
+  const availability = getAvailability(registrations, capacity);
   const reviews = summaries
     .flatMap((summary) => summary.pending.map((payment) => ({ summary, payment })))
     .sort((a, b) => a.payment.date.localeCompare(b.payment.date));
@@ -61,7 +60,7 @@ export function useDashboard() {
     {
       title: 'Recaudado',
       value: formatMoney(collected),
-      note: 'Pagos aprobados por Nequi · COP',
+      note: 'Pagos aprobados por llave Bre-B · COP',
       icon: 'check' as const,
     },
   ].map((metric, index) => ({
@@ -86,7 +85,13 @@ export function useDashboard() {
       count: count(status),
       dotClass: 'legend-dot legend-dot--' + statusClass(status),
     })),
-    deadlineLabel: formatDate(fechaLimiteSaldo),
+    deadlineLabel: formatDate(evento.fechaLimitePago),
+    isEmpty: registrations.length === 0,
+    startTime: new Intl.DateTimeFormat('es-CO', {
+      timeZone: 'America/Bogota',
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date(evento.largada)),
     reviews: reviews.slice(0, 5).map(({ summary, payment }) => ({
       id: payment.id,
       name: fullName(summary.registration),

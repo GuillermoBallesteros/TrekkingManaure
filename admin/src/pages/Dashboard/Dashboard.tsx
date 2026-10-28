@@ -33,6 +33,12 @@ export default function Dashboard() {
           </article>
         ))}
       </div>
+      {dashboard.isEmpty && (
+        <p className="admin-notice">
+          Aún no hay reservas. Cada reserva hecha desde el sitio público aparece aquí al instante,
+          con su pago esperado listo para confirmar.
+        </p>
+      )}
       <div className="admin-overview-grid">
         <article className="admin-panel">
           <div className="admin-panel-head">
@@ -40,7 +46,7 @@ export default function Dashboard() {
               <h2>El pulso de las inscripciones</h2>
               <p>Estado de pago de cada inscripción</p>
             </div>
-            <span className="admin-pill">Vista previa</span>
+            <span className="admin-pill">En vivo</span>
           </div>
           <div className="admin-chart">
             <div
@@ -78,14 +84,14 @@ export default function Dashboard() {
           <h2>
             Desafío
             <br />
-            <em>Perijá 13K</em>
+            <em>Perijá {evento.distanciaKm}K</em>
           </h2>
-          <p>Manaure · Cesar · Colombia</p>
+          <p>{evento.lugar.split(', ').join(' · ')}</p>
           <div>
             <Icon name="calendar" />
             <span>
               {evento.fechasTexto}
-              <small>Salida · 6:00 a.m.</small>
+              <small>Salida · {dashboard.startTime}</small>
             </span>
           </div>
           <a href="#/cupos">
@@ -98,7 +104,7 @@ export default function Dashboard() {
           <div className="admin-panel-head">
             <div>
               <h2>Pagos por revisar</h2>
-              <p>Los comprobantes más antiguos primero</p>
+              <p>Los más antiguos primero</p>
             </div>
             <a href="#/pagos" className="admin-text-link">
               Revisar <Icon name="arrow" />

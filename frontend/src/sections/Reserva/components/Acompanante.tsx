@@ -1,5 +1,4 @@
-import { precios } from '../../../../../shared/config';
-import { formatMoney } from '../../../../../shared/utils/format';
+import { useAcompanante } from '../../../hooks';
 import CamposPersona from './CamposPersona';
 import FichaSalud from './FichaSalud';
 
@@ -10,15 +9,8 @@ type Props = {
   onKit: (value: boolean | null) => void;
 };
 
-export default function Acompanante({ companion, onCompanion, kit, onKit }: Props) {
-  const kitOptions = [
-    { value: false, title: 'No', text: 'Sin kit, no se pide talla.' },
-    {
-      value: true,
-      title: 'Sí',
-      text: 'Valor total ' + formatMoney(precios.acompananteConKit) + '.',
-    },
-  ];
+export default function Acompanante(props: Props) {
+  const view = useAcompanante(props);
 
   return (
     <div className="form-block">
@@ -32,41 +24,33 @@ export default function Acompanante({ companion, onCompanion, kit, onKit }: Prop
       <div className="toggle-line companion-toggle">
         <div className="toggle-line__text">
           <strong>Llevo acompañante</strong>
-          <small>
-            {formatMoney(precios.acompanante)} sin kit · {formatMoney(precios.acompananteConKit)}{' '}
-            con kit.
-          </small>
+          <small>{view.priceText}</small>
         </div>
         <label className="switch">
           <input
             type="checkbox"
             aria-label="Llevo acompañante"
-            checked={companion}
-            onChange={(event) => onCompanion(event.target.checked)}
+            checked={view.companion}
+            onChange={view.toggleCompanion}
           />
           <span className="switch__track" />
         </label>
       </div>
-      {companion && (
+      {view.companion && (
         <div className="fields companion-fields is-open">
           <div className="field field--full">
             <span className="field__label" id="acompKit-label">
               ¿El acompañante comprará kit? <span className="req">*</span>
             </span>
             <div className="choice-grid" role="radiogroup" aria-labelledby="acompKit-label">
-              {kitOptions.map((option) => (
+              {view.kitOptions.map((option) => (
                 <label className="choice" key={option.title}>
                   <input
                     type="radio"
                     name="acompKit"
                     value={option.title}
                     required
-                    checked={kit === option.value}
-                    onClick={() => {
-                      // Un clic sobre la opción ya marcada la desmarca.
-                      if (kit === option.value) onKit(null);
-                    }}
-                    onChange={() => onKit(option.value)}
+                    {...option.input}
                   />
                   <span className="choice__dot" />
                   <span className="choice__text">
@@ -77,10 +61,9 @@ export default function Acompanante({ companion, onCompanion, kit, onKit }: Prop
               ))}
             </div>
           </div>
-          {/* Los datos del acompañante salen cuando se responde si comprará kit. */}
-          {kit !== null && (
+          {view.showPerson && (
             <>
-              <CamposPersona prefijo="acomp" sufijo=" del acompañante" conTalla={kit} />
+              <CamposPersona prefijo="acomp" sufijo=" del acompañante" conTalla={view.withSize} />
               <FichaSalud prefijo="acomp" />
               <div className="field field--full">
                 <label htmlFor="acompEstadia">
@@ -90,8 +73,11 @@ export default function Acompanante({ companion, onCompanion, kit, onKit }: Prop
                   <option value="" disabled>
                     Selecciona
                   </option>
-                  <option value="Páramo">Quedarse en el páramo</option>
-                  <option value="Hotel en Manaure">Hotel en Manaure</option>
+                  {view.stays.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.title}
+                    </option>
+                  ))}
                 </select>
               </div>
             </>

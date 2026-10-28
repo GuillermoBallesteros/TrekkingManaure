@@ -2,21 +2,21 @@ import './ParticipantTable.css';
 import Icon from '../../../../shared/components/Icon';
 import Modal from '../../../../shared/components/Modal';
 import { useParticipantTable } from '../../hooks';
-import type { Summary } from '../../utils/comun/inscripcion';
+import type { Summary } from '../../../../shared/reservas';
 import RegistrationDetail from './RegistrationDetail';
 import StatusBadge from '../comun/StatusBadge';
 
-export default function ParticipantTable({ rows }: { rows: Summary[] }) {
+type Props = {
+  rows: Summary[];
+  empty: { title: string; text: string };
+};
+
+export default function ParticipantTable({ rows, empty }: Props) {
   const table = useParticipantTable(rows);
 
   return (
     <>
-      <div
-        className="table-scroll"
-        role="region"
-        aria-label="Inscripciones de demostración"
-        tabIndex={0}
-      >
+      <div className="table-scroll" role="region" aria-label="Inscripciones" tabIndex={0}>
         <table>
           <thead>
             <tr>
@@ -84,8 +84,8 @@ export default function ParticipantTable({ rows }: { rows: Summary[] }) {
         {table.isEmpty && (
           <div className="empty-state">
             <Icon name="search" />
-            <h3>No hay resultados</h3>
-            <p>Cambia los filtros o el texto de búsqueda.</p>
+            <h3>{empty.title}</h3>
+            <p>{empty.text}</p>
           </div>
         )}
       </div>

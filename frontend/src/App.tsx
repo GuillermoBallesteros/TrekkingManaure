@@ -1,16 +1,11 @@
-import { useState } from 'react';
-import { Navbar, Footer } from './components/layout';
+import { Navbar, Footer } from './components';
 import { Home } from './pages';
 import Modal from '../../shared/components/Modal';
 import Icon from '../../shared/components/Icon';
-import { contacto, evento } from '../../shared/config';
-import { formatDate } from '../../shared/utils/format';
-import { useSmoothScroll } from './hooks';
-
-const apertura = formatDate(evento.fechaAperturaInscripciones);
+import { useContacto, useSmoothScroll } from './hooks';
 
 export default function App() {
-  const [contactOpen, setContactOpen] = useState(false);
+  const contact = useContacto();
   useSmoothScroll();
 
   return (
@@ -21,10 +16,10 @@ export default function App() {
       <Navbar />
       <Home />
       <Footer />
-      {contacto.whatsappConfigurado ? (
+      {contact.whatsappHref ? (
         <a
           className="wa-float"
-          href={'https://wa.me/' + contacto.whatsapp}
+          href={contact.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Escribir por WhatsApp"
@@ -35,21 +30,21 @@ export default function App() {
         <button
           type="button"
           className="wa-float"
-          onClick={() => setContactOpen(true)}
+          onClick={contact.openModal}
           aria-label="Información de contacto"
         >
           <Icon name="whatsapp" />
         </button>
       )}
-      <Modal open={contactOpen} title="Reservar con Asesor" onClose={() => setContactOpen(false)}>
+      <Modal open={contact.open} title="Reservar con Asesor" onClose={contact.close}>
         <p>
           El canal de WhatsApp de reservas se habilitará con la apertura de inscripciones, el{' '}
-          {apertura}.
+          {contact.apertura}.
         </p>
         <p>
           Mientras tanto, explora la información del evento y prepara tu reserva en el formulario.
         </p>
-        <a href="#reserva" className="btn btn--primary" onClick={() => setContactOpen(false)}>
+        <a href="#reserva" className="btn btn--primary" onClick={contact.close}>
           Ver formulario <Icon name="arrow" />
         </a>
       </Modal>

@@ -39,12 +39,18 @@ export default function ReviewPanel({ review }: { review: PaymentReviewView }) {
       </dl>
 
       <div className="review-receipt">
-        <Icon name="whatsapp" />
+        <Icon name="shield" />
         <span>
-          <strong>Comprobante recibido por WhatsApp</strong>
-          <small>Verifica la referencia en la app de Nequi antes de decidir.</small>
+          <strong>Pago por confirmar</strong>
+          <small>{review.verifyText}</small>
         </span>
       </div>
+
+      {review.error && (
+        <p role="alert" className="admin-error">
+          {review.error}
+        </p>
+      )}
 
       {panel.isPending && !review.rejecting && (
         <>
@@ -64,7 +70,12 @@ export default function ReviewPanel({ review }: { review: PaymentReviewView }) {
             <button type="button" className="btn btn--ghost" onClick={review.startReject}>
               <Icon name="close" /> Rechazar
             </button>
-            <button type="button" className="btn btn--primary" onClick={review.approve}>
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={review.approve}
+              disabled={review.busy}
+            >
               <Icon name="check" /> Aprobar pago
             </button>
           </div>
@@ -111,7 +122,11 @@ export default function ReviewPanel({ review }: { review: PaymentReviewView }) {
             <button type="button" className="btn btn--ghost" onClick={review.cancelReject}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn--primary" disabled={!review.canReject}>
+            <button
+              type="submit"
+              className="btn btn--primary"
+              disabled={!review.canReject || review.busy}
+            >
               Confirmar rechazo
             </button>
           </div>
@@ -121,7 +136,12 @@ export default function ReviewPanel({ review }: { review: PaymentReviewView }) {
       {!panel.isPending && (
         <div className="review-decided">
           <p>{panel.decidedText}</p>
-          <button type="button" className="btn btn--ghost" onClick={review.reopen}>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={review.reopen}
+            disabled={review.busy}
+          >
             Devolver a revisión
           </button>
         </div>

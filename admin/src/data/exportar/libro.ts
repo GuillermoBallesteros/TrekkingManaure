@@ -1,5 +1,5 @@
 import type { DxfDef, StyleDef } from '../../utils/exportar/xlsx/estilos';
-import type { RegistrationStatus } from '../../types/participante';
+import type { RegistrationStatus } from '../../../../shared/reservas';
 
 export const hojas = {
   resumen: 'Resumen',
@@ -22,7 +22,7 @@ export const contenidoLibro = [
   },
   {
     hoja: hojas.pagos,
-    descripcion: 'Comprobantes de Nequi; cambiar su revisión recalcula todo el libro.',
+    descripcion: 'Pagos por llave Bre-B; cambiar su revisión recalcula todo el libro.',
   },
   { hoja: hojas.corredores, descripcion: 'Una fila por corredor: estadía, kit, talla y salud.' },
   {

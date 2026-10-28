@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
-import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import { motivosRechazo, otroMotivo } from '../../data/pagos/motivos';
-import type { Payment, PaymentReview, Registration } from '../../types/participante';
-import { classNames } from '../../utils/comun/classNames';
 import {
   fullName,
   getExpectedAmount,
   getStatus,
+  metodoPago,
+  reservasApi,
   summarize,
+  useReservas,
   withReview,
-} from '../../utils/comun/inscripcion';
+  type Payment,
+  type PaymentReview,
+  type Registration,
+} from '../../../../shared/reservas';
+import { formatDate, formatMoney } from '../../../../shared/utils/format';
+import { useAdminUi } from '../../context/AdminUiContext';
+import { motivosRechazo, otroMotivo } from '../../data/pagos/motivos';
+import { classNames } from '../../utils/comun/classNames';
 
 type Filter = PaymentReview | 'Todos';
 
@@ -59,8 +64,7 @@ function amountCheck(registration: Registration, payment: Payment) {
       className: 'review-check is-ok',
       icon: 'check' as const,
       expected: formatMoney(expected),
-      message:
-        'El monto coincide con lo esperado para este concepto (' + formatMoney(expected) + ').',
+      message: 'El monto esperado coincide con este concepto (' + formatMoney(expected) + ').',
     };
   }
 
@@ -70,7 +74,7 @@ function amountCheck(registration: Registration, payment: Payment) {
     icon: 'info' as const,
     expected: formatMoney(expected),
     message:
-      'El comprobante tiene ' +
+      'Este pago es de ' +
       formatMoney(Math.abs(difference)) +
       (difference < 0
         ? ' menos. Si lo apruebas, cuenta como abono y el resto queda pendiente.'
@@ -91,15 +95,16 @@ function panelView(item: Item, today: string) {
     review: payment.review,
     check: amountCheck(registration, payment),
     facts: [
-      { label: 'Referencia Nequi', value: payment.reference },
-      { label: 'Fecha del comprobante', value: formatDate(payment.date) },
+      { label: 'Vía de pago', value: metodoPago.label },
+      { label: 'Fecha del pago', value: formatDate(payment.date) },
       {
         label: 'Plan elegido',
         value:
-          registration.plan === 'Completo'
+          registration.plan === 'total'
             ? 'Pago total'
             : 'Separación · saldo el ' + formatDate(registration.commitmentDate || today),
       },
+      { label: 'Teléfono', value: registration.phone },
       { label: 'Total de la inscripción', value: formatMoney(summary.total) },
       { label: 'Aprobado antes de este pago', value: formatMoney(paidBefore) },
       {
@@ -120,8 +125,8 @@ function panelView(item: Item, today: string) {
 }
 
 export function usePaymentReview() {
-  const { registrations, today, reviewPayment, focusPaymentId, setFocusPaymentId } =
-    useAdminPreview();
+  const { registrations, today } = useReservas();
+  const { focusPaymentId, setFocusPaymentId } = useAdminUi();
   const [filter, setFilter] = useState<Filter>('Por revisar');
   const [selectedId, setSelectedId] = useState<string | null>(focusPaymentId);
   const [rejecting, setRejecting] = useState(false);
@@ -129,6 +134,8 @@ export function usePaymentReview() {
   const [note, setNote] = useState('');
   const [lastAction, setLastAction] = useState<LastAction | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -150,6 +157,7 @@ export function usePaymentReview() {
   const rejection = reason === otroMotivo ? note.trim() : reason;
 
   function resetRejection() {
+    setError('');
     setRejecting(false);
     setReason('');
     setNote('');
@@ -169,12 +177,23 @@ export function usePaymentReview() {
     }
   }
 
-  function decide(review: PaymentReview, rejectionReason: string | null = null) {
-    if (!current) return;
+  async function decide(review: PaymentReview, rejectionReason: string | null = null) {
+    if (!current || busy) return;
     const { registration, payment } = current;
     const next = getStatus(withReview(registration, payment.id, review), today);
 
-    reviewPayment(registration.id, payment.id, review, rejectionReason);
+    setBusy(true);
+    const result = await reservasApi.revisarPago(
+      registration.id,
+      payment.id,
+      review,
+      rejectionReason,
+    );
+    setBusy(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
     setLastAction({
       registrationId: registration.id,
       paymentId: payment.id,
@@ -187,14 +206,20 @@ export function usePaymentReview() {
     resetRejection();
   }
 
-  function undo() {
-    if (!lastAction) return;
-    reviewPayment(
+  async function undo() {
+    if (!lastAction || busy) return;
+    setBusy(true);
+    const result = await reservasApi.revisarPago(
       lastAction.registrationId,
       lastAction.paymentId,
       lastAction.review,
       lastAction.reason,
     );
+    setBusy(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
     setSelectedId(lastAction.paymentId);
     if (filter !== 'Todos' && filter !== lastAction.review) setFilter(lastAction.review);
     setLastAction(null);
@@ -222,7 +247,7 @@ export function usePaymentReview() {
     emptyTitle: filter === 'Por revisar' ? 'Todo al día' : 'Sin pagos en esta vista',
     emptyText:
       filter === 'Por revisar'
-        ? 'No quedan comprobantes por revisar.'
+        ? 'No quedan pagos por confirmar.'
         : 'Cambia el filtro para ver otros pagos.',
     queue: items.map(({ registration, payment }) => {
       const selected = payment.id === current?.payment.id;
@@ -258,6 +283,9 @@ export function usePaymentReview() {
     selectReason: setReason,
     changeNote: (event: ChangeEvent<HTMLTextAreaElement>) => setNote(event.target.value),
     confirmReject,
+    error,
+    busy,
+    verifyText: 'Confirma en la llave Bre-B que el dinero llegó antes de aprobar.',
     approve: () => decide('Aprobado'),
     reopen: () => decide('Por revisar'),
     footLabel: items.length + ' pagos en esta vista · los más antiguos primero',

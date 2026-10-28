@@ -1,8 +1,13 @@
 import { evento } from '../../../../../shared/config';
 import { formatDate } from '../../../../../shared/utils/format';
-import { tallas } from '../../../data/cupos/tallas';
 import { colores, coloresEstado, dxfEstado, hojas } from '../../../data/exportar/libro';
-import { getRunners, statusOrder, type Summary } from '../../comun/inscripcion';
+import {
+  estadias,
+  getRunners,
+  statusOrder,
+  tallas,
+  type Summary,
+} from '../../../../../shared/reservas';
 import { merge, setCell, setRow, type Cell, type Chart, type Sheet } from '../xlsx/hoja';
 import { absoluteRange, columnName } from '../xlsx/referencias';
 import { hojaConTitulo, nota, seccion, type LibroContexto } from './comun';
@@ -256,8 +261,8 @@ function bloqueIngresos(sheet: Sheet, summaries: Summary[], start: number, price
     summaries.filter((item) => item.registration.companion?.kit).length,
     summaries.filter((item) => item.registration.companion && !item.registration.companion.kit)
       .length,
-    summaries.filter((item) => item.registration.extras.cuatrimoto).length,
-    summaries.filter((item) => item.registration.extras.parapente).length,
+    summaries.filter((item) => item.registration.extras.includes('cuatrimoto')).length,
+    summaries.filter((item) => item.registration.extras.includes('parapente')).length,
   ];
   sheet.charts.push({
     kind: 'bar',
@@ -350,7 +355,7 @@ function bloqueTallas(sheet: Sheet, summaries: Summary[], start: number) {
 
 function bloqueEstadia(sheet: Sheet, summaries: Summary[], start: number) {
   const first = start + 2;
-  const stays = ['Páramo', 'Hotel en Manaure'];
+  const stays = [...estadias];
   const last = first + stays.length - 1;
   seccion(sheet, start, 1, 7, 'Estadía y experiencias');
   encabezadoBloque(sheet, start + 1, ['Estadía', 'Corredores', '% del total']);

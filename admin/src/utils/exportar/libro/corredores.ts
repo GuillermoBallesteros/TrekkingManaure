@@ -1,8 +1,8 @@
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
-import { getRunners, type Runner } from '../../comun/inscripcion';
+import { estadias, getRunners, tallas, type Runner } from '../../../../../shared/reservas';
 import { addTable, tableColumnRange, thisRow, type CellValue } from '../xlsx/hoja';
 import { columnName, rangeRef } from '../xlsx/referencias';
-import { filaTabla, hojaConTitulo, siNo, type LibroContexto } from './comun';
+import { filaTabla, hojaConTitulo, listaExcel, siNo, type LibroContexto } from './comun';
 
 const T = 'Corredores';
 const r = (column: string) => thisRow(T, column);
@@ -23,6 +23,7 @@ const columnas: {
   { name: 'Rol', width: 13, value: ({ runner }) => runner.role },
   { name: 'Nombre', width: 24, value: ({ runner }) => runner.name },
   { name: 'Documento', width: 20, value: ({ runner }) => runner.document },
+  { name: 'Ciudad', width: 16, value: ({ runner }) => runner.city },
   { name: 'Estadía', width: 17, value: ({ runner }) => runner.stay },
   { name: 'Kit', width: 8, style: 'centro', value: ({ runner }) => siNo(runner.kit) },
   { name: 'Talla', width: 9, style: 'centro', value: ({ runner }) => runner.shirtSize ?? '' },
@@ -91,8 +92,8 @@ export function crearCorredores(contexto: LibroContexto) {
 
   sheet.validations.push(
     { range: range('Kit'), list: '"Sí,No"' },
-    { range: range('Talla'), list: '"XS,S,M,L,XL,XXL"' },
-    { range: range('Estadía'), list: '"Páramo,Hotel en Manaure"' },
+    { range: range('Talla'), list: listaExcel(tallas) },
+    { range: range('Estadía'), list: listaExcel(estadias) },
     { range: range('Practica deporte'), list: '"Sí,No"' },
   );
   for (const [name, dxf] of Object.entries(dxfEstado)) {

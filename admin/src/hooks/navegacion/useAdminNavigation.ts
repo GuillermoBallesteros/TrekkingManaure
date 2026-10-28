@@ -1,25 +1,24 @@
 import { useEffect, useState, type MouseEvent } from 'react';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import { adminLinks, type AdminRoute } from '../../data/navegacion/enlaces';
+import { countPendingReviews, useReservas } from '../../../../shared/reservas';
+import { adminLinks, rutaInicial, type AdminRoute } from '../../data/navegacion/enlaces';
+import type { Sesion } from '../../services';
 import { classNames } from '../../utils/comun/classNames';
-import { countPendingReviews } from '../../utils/comun/inscripcion';
 
-function readRoute() {
-  return (location.hash.slice(2) || 'acceso') as AdminRoute;
+function readRoute(): AdminRoute {
+  const route = location.hash.slice(2);
+  return adminLinks.find((link) => link.id === route)?.id ?? rutaInicial;
 }
 
 function focusContent() {
   document.getElementById('admin-content')?.focus();
 }
 
-export function useAdminNavigation() {
-  const { registrations } = useAdminPreview();
+export function useAdminNavigation(sesion: Sesion, cerrarSesion: () => void) {
+  const { registrations } = useReservas();
   const [route, setRoute] = useState<AdminRoute>(readRoute);
   const [menuOpen, setMenuOpen] = useState(false);
   const pending = countPendingReviews(registrations);
   const title = adminLinks.find((link) => link.id === route)?.label || 'Vista general';
-  const publicUrl =
-    import.meta.env.VITE_PUBLIC_URL || location.protocol + '//' + location.hostname + ':5173';
 
   useEffect(() => {
     function onHash() {
@@ -39,7 +38,7 @@ export function useAdminNavigation() {
   }, []);
 
   useEffect(() => {
-    document.title = (route === 'acceso' ? 'Acceso' : title) + ' · Perijá Admin';
+    document.title = title + ' · Perijá Admin';
     document.getElementById('admin-content')?.focus({ preventScroll: true });
   }, [route, title]);
 
@@ -51,7 +50,12 @@ export function useAdminNavigation() {
   return {
     route,
     title,
-    publicUrl,
+    publicUrl: '/',
+    user: { name: sesion.nombre, email: sesion.correo, initial: sesion.nombre.charAt(0) },
+    logout: () => {
+      cerrarSesion();
+      history.replaceState(null, '', location.pathname);
+    },
     menuOpen,
     sidebarClass: classNames('admin-sidebar', menuOpen && 'is-open'),
     links: adminLinks.map((link) => ({

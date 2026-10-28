@@ -1,6 +1,5 @@
-import { evento } from '../../../../../shared/config';
 import { hojas } from '../../../data/exportar/libro';
-import { tarifas } from '../../../data/comun/tarifas';
+import { evento, precios } from '../../../../../shared/config';
 import { encabezado, hojaConTitulo, nota, type LibroContexto } from './comun';
 import { setRow } from '../xlsx/hoja';
 import type { DefinedName } from '../xlsx/paquete';
@@ -29,42 +28,42 @@ export function crearTarifas(contexto: LibroContexto) {
     {
       name: 'PrecioTitular',
       label: 'Inscripción y kit del titular',
-      value: tarifas.titular,
+      value: precios.total,
       style: 'parametro',
       help: 'El kit es obligatorio para el titular.',
     },
     {
       name: 'PrecioSeparacion',
       label: 'Separación del cupo',
-      value: tarifas.separacion,
+      value: precios.inscripcion,
       style: 'parametro',
       help: 'Monto mínimo para apartar el cupo; el resto se paga en la fecha de compromiso.',
     },
     {
       name: 'PrecioAcompSinKit',
       label: 'Acompañante sin kit',
-      value: tarifas.acompananteSinKit,
+      value: precios.acompanante,
       style: 'parametro',
       help: 'Corre el recorrido sin camisa ni kit.',
     },
     {
       name: 'PrecioAcompConKit',
       label: 'Acompañante con kit',
-      value: tarifas.acompananteConKit,
+      value: precios.acompananteConKit,
       style: 'parametro',
       help: 'Igual al valor del titular; se le pide talla.',
     },
     {
       name: 'PrecioCuatrimoto',
       label: 'Paseo en cuatrimoto',
-      value: tarifas.cuatrimoto,
+      value: precios.cuatrimoto,
       style: 'parametro',
       help: 'Experiencia adicional opcional.',
     },
     {
       name: 'PrecioParapente',
       label: 'Vuelo en parapente',
-      value: tarifas.parapente,
+      value: precios.parapente,
       style: 'parametro',
       help: 'Experiencia adicional opcional.',
     },

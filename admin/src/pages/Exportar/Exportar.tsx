@@ -48,8 +48,8 @@ export default function Exportar() {
             <Icon name="sheet" /> Descargar Excel (.xlsx)
           </button>
           <p className="admin-notice">
-            La muestra contiene exclusivamente datos ficticios. Los registros reales se exportarán
-            cuando el panel esté conectado al servidor.
+            El libro incluye las reservas guardadas en este navegador. Cuando el panel se conecte al
+            servidor, exportará las de todos los equipos.
           </p>
           <p role="status" className="admin-feedback">
             {exportar.feedback}

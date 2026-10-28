@@ -1,13 +1,12 @@
 import { useState, type ChangeEvent } from 'react';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
+import { countRunners, statusOrder, summarize, useReservas } from '../../../../shared/reservas';
 import { contenidoLibro } from '../../data/exportar/libro';
-import { countRunners, statusOrder, summarize } from '../../utils/comun/inscripcion';
 import { plural } from '../../utils/comun/texto';
 import { downloadBlob } from '../../utils/exportar/descarga';
 import { crearLibroGestion } from '../../utils/exportar/libro/crearLibro';
 
 export function useExportar() {
-  const { registrations, today, capacity } = useAdminPreview();
+  const { registrations, today, capacity } = useReservas();
   const [filter, setFilter] = useState('Todos');
   const [feedback, setFeedback] = useState('');
   const summaries = registrations
@@ -34,7 +33,7 @@ export function useExportar() {
     downloadBlob('perija-gestion-' + today + '.xlsx', blob);
     setFeedback(
       'Se descargó el libro con ' +
-        plural(summaries.length, 'inscripción ficticia', 'inscripciones ficticias') +
+        plural(summaries.length, 'inscripción', 'inscripciones') +
         '. Ábrelo en Excel para ver fórmulas, filtros y gráficos.',
     );
   }

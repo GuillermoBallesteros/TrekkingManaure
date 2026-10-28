@@ -1,8 +1,6 @@
-import { useRef, useState } from 'react';
 import Modal from '../../../../shared/components/Modal';
 import Icon from '../../../../shared/components/Icon';
-import { useBloquesProgresivos } from '../../hooks/useBloquesProgresivos';
-import { useReserva } from '../../hooks/useReserva';
+import { useReserva } from '../../hooks';
 import type { Estadia } from '../../types/reserva';
 import DatosPersonales from './components/DatosPersonales';
 import OpcionesReserva from './components/OpcionesReserva';
@@ -20,10 +18,7 @@ export default function Reserva({
   stay: Estadia;
   onStay: (value: Estadia) => void;
 }) {
-  const state = useReserva(stay);
-  const [conditionsOpen, setConditionsOpen] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
-  const { visibles, revisar } = useBloquesProgresivos(formRef);
+  const state = useReserva(stay, onStay);
 
   return (
     <section className="section reserva" id="reserva">
@@ -34,25 +29,31 @@ export default function Reserva({
             Aparta tu <em>cupo</em>
           </h2>
           <p className="section-sub">
-            Completa tus datos, elige cómo pagar y finaliza. Te llevamos a WhatsApp con tu
-            información. Pagas por Nequi o llave Bre-B, la vía que prefieras.
+            Completa tus datos, elige cómo pagar y registra tu reserva. Pagas por llave Bre-B y la
+            organización confirma tu cupo cuando verifica el pago.
           </p>
         </div>
         <div className="reserva-grid">
           <form
+            key={state.formKey}
             className="form-card reveal"
-            ref={formRef}
+            ref={state.formRef}
             onSubmit={state.submit}
-            onChange={revisar}
-            onInput={revisar}
+            onChange={state.revisar}
+            onInput={state.revisar}
           >
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 0}>
+            {state.agotado && (
+              <p className="form-error" role="status">
+                {state.soldOutText}
+              </p>
+            )}
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(0)}>
               <DatosPersonales />
             </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 1}>
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(1)}>
               <ControlSeguridad />
             </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 2}>
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(2)}>
               <OpcionesReserva
                 stay={stay}
                 onStay={onStay}
@@ -60,7 +61,7 @@ export default function Reserva({
                 onExtras={state.toggleExtra}
               />
             </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 3}>
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(3)}>
               <Acompanante
                 companion={state.companion}
                 onCompanion={state.setCompanion}
@@ -68,7 +69,7 @@ export default function Reserva({
                 onKit={state.setCompanionKit}
               />
             </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 4}>
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(4)}>
               <FormaPago
                 plan={state.plan}
                 onPlan={state.setPlan}
@@ -77,7 +78,7 @@ export default function Reserva({
                 quote={state.quote}
               />
             </div>
-            <div className="bloque-progresivo" data-bloque hidden={visibles <= 5}>
+            <div className="bloque-progresivo" data-bloque hidden={state.isHidden(5)}>
               <div className="form-block form-submit">
                 <div className="toggle-line terms-toggle">
                   <div className="toggle-line__text">
@@ -86,7 +87,7 @@ export default function Reserva({
                       <button
                         type="button"
                         className="conditions-link"
-                        onClick={() => setConditionsOpen(true)}
+                        onClick={state.openConditions}
                       >
                         Consultar condiciones
                       </button>
@@ -101,12 +102,21 @@ export default function Reserva({
                     <span className="switch__track" />
                   </label>
                 </div>
-                <button type="submit" className="btn btn--primary btn--block">
-                  Finalizar registro <Icon name="whatsapp" />
+                {state.soldOut && (
+                  <p className="form-error" role="status">
+                    {state.soldOutText}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  className="btn btn--primary btn--block"
+                  disabled={state.soldOut}
+                >
+                  Revisar y registrar <Icon name="arrow" />
                 </button>
                 <p className="note form-note">
-                  Primero revisas el resumen; después se abre WhatsApp con tus datos. No se realiza
-                  ningún pago desde la página.
+                  Primero revisas el resumen y confirmas. Tu reserva queda registrada y pendiente
+                  hasta que la organización verifique tu pago. No se paga desde la página.
                 </p>
                 {state.error && (
                   <p className="form-error" role="alert">
@@ -121,18 +131,24 @@ export default function Reserva({
       </div>
       <Modal
         open={state.preview !== null}
-        title="Resumen de tu reserva"
+        title={state.previewState === 'registrada' ? 'Reserva registrada' : 'Resumen de tu reserva'}
         className="modal--resumen"
-        onClose={() => state.setPreview(null)}
+        onClose={state.closePreview}
       >
-        {state.preview && (
-          <ResumenModal resumen={state.preview} onBack={() => state.setPreview(null)} />
+        {state.preview && state.previewState && (
+          <ResumenModal
+            resumen={state.preview}
+            estado={state.previewState}
+            error={state.previewError}
+            onConfirm={state.confirm}
+            onBack={state.closePreview}
+          />
         )}
       </Modal>
       <Modal
-        open={conditionsOpen}
+        open={state.conditionsOpen}
         title="Condiciones de participación"
-        onClose={() => setConditionsOpen(false)}
+        onClose={state.closeConditions}
       >
         <p>
           La experiencia contempla un recorrido de montaña, bajas temperaturas y preparación

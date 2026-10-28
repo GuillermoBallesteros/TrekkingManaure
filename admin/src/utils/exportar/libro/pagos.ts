@@ -1,5 +1,5 @@
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
-import type { Payment, Registration } from '../../../types/participante';
+import { metodoPago, type Payment, type Registration } from '../../../../../shared/reservas';
 import { addTable, tableColumnRange, thisRow, type CellValue } from '../xlsx/hoja';
 import { columnName, excelDate } from '../xlsx/referencias';
 import { filaTabla, hojaConTitulo, type LibroContexto } from './comun';
@@ -29,7 +29,6 @@ const columnas: {
   },
   { name: 'Concepto', width: 18, value: ({ payment }) => payment.concept },
   { name: 'Fecha', width: 12, style: 'fecha', value: ({ payment }) => excelDate(payment.date) },
-  { name: 'Referencia Nequi', width: 16, value: ({ payment }) => payment.reference },
   {
     name: 'Monto',
     width: 14,
@@ -50,7 +49,7 @@ const columnas: {
 export function crearPagos(contexto: LibroContexto) {
   const sheet = hojaConTitulo(
     hojas.pagos,
-    'Pagos por Nequi',
+    'Pagos por ' + metodoPago.label,
     'Cambia la columna Revisión (Por revisar, Aprobado o Rechazado) y el saldo y estado de la inscripción se actualizan solos.',
     columnas.length - 1,
     { tabColor: 'E8581C' },

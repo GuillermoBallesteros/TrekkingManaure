@@ -1,12 +1,12 @@
 import { useState, type ChangeEvent } from 'react';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import type { Registration } from '../../types/participante';
 import {
   countRunners,
   hasHealthAlerts,
   statusOrder,
   summarize,
-} from '../../utils/comun/inscripcion';
+  useReservas,
+  type Registration,
+} from '../../../../shared/reservas';
 
 function searchableText(registration: Registration) {
   return [
@@ -16,7 +16,9 @@ function searchableText(registration: Registration) {
     registration.document,
     registration.phone,
     registration.email,
-    registration.companion?.name,
+    registration.city,
+    registration.companion?.firstName,
+    registration.companion?.lastName,
     registration.companion?.document,
   ]
     .join(' ')
@@ -24,7 +26,7 @@ function searchableText(registration: Registration) {
 }
 
 export function useParticipantes() {
-  const { registrations, today } = useAdminPreview();
+  const { registrations, today } = useReservas();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('Todos');
   const [healthOnly, setHealthOnly] = useState(false);
@@ -47,6 +49,12 @@ export function useParticipantes() {
     totalLabel:
       registrations.length + ' inscripciones · ' + countRunners(registrations) + ' corredores',
     resultLabel: rows.length + ' de ' + registrations.length + ' inscripciones',
+    empty: registrations.length
+      ? { title: 'No hay resultados', text: 'Cambia los filtros o el texto de búsqueda.' }
+      : {
+          title: 'Aún no hay reservas',
+          text: 'Las reservas del sitio público aparecen aquí en cuanto se registran.',
+        },
     changeSearch: (event: ChangeEvent<HTMLInputElement>) => setSearch(event.target.value),
     changeStatus: (event: ChangeEvent<HTMLSelectElement>) => setStatus(event.target.value),
     changeHealthOnly: (event: ChangeEvent<HTMLInputElement>) => setHealthOnly(event.target.checked),

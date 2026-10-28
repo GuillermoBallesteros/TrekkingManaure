@@ -18,7 +18,10 @@ Tekking Manaure/
 │     │                          Extras, Alojamiento, Seguridad, Galeria, Reserva, Aliados
 │     ├─ components/layout/      Navbar, Footer
 │     ├─ components/ui/          Calendario, ContadorCupos, CuentaRegresiva, Marquee
-│     ├─ hooks/                  useReveal, useReserva, useSmoothScroll (nuevo)
+│     ├─ hooks/<dominio>/        la lógica de cada sección o componente (useGaleria, useReserva…)
+│     ├─ utils/<dominio>/        cálculos puros (cotización, calendario, mensaje de WhatsApp…)
+│     ├─ data/<dominio>/         catálogos y textos fijos (enlaces, kit, estadías, opciones…)
+│     ├─ types/ · services/      tipos de la reserva y cliente de API reservado
 │     └─ styles/global.css       reglas comunes y adaptación a móvil
 ├─ admin/                        Panel de administración (otra área)
 ├─ backend/                      API y base de datos (otra área)
@@ -31,6 +34,8 @@ Tekking Manaure/
 │  └─ frontend/santiago/         esta nota (ruta asignada a Santiago en responsables.json)
 └─ scripts/                      comprobador de áreas del equipo
 ```
+
+Desde el 27 de octubre de 2026 `frontend/src` sigue el mismo patrón que `admin/src`: cada `.tsx` solo presenta y llama a un hook de `hooks/<dominio>/` que le entrega textos, clases y acciones ya preparados. Las rutas de archivo citadas en la sección 2 son anteriores a ese cambio.
 
 ## 2. Qué se añadió o cambió, por carpeta
 

@@ -1,35 +1,41 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { formatDate, formatMoney } from '../../../../shared/utils/format';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
-import { tarifas } from '../../data/comun/tarifas';
-import type { PaymentConcept, Registration } from '../../types/participante';
-import { classNames } from '../../utils/comun/classNames';
-import { daysBetween, describeDeadline, getAge } from '../../utils/comun/fechas';
+import { precios } from '../../../../shared/config';
 import {
   getBalance,
   getCharges,
   getHealthAlerts,
   getRunners,
+  metodoPago,
+  reservasApi,
   summarize,
+  useReservas,
+  type Registration,
   type Runner,
-} from '../../utils/comun/inscripcion';
+} from '../../../../shared/reservas';
+import { formatDate, formatMoney } from '../../../../shared/utils/format';
+import { classNames } from '../../utils/comun/classNames';
+import { daysBetween, describeDeadline, getAge } from '../../utils/comun/fechas';
 
 type Fact = { label: string; value: string };
+
+function birthFact(birthDate: string, today: string): Fact {
+  return {
+    label: 'Nacimiento',
+    value:
+      formatDate(birthDate) +
+      ' de ' +
+      birthDate.slice(0, 4) +
+      ' · ' +
+      getAge(birthDate, today) +
+      ' años',
+  };
+}
 
 function contactFacts(registration: Registration, today: string): Fact[] {
   return [
     { label: 'Teléfono', value: registration.phone },
     { label: 'Correo', value: registration.email },
-    {
-      label: 'Nacimiento',
-      value:
-        formatDate(registration.birthDate) +
-        ' de ' +
-        registration.birthDate.slice(0, 4) +
-        ' · ' +
-        getAge(registration.birthDate, today) +
-        ' años',
-    },
+    birthFact(registration.birthDate, today),
     { label: 'Género', value: registration.gender },
   ];
 }
@@ -44,6 +50,7 @@ function runnerView(runner: Runner, extraFacts: Fact[] = []) {
     document: runner.document,
     facts: [
       ...extraFacts,
+      { label: 'Ciudad', value: runner.city },
       { label: 'Estadía', value: runner.stay },
       { label: 'Kit', value: runner.kit ? 'Sí · talla ' + runner.shirtSize : 'Sin kit' },
     ],
@@ -54,21 +61,17 @@ function runnerView(runner: Runner, extraFacts: Fact[] = []) {
   };
 }
 
-function conceptFor(paid: number, amount: number, total: number): PaymentConcept {
-  if (paid > 0) return 'Pago de saldo';
-  return amount >= total ? 'Pago total' : 'Separación de cupo';
-}
-
 export type RunnerView = ReturnType<typeof runnerView>;
 
 export function useRegistrationDetail(registrationId: string) {
-  const { registrations, today, addPayment } = useAdminPreview();
+  const { registrations, today } = useReservas();
   const registration = registrations.find((item) => item.id === registrationId);
   const [amount, setAmount] = useState<number | ''>(() =>
     registration ? getBalance(registration) : '',
   );
-  const [reference, setReference] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   if (!registration) return null;
 
@@ -78,18 +81,21 @@ export function useRegistrationDetail(registrationId: string) {
     ? daysBetween(today, registration.commitmentDate)
     : null;
 
-  function submitPayment(event: FormEvent<HTMLFormElement>) {
+  async function submitPayment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!registration) return;
+    if (!registration || saving) return;
     const value = amount === '' ? balance : amount;
 
-    addPayment(registration.id, {
-      concept: conceptFor(paid, value, total),
-      amount: value,
-      reference: reference.trim(),
-    });
+    setSaving(true);
+    setFeedback('');
+    setError('');
+    const result = await reservasApi.registrarPago(registration.id, value);
+    setSaving(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
     setAmount(balance - value);
-    setReference('');
     setFeedback('Pago de ' + formatMoney(value) + ' registrado como aprobado.');
   }
 
@@ -106,12 +112,12 @@ export function useRegistrationDetail(registrationId: string) {
       },
     ],
     plan:
-      registration.plan === 'Completo'
+      registration.plan === 'total'
         ? { text: 'Eligió pagar el total en un solo pago.', date: null, deadline: null }
         : {
             text:
               'Separó el cupo con ' +
-              formatMoney(tarifas.separacion) +
+              formatMoney(precios.inscripcion) +
               ' y se comprometió a pagar el resto el ',
             date: registration.commitmentDate && formatDate(registration.commitmentDate),
             deadline: balance > 0 && daysLeft !== null ? ' · ' + describeDeadline(daysLeft) : null,
@@ -119,7 +125,13 @@ export function useRegistrationDetail(registrationId: string) {
     deadlineClass: classNames(daysLeft !== null && daysLeft < 0 && 'is-late'),
     overdue: status === 'Vencido',
     titular: runnerView(titular, contactFacts(registration, today)),
-    companion: companion ? runnerView(companion) : null,
+    companion:
+      companion && registration.companion
+        ? runnerView(companion, [
+            birthFact(registration.companion.birthDate, today),
+            { label: 'Género', value: registration.companion.gender },
+          ])
+        : null,
     charges: getCharges(registration).map((charge) => ({
       label: charge.label,
       amount: formatMoney(charge.amount),
@@ -128,7 +140,7 @@ export function useRegistrationDetail(registrationId: string) {
     payments: registration.payments.map((payment) => ({
       id: payment.id,
       concept: payment.concept,
-      detail: formatDate(payment.date) + ' · Ref. ' + payment.reference,
+      detail: formatDate(payment.date) + ' · ' + metodoPago.label,
       reason: payment.rejectionReason,
       amount: formatMoney(payment.amount),
       review: payment.review,
@@ -138,14 +150,16 @@ export function useRegistrationDetail(registrationId: string) {
     form: {
       visible: balance > 0 && pending.length === 0,
       amount,
-      reference,
       max: balance,
       placeholder: String(balance),
       changeAmount: (event: ChangeEvent<HTMLInputElement>) =>
         setAmount(event.target.value === '' ? '' : Number(event.target.value)),
-      changeReference: (event: ChangeEvent<HTMLInputElement>) => setReference(event.target.value),
       submit: submitPayment,
+      saving,
+      title: 'Registrar pago recibido por ' + metodoPago.label,
     },
+    paymentsTitle: 'Pagos por ' + metodoPago.label,
     feedback,
+    error,
   };
 }
