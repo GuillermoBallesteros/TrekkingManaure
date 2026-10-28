@@ -1,57 +1,23 @@
-import { useEffect, useState } from 'react';
 import Brand from '../../../../../shared/components/Brand';
+import { useNavbar } from '../../../hooks';
 import './Navbar.css';
 
-const links = [
-  ['evento', 'Evento'],
-  ['incluye', 'Incluye'],
-  ['costos', 'Costos'],
-  ['estadia', 'Estadía'],
-  ['seguridad', 'Seguridad'],
-  ['galeria', 'Galería'],
-  ['aliados', 'Aliados'],
-] as const;
-
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(window.scrollY > 20);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, []);
+  const nav = useNavbar();
 
   return (
-    <header className={'nav ' + (scrolled || open ? 'is-scrolled' : '')}>
+    <header className={nav.headerClass}>
       <div className="container nav__inner">
-        <a
-          href="#inicio"
-          aria-label="Trekking Desafío Perijá, inicio"
-          onClick={() => setOpen(false)}
-        >
+        <a href="#inicio" aria-label="Trekking Desafío Perijá, inicio" onClick={nav.close}>
           <Brand />
         </a>
-        <nav
-          className={'nav__links ' + (open ? 'is-open' : '')}
-          id="menu"
-          aria-label="Navegación principal"
-        >
-          {links.map(([id, label]) => (
-            <a key={id} href={'#' + id} onClick={() => setOpen(false)}>
-              {label}
+        <nav className={nav.linksClass} id="menu" aria-label="Navegación principal">
+          {nav.links.map((link) => (
+            <a key={link.id} href={link.href} onClick={nav.close}>
+              {link.label}
             </a>
           ))}
-          <a className="nav__mobile-reserva" href="#reserva" onClick={() => setOpen(false)}>
+          <a className="nav__mobile-reserva" href="#reserva" onClick={nav.close}>
             Reserva
           </a>
         </nav>
@@ -62,10 +28,10 @@ export default function Navbar() {
           <button
             type="button"
             className="nav__toggle"
-            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-            aria-expanded={open}
+            aria-label={nav.toggleLabel}
+            aria-expanded={nav.open}
             aria-controls="menu"
-            onClick={() => setOpen(!open)}
+            onClick={nav.toggle}
           >
             <span />
           </button>

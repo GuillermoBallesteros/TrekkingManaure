@@ -1,4 +1,5 @@
 import Icon from '../../../../shared/components/Icon';
+import { caracteristicas } from '../../data/evento/caracteristicas';
 import './Evento.css';
 
 export default function Evento() {
@@ -19,34 +20,15 @@ export default function Evento() {
         </div>
 
         <div className="features">
-          <article className="feature reveal" data-delay="1">
-            <span className="feature__icon">
-              <Icon name="mountain" />
-            </span>
-            <h3>Senderos naturales</h3>
-            <p>13 km de camino de montaña con guías locales que conocen cada tramo.</p>
-          </article>
-          <article className="feature reveal" data-delay="2">
-            <span className="feature__icon">
-              <Icon name="sun" />
-            </span>
-            <h3>Paisajes únicos</h3>
-            <p>Del clima cálido del pueblo al frío del páramo en un solo recorrido.</p>
-          </article>
-          <article className="feature reveal" data-delay="3">
-            <span className="feature__icon">
-              <Icon name="fire" />
-            </span>
-            <h3>Fogata y montaña</h3>
-            <p>Para quienes se quedan en el páramo: noche de fogata y experiencia completa.</p>
-          </article>
-          <article className="feature reveal" data-delay="4">
-            <span className="feature__icon">
-              <Icon name="users" />
-            </span>
-            <h3>Comunidad</h3>
-            <p>Un grupo pequeño, con cupo máximo, para cuidar la ruta y la naturaleza.</p>
-          </article>
+          {caracteristicas.map((feature) => (
+            <article className="feature reveal" data-delay={feature.delay} key={feature.title}>
+              <span className="feature__icon">
+                <Icon name={feature.icon} />
+              </span>
+              <h3>{feature.title}</h3>
+              <p>{feature.text}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>

@@ -1,12 +1,11 @@
-import { precios } from '../../../../shared/config';
-import { formatMoney } from '../../../../shared/utils/format';
 import Icon from '../../../../shared/components/Icon';
-import acompanante from '../../../../shared/assets/images/experiencias/acompanante-mochilas.webp';
-import cuatrimoto from '../../../../shared/assets/images/experiencias/cuatrimoto-montana.webp';
-import parapente from '../../../../shared/assets/images/experiencias/parapente-biplaza.webp';
+import CloudImage from '../../../../shared/components/CloudImage';
+import { useExtras } from '../../hooks';
 import './Extras.css';
 
 export default function Extras() {
+  const { actividades, hotel } = useExtras();
+
   return (
     <div style={{ marginTop: '3rem' }}>
       <div className="section-head reveal" style={{ marginBottom: '1.2rem' }}>
@@ -16,58 +15,60 @@ export default function Extras() {
         </h2>
       </div>
       <div className="extras">
-        <article className="extra reveal" data-delay="1">
-          <img
-            className="extra__foto"
-            src={acompanante}
-            alt="Pareja de senderistas desayunando en una terraza, con mochilas y bastones junto a la mesa"
-            loading="lazy"
-            decoding="async"
-          />
-          <Icon name="users" />
-          <h3>Acompañante</h3>
-          <strong>{formatMoney(precios.acompanante)}</strong>
-          <small>Acompañante sin pago de kit. Cubre hospedaje y las 3 comidas.</small>
-          <div className="extra__chips">
-            <span>Hospedaje</span>
-            <span>3 comidas</span>
-          </div>
-        </article>
-        <article className="extra reveal" data-delay="2">
-          <img
-            className="extra__foto"
-            src={cuatrimoto}
-            alt="Guía en cuatrimoto por los caminos de montaña de Manaure"
-            loading="lazy"
-            decoding="async"
-          />
-          <Icon name="mountain" />
-          <h3>Cuatrimoto</h3>
-          <strong>
-            {formatMoney(precios.cuatrimoto)}{' '}
-            <small style={{ fontFamily: 'var(--textos)', fontSize: '.5em' }}>aprox.</small>
-          </strong>
-          <small>Por pareja. Merienda incluida.</small>
-        </article>
-        <article className="extra reveal" data-delay="3">
-          <img
-            className="extra__foto"
-            src={parapente}
-            alt="Vuelo en parapente biplaza sobre Manaure"
-            loading="lazy"
-            decoding="async"
-          />
-          <Icon name="flag" />
-          <h3>Parapente</h3>
-          <strong>
-            {formatMoney(precios.parapente)}{' '}
-            <small style={{ fontFamily: 'var(--textos)', fontSize: '.5em' }}>aprox.</small>
-          </strong>
-          <small>Por persona. Merienda incluida.</small>
-        </article>
+        {actividades.map((extra) => (
+          <article className="extra reveal" data-delay={extra.delay} key={extra.title}>
+            <CloudImage
+              className="extra__foto"
+              publicId={extra.publicId}
+              preset={extra.preset}
+              alt={extra.alt}
+              loading="lazy"
+            />
+            <Icon name={extra.icon} />
+            <h3>{extra.title}</h3>
+            <strong>
+              {extra.price}
+              {extra.aprox && (
+                <>
+                  {' '}
+                  <small style={{ fontFamily: 'var(--textos)', fontSize: '.5em' }}>aprox.</small>
+                </>
+              )}
+            </strong>
+            <small>{extra.text}</small>
+            {extra.chips && (
+              <div className="extra__chips">
+                {extra.chips.map((chip) => (
+                  <span key={chip}>{chip}</span>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
       </div>
+      <article className="extra extra--hotel reveal" data-delay="1">
+        <Icon name={hotel.icon} />
+        <div className="extra--hotel__texto">
+          <h3>{hotel.title}</h3>
+          <small>{hotel.text}</small>
+          <div className="extra__chips">
+            {hotel.chips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            ))}
+          </div>
+        </div>
+        <div className="extra--hotel__precio">
+          <strong>{hotel.price}</strong>
+          <small>{hotel.unidad}</small>
+          <small>{hotel.ejemplo}</small>
+          <a href="#reserva" className="btn btn--ghost">
+            Elegir al reservar
+          </a>
+        </div>
+      </article>
       <p className="note" style={{ marginTop: '.9rem' }}>
-        Valores de cuatrimoto y parapente pendientes de confirmación con el flyer oficial.
+        Las actividades adicionales y el hotel previo se eligen al reservar y se suman al total de
+        tu inscripción.
       </p>
     </div>
   );

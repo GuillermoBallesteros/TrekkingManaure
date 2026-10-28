@@ -5,6 +5,8 @@ import { getViolations, resolveOwner } from './team-workflow.mjs';
 test('los archivos de presentación e integración visual pertenecen a Santiago', () => {
   for (const file of [
     'frontend/src/sections/Galeria/Galeria.tsx',
+    'frontend/src/hooks/galeria/useGaleria.ts',
+    'frontend/src/data/kit/incluye.ts',
     'frontend/src/pages/Home/Home.tsx',
     'frontend/src/styles/global.css',
     'frontend/package-lock.json',
@@ -19,7 +21,10 @@ test('las excepciones funcionales tienen precedencia sobre la carpeta frontend',
     'frontend/src/sections/Reserva/components/Comprobante.tsx',
     'frontend/src/sections/Costos/Costos.css',
     'frontend/src/components/ui/Calendario/Calendario.tsx',
-    'frontend/src/hooks/useReserva.ts',
+    'frontend/src/hooks/reserva/useReserva.ts',
+    'frontend/src/hooks/cupos/useCuentaRegresiva.ts',
+    'frontend/src/data/reserva/formulario.ts',
+    'frontend/src/utils/reserva/cotizacion.ts',
     'frontend/src/services/api.ts',
     'shared/config/index.ts',
     'shared/utils/capacity.ts',
@@ -28,7 +33,7 @@ test('las excepciones funcionales tienen precedencia sobre la carpeta frontend',
 });
 
 test('los prefijos de carpeta y las rutas exactas no incluyen archivos parecidos', () => {
-  assert.equal(resolveOwner('frontend/src/hooks/useReserva.ts.backup'), 'santiago');
+  assert.equal(resolveOwner('frontend/src/hooks/reservas/useReserva.ts'), 'santiago');
   assert.equal(resolveOwner('frontend/src/sections/ReservaNueva/index.ts'), 'santiago');
   assert.equal(resolveOwner('frontend-extra/archivo.ts'), 'coordinacion');
 });

@@ -14,5 +14,5 @@
       "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"]
     }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "../admin/src", "../shared", "vite.config.ts"]
 }

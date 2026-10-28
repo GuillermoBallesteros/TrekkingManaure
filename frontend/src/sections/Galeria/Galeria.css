@@ -93,65 +93,6 @@
   background: rgba(3, 27, 22, 0.7);
 }
 
-.gallery-placeholder {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 1.6rem;
-  border: 1px solid var(--linea);
-  border-radius: 22px;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 100% 0, rgba(242, 193, 78, 0.07), transparent 70%),
-    linear-gradient(150deg, var(--panel), var(--fondo));
-}
-
-.gallery-placeholder--wide {
-  grid-column: span 2;
-  background-image: repeating-radial-gradient(
-    ellipse at 100% 100%,
-    transparent 0 35px,
-    rgba(242, 193, 78, 0.06) 36px 37px,
-    transparent 38px 60px
-  );
-}
-
-.gallery-placeholder > .ico {
-  width: 33px;
-  height: 33px;
-  color: var(--dorado);
-  margin-bottom: 1.2rem;
-}
-
-.gallery-placeholder h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.4rem;
-}
-
-.gallery-placeholder p {
-  font-size: 0.74rem;
-  color: rgba(253, 248, 223, 0.6);
-}
-
-.gallery-placeholder > small {
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--dorado);
-  margin-top: 1.1rem;
-}
-
-.gallery-placeholder__index {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-family: var(--titulos);
-  font-size: 1.8rem;
-  color: rgba(242, 193, 78, 0.2);
-}
-
 .gallery-note {
   margin-top: 1rem;
 }
@@ -202,9 +143,6 @@
   .gallery-item:last-child:nth-child(odd) {
     grid-column: span 2;
   }
-  .gallery-placeholder--wide {
-    grid-column: span 2;
-  }
 }
 
 @media (max-width: 600px) {
@@ -213,9 +151,6 @@
     grid-auto-rows: 210px;
   }
   .gallery-item:last-child:nth-child(odd) {
-    grid-column: auto;
-  }
-  .gallery-placeholder--wide {
     grid-column: auto;
   }
   .gallery-modal__footer {
@@ -229,9 +164,7 @@
   padding: 0.75rem;
 }
 .gallery-modal .modal__card {
-  width: fit-content;
-  min-width: min(100%, 300px);
-  max-width: 100%;
+  width: min(100%, 1100px);
   max-height: 94dvh;
   padding: 0.9rem;
   display: flex;
@@ -260,7 +193,8 @@
   position: relative;
   min-width: 0;
   margin: 0 auto;
-  width: min(calc(100vw - 3.4rem), 1040px, calc(min(66dvh, 680px) * 1.5));
+  width: 100%;
+  max-width: calc(min(66dvh, 680px) * 1.5);
 }
 .visor__pista {
   position: relative;
@@ -318,6 +252,13 @@
   padding: 0.2rem 0.1rem;
   scrollbar-width: none;
 }
+/* Centradas bajo la foto; si no caben, la tira se desplaza desde el primer elemento */
+.visor__mini:first-child {
+  margin-left: auto;
+}
+.visor__mini:last-child {
+  margin-right: auto;
+}
 .visor__tira::-webkit-scrollbar {
   display: none;
 }
@@ -369,7 +310,7 @@
     border-radius: 18px;
   }
   .visor__foto {
-    width: min(calc(100vw - 2.4rem), calc(min(70dvh, 560px) * 1.34));
+    max-width: calc(min(70dvh, 560px) * 1.34);
   }
   .visor__pista {
     aspect-ratio: 4 / 3;
@@ -377,5 +318,33 @@
   .visor__mini {
     width: 60px;
     height: 46px;
+  }
+}
+
+/* Pantallas bajas (móvil en apaisado): la foto cede altura para que quepan la tira y el pie */
+@media (max-height: 520px) {
+  .gallery-modal .modal__card {
+    gap: 0.4rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .gallery-modal .modal__head h2 {
+    font-size: 1.1rem;
+  }
+  .gallery-modal .modal__close {
+    width: 36px;
+    height: 36px;
+  }
+  .visor {
+    gap: 0.4rem;
+  }
+  .visor__foto {
+    max-width: calc(38dvh * 1.5);
+  }
+  .visor__pista {
+    aspect-ratio: 3 / 2;
+  }
+  .visor__mini {
+    width: 52px;
+    height: 38px;
   }
 }

@@ -10,6 +10,15 @@ export function formatDate(value: string): string {
   }).format(new Date(`${value}T12:00:00-05:00`));
 }
 
+/** Fecha y hora de Colombia de un instante ISO: 27 oct 2026, 3:15 p. m. */
+export function formatDateTime(value: string): string {
+  return new Intl.DateTimeFormat('es-CO', {
+    timeZone: 'America/Bogota',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(new Date(value));
+}
+
 export function todayInColombia(): string {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'America/Bogota',

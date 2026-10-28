@@ -150,6 +150,13 @@ input[type='number'] {
   display: none;
 }
 
+.admin-error {
+  color: #ff9b85;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  margin: 12px 0 0;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

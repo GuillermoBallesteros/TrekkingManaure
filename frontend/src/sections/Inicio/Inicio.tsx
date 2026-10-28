@@ -1,12 +1,21 @@
+import CloudImage from '../../../../shared/components/CloudImage';
 import Icon from '../../../../shared/components/Icon';
 import { evento } from '../../../../shared/config';
-import ContadorCupos from '../../components/ui/ContadorCupos';
+import { imagenes, presets } from '../../../../shared/data/imagenes';
+import { ContadorCupos } from '../../components';
 import './Inicio.css';
 
 export default function Inicio() {
   return (
     <section className="hero" id="inicio">
-      <div className="hero__bg" aria-hidden="true" />
+      <CloudImage
+        className="hero__bg"
+        publicId={imagenes.portada}
+        preset={presets.portada}
+        aria-hidden="true"
+        fetchPriority="high"
+        draggable={false}
+      />
       <svg
         className="hero__mountains"
         viewBox="0 0 1440 320"
@@ -45,7 +54,7 @@ export default function Inicio() {
               <Icon name="calendar" /> {evento.fechasTexto}
             </span>
             <span className="fact">
-              <Icon name="clock" /> Salida 6:00 a.m.
+              <Icon name="clock" /> Salida {evento.horaSalidaTexto}
             </span>
             <span className="fact">
               <Icon name="pin" /> Restaurante El Sabor · Villa Adelaida

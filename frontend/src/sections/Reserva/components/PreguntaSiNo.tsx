@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { fieldName } from '../../../utils/reserva';
+import { usePreguntaSiNo } from '../../../hooks';
 
 type Props = {
   prefijo: string;
@@ -8,49 +7,51 @@ type Props = {
   pregunta: string;
   /** Si se indica, al responder Sí se pide el detalle con esta etiqueta. */
   detalle?: string;
+  /** Si se indica, responder No bloquea el formulario y muestra este mensaje. */
+  exigeSi?: string;
 };
 
-export default function PreguntaSiNo({ prefijo, base, pregunta, detalle }: Props) {
-  const [answer, setAnswer] = useState('');
-  const name = fieldName(prefijo, base);
-  const detailName = fieldName(prefijo, base + 'Cual');
+export default function PreguntaSiNo({ prefijo, base, pregunta, detalle, exigeSi }: Props) {
+  const view = usePreguntaSiNo(prefijo, base, detalle, exigeSi);
 
   return (
     <div className="field field--full">
-      <span className="field__label" id={name + '-label'}>
+      <span className="field__label" id={view.labelId}>
         {pregunta} <span className="req">*</span>
       </span>
-      <div className="choice-grid" role="radiogroup" aria-labelledby={name + '-label'}>
-        {['Sí', 'No'].map((option) => (
-          <label className="choice" key={option}>
+      <div className="choice-grid" role="radiogroup" aria-labelledby={view.labelId}>
+        {view.options.map((option) => (
+          <label className="choice" key={option.value}>
             <input
               type="radio"
-              name={name}
-              value={option}
+              name={view.name}
+              value={option.value}
               required
-              checked={answer === option}
-              onClick={() => {
-                // Un clic sobre la opción ya marcada la desmarca.
-                if (answer === option) setAnswer('');
-              }}
-              onChange={() => setAnswer(option)}
+              ref={option.ref}
+              {...option.input}
             />
             <span className="choice__dot" />
             <span className="choice__text">
-              <strong>{option}</strong>
+              <strong>{option.value}</strong>
             </span>
           </label>
         ))}
       </div>
-      {detalle && answer === 'Sí' && (
+      {view.showDetail && (
         <input
-          id={detailName}
-          name={detailName}
+          id={view.detailName}
+          name={view.detailName}
           required
+          minLength={2}
           aria-label={detalle}
           placeholder={detalle}
           maxLength={200}
         />
+      )}
+      {view.aviso && (
+        <small className="field-error" role="alert">
+          {view.aviso}
+        </small>
       )}
     </div>
   );

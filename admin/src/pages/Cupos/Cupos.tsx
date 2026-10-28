@@ -1,16 +1,9 @@
 import './Cupos.css';
-import { useState } from 'react';
 import Icon from '../../../../shared/components/Icon';
-import { cupos } from '../../../../shared/config';
-import { getCapacity } from '../../../../shared/utils/capacity';
-import { useAdminPreview } from '../../context/AdminPreviewContext';
+import { useCupos } from '../../hooks';
 
 export default function Cupos() {
-  const { participants, capacity, setCapacity } = useAdminPreview();
-  const [value, setValue] = useState(capacity);
-  const [feedback, setFeedback] = useState('');
-  const confirmed = participants.filter((person) => person.status === 'Confirmado').length;
-  const availability = getCapacity(confirmed, capacity);
+  const view = useCupos();
 
   return (
     <>
@@ -20,7 +13,7 @@ export default function Cupos() {
           <h1>
             Gestión de <em>cupos</em>
           </h1>
-          <p>Capacidad inicial, ampliación y disponibilidad del recorrido.</p>
+          <p>Capacidad, kits por talla, estadías y experiencias de los cupos asegurados.</p>
         </div>
       </div>
       <div className="admin-capacity-grid">
@@ -28,66 +21,102 @@ export default function Cupos() {
           <div className="admin-panel-head">
             <div>
               <h2>Disponibilidad del evento</h2>
-              <p>Escenario de demostración</p>
+              <p>Cada titular y acompañante con pago aprobado ocupa un cupo</p>
             </div>
             <Icon name="users" />
           </div>
           <div className="admin-capacity-number">
-            <strong>{availability.available}</strong>
+            <strong>{view.availability.available}</strong>
             <span>
-              Cupos disponibles<small>de {availability.capacity} en el ejemplo</small>
+              Cupos disponibles<small>de {view.availability.capacity} en total</small>
             </span>
           </div>
           <div
             className="bar"
             role="meter"
-            aria-label="Cupos ocupados en el ejemplo"
+            aria-label="Cupos ocupados"
             aria-valuemin={0}
-            aria-valuemax={availability.capacity}
-            aria-valuenow={confirmed}
+            aria-valuemax={view.availability.capacity}
+            aria-valuenow={view.availability.occupied}
           >
-            <div className="bar__fill" style={{ width: availability.percentage + '%' }} />
+            <div className="bar__fill" style={view.barStyle} />
           </div>
           <div className="admin-capacity-legend">
-            <span>{confirmed} confirmados</span>
-            <span>{availability.available} disponibles</span>
+            <span>{view.availability.occupied} ocupados</span>
+            <span>{view.availability.available} disponibles</span>
           </div>
-          <p className="admin-notice">
-            La política del evento contempla {cupos.iniciales} cupos iniciales y una ampliación de{' '}
-            {cupos.ampliacion} al llenarse, hasta {cupos.maximo} participantes.
-          </p>
+          <p className="admin-notice">{view.policyText}</p>
         </article>
         <article className="admin-panel admin-settings">
-          <h2>Probar capacidad</h2>
-          <p>Ajusta el escenario para explorar cómo se presenta la disponibilidad.</p>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              setCapacity(value);
-              setFeedback('Capacidad actualizada solo en la vista previa.');
-            }}
-          >
-            <label htmlFor="capacity">Capacidad de ejemplo</label>
+          <h2>Capacidad del evento</h2>
+          <p>Amplía o reduce los cupos. El cambio se refleja de inmediato en el sitio público.</p>
+          <form onSubmit={view.applyCapacity}>
+            <label htmlFor="capacity">Capacidad total</label>
             <input
               id="capacity"
               required
               type="number"
-              min={cupos.iniciales}
-              max={cupos.maximo}
-              value={value}
-              onChange={(event) => setValue(Number(event.target.value))}
+              min={view.range.min}
+              max={view.range.max}
+              step={1}
+              value={view.value}
+              onChange={view.changeValue}
             />
-            <small>
-              Entre {cupos.iniciales} y {cupos.maximo} cupos.
-            </small>
-            <button className="btn btn--primary" type="submit">
-              Aplicar al ejemplo <Icon name="check" />
+            <small>{view.limitText}</small>
+            <button className="btn btn--primary" type="submit" disabled={view.saving}>
+              {view.saving ? 'Guardando…' : 'Guardar capacidad'} <Icon name="check" />
             </button>
           </form>
           <p role="status" className="admin-feedback">
-            {feedback}
+            {view.feedback}
           </p>
+          {view.error && (
+            <p role="alert" className="admin-error">
+              {view.error}
+            </p>
+          )}
         </article>
+      </div>
+
+      <article className="admin-panel admin-kits">
+        <div className="admin-panel-head">
+          <div>
+            <h2>Kits por talla</h2>
+            <p>Solo se pide talla a quien compra kit; así se evita producir camisas de más</p>
+          </div>
+          <span className="admin-pill">{view.kitsLabel}</span>
+        </div>
+        <div className="admin-kit-sizes">
+          {view.sizes.map((item) => (
+            <div key={item.size}>
+              <strong>{item.count}</strong>
+              <span>{item.size}</span>
+            </div>
+          ))}
+        </div>
+        <div className="admin-panel-foot">
+          <Icon name="shirt" />
+          <span>{view.riskText}</span>
+        </div>
+      </article>
+
+      <div className="admin-logistics">
+        {view.logistics.map((group) => (
+          <article className="admin-panel" key={group.title}>
+            <div className="admin-panel-head">
+              <h2>{group.title}</h2>
+              <Icon name={group.icon} />
+            </div>
+            <dl>
+              {group.rows.map((row) => (
+                <div key={row.label}>
+                  <dt>{row.label}</dt>
+                  <dd>{row.total}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        ))}
       </div>
     </>
   );

@@ -1,10 +1,11 @@
-import marca from '../assets/images/marca/logo-trekking-perija.png';
+import { imagenes, presets } from '../data/imagenes';
+import CloudImage from './CloudImage';
 
 export default function Brand() {
   return (
     <span className="brand">
       <span className="brand__mark">
-        <img src={marca} alt="" />
+        <CloudImage publicId={imagenes.logo} preset={presets.logo} width={52} height={46} />
       </span>
       <span className="brand__text">
         <span className="brand__name">Trekking Perijá</span>

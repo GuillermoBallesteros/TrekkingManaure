@@ -4,9 +4,10 @@ Primer esqueleto visual basado en `diseno.html`: página pública y administraci
 
 ## Organización
 
-- `frontend/`: navegación, secciones públicas, galería y formulario de reserva de prueba.
-- `admin/`: acceso visual, resumen, participantes, revisión de pagos, cupos, galería y exportación de muestra.
-- `shared/`: recursos compartidos por ambas aplicaciones: configuración del evento, imágenes existentes, fuentes locales, colores, iconos y diálogos.
+- `frontend/`: la aplicación que se ejecuta. Sirve el sitio público y, en `/admin`, el panel.
+- `admin/src/`: código del panel (acceso, resumen, participantes, pagos, cupos y exportación). No tiene servidor propio: lo carga `frontend`.
+- `shared/`: recursos compartidos: configuración del evento, imágenes, fuentes, colores, iconos, diálogos y el sistema de reservas (`shared/reservas/`).
+- `docs/INTEGRACION-BACKEND.md`: qué reemplazar para conectar la API.
 - `backend/`: estructura de la futura API, conservada sin implementar integraciones.
 - `docs/ESTRUCTURA.md`: mapa de componentes, decisiones y continuación del desarrollo.
 
@@ -22,34 +23,24 @@ El comando general de formato que aparece más abajo se reserva para una integra
 
 ## Ejecutar el proyecto
 
-Se requiere Node.js y npm. Desde la raíz, instala las dependencias de cada aplicación:
+Se requiere Node.js y npm. Desde la raíz:
 
 ```powershell
 npm.cmd install --prefix frontend
-npm.cmd install --prefix admin
-```
-
-Abre dos terminales y ejecuta cada comando por separado:
-
-```powershell
 npm.cmd run dev --prefix frontend
 ```
 
-```powershell
-npm.cmd run dev --prefix admin
-```
-
 - Sitio público: http://localhost:5173/
-- Acceso administrativo: http://localhost:5174/
-- Vista general de ejemplo: http://localhost:5174/#/resumen
+- Panel de administración: http://localhost:5173/admin (no hay enlace en el sitio; se escribe en la barra de direcciones)
 
-Se puede configurar `VITE_ADMIN_URL` en frontend y `VITE_PUBLIC_URL` en admin para cambiar los enlaces entre aplicaciones.
+El acceso al panel es simulado: entra con cualquier correo y contraseña de formato válido. Detalles en `docs/admin/ACCESO-SIMULADO.md`.
+
+Al publicar, el hosting debe responder `index.html` también para `/admin` (reescritura de SPA).
 
 ## Comprobar y dar formato
 
 ```powershell
 npm.cmd run build --prefix frontend
-npm.cmd run build --prefix admin
 npm.cmd run format:check --prefix frontend
 ```
 
@@ -59,12 +50,17 @@ Para aplicar el formato a ambas aplicaciones, a `shared/` y a la documentación:
 npm.cmd run format --prefix frontend
 ```
 
-La configuración de Prettier está en `.prettierrc.json`. Los builds incluyen la comprobación de TypeScript.
+La configuración de Prettier está en `.prettierrc.json`. El build incluye la comprobación de TypeScript del sitio, del panel y de `shared/`.
 
 ## Alcance de esta entrega
 
-El formulario permite elegir estadía, acompañante, actividades y fecha de pago, validar un comprobante local y revisar un resumen. No envía datos, archivos ni pagos. El calendario se habilita con un archivo JPG, PNG o PDF válido de hasta 5 MB.
+El sitio y el panel comparten un único sistema de reservas (`shared/reservas/`), guardado por ahora en el `localStorage` del navegador:
 
-El panel usa seis participantes ficticios. Sus acciones solo cambian la demostración en memoria y se reinician al recargar. La autenticación, los comprobantes reales, WhatsApp, la persistencia y la exportación .xlsx se conectarán en una etapa posterior. La descarga actual es una muestra CSV compatible con Excel.
+1. La persona completa el formulario, revisa el resumen y confirma. La reserva se registra con un código (`PER-0001`…) y con su primer pago esperado en «Por revisar».
+2. Paga por llave Bre-B. En el panel, la organización verifica que el dinero llegó y aprueba o rechaza ese pago. No hay comprobantes: la decisión del panel es la única fuente de verdad.
+3. Al aprobar el primer pago, el titular y su acompañante ocupan cupo. El contador del sitio, el panel y las demás pestañas abiertas se actualizan al instante.
+4. Los saldos se registran desde el detalle de cada participante. La capacidad (60 al inicio, hasta 70) solo cambia desde «Gestión de cupos».
 
-La configuración de referencia está en `shared/config/index.ts`. Las fotografías generales se añaden a `shared/assets/images/galeria/`; las dos aplicaciones usan el mismo catálogo. Se conservaron el afiche y los diez logos ya existentes.
+El sistema arranca vacío: no hay datos ni cuentas de ejemplo. Como los datos viven en cada navegador, lo que se reserva en un equipo no aparece en otro hasta conectar el backend.
+
+La configuración de referencia está en `shared/config/index.ts`. Las imágenes del sitio viven en Cloudinary (carpeta `trekking-manaure/`) y se entregan optimizadas para móvil y PC; las dos aplicaciones usan el mismo catálogo (`shared/data/imagenes.ts`). Cómo agregar o cambiar una imagen: `docs/frontend/imagenes-cloudinary.md`.

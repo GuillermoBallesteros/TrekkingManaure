@@ -87,9 +87,92 @@
   margin-top: 8px;
 }
 
+.admin-kits {
+  margin-top: 24px;
+}
+
+.admin-kits .admin-panel-foot {
+  justify-content: flex-start;
+}
+
+.admin-kit-sizes {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+.admin-kit-sizes > div {
+  padding: 16px 10px;
+  border: 1px solid rgba(253, 248, 223, 0.1);
+  border-radius: 14px;
+  background: rgba(3, 27, 22, 0.45);
+  text-align: center;
+}
+
+.admin-kit-sizes strong {
+  display: block;
+  font-family: var(--titulos);
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--dorado-claro);
+}
+
+.admin-kit-sizes span {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: rgba(253, 248, 223, 0.55);
+  margin-top: 6px;
+}
+
+.admin-logistics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.admin-logistics .admin-panel-head .ico {
+  width: 20px;
+  height: 20px;
+  color: var(--dorado);
+}
+
+.admin-logistics dl {
+  padding: 0 24px 16px;
+}
+
+.admin-logistics dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(253, 248, 223, 0.07);
+  font-size: 0.72rem;
+}
+
+.admin-logistics dt {
+  color: rgba(253, 248, 223, 0.6);
+}
+
+.admin-logistics dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--dorado-claro);
+}
+
 @media (max-width: 1050px) {
-  .admin-capacity-grid {
+  .admin-capacity-grid,
+  .admin-logistics {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-kit-sizes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -106,5 +189,12 @@
   }
   .admin-settings {
     padding: 26px 22px;
+  }
+  .admin-kit-sizes {
+    padding-inline: 18px;
+    gap: 8px;
+  }
+  .admin-logistics dl {
+    padding-inline: 18px;
   }
 }

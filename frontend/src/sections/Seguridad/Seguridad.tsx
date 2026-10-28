@@ -1,4 +1,5 @@
 import Icon from '../../../../shared/components/Icon';
+import { abrigoNecesario, medidasSeguridad } from '../../data/seguridad/medidas';
 import './Seguridad.css';
 
 export default function Seguridad() {
@@ -27,50 +28,24 @@ export default function Seguridad() {
               suficiente, ropa térmica, impermeable y calzado adecuado. No vayas improvisando.
             </p>
             <div className="cold__list">
-              <span className="chip">Abrigo</span>
-              <span className="chip">Ropa térmica</span>
-              <span className="chip">Impermeable</span>
-              <span className="chip">Calzado de montaña</span>
-              <span className="chip">Agua</span>
+              {abrigoNecesario.map((item) => (
+                <span className="chip" key={item}>
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
           <div className="safety-list reveal" data-delay="1">
-            <div className="safety-item">
-              <Icon name="medical" />
-              <div>
-                <strong>Paramédicos</strong>
-                <small>Acompañamiento durante todo el recorrido</small>
+            {medidasSeguridad.map((item) => (
+              <div className="safety-item" key={item.title}>
+                <Icon name={item.icon} />
+                <div>
+                  <strong>{item.title}</strong>
+                  <small>{item.text}</small>
+                </div>
               </div>
-            </div>
-            <div className="safety-item">
-              <Icon name="mountain" />
-              <div>
-                <strong>Guías locales</strong>
-                <small>Conocen la ruta y el terreno</small>
-              </div>
-            </div>
-            <div className="safety-item">
-              <Icon name="droplet" />
-              <div>
-                <strong>Puntos de hidratación</strong>
-                <small>Abastecimiento en la ruta</small>
-              </div>
-            </div>
-            <div className="safety-item">
-              <Icon name="shield" />
-              <div>
-                <strong>Apoyo de policía y fuerzas armadas</strong>
-                <small>Seguridad en el recorrido</small>
-              </div>
-            </div>
-            <div className="safety-item">
-              <Icon name="check" />
-              <div>
-                <strong>Seguro médico</strong>
-                <small>Cobertura del evento</small>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

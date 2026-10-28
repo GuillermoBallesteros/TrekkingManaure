@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Inicio,
   Evento,
@@ -11,13 +10,11 @@ import {
   Reserva,
   Aliados,
 } from '../../sections';
-import Marquee from '../../components/ui/Marquee/Marquee';
-import { useReveal } from '../../hooks/useReveal';
-import type { Estadia } from '../../types/reserva';
+import { Marquee } from '../../components';
+import { useHome } from '../../hooks';
 
 export default function Home() {
-  const [stay, setStay] = useState<Estadia>('');
-  useReveal();
+  const home = useHome();
 
   return (
     <main id="contenido">
@@ -27,10 +24,10 @@ export default function Home() {
       <Cupos />
       <Kit />
       <Costos />
-      <Alojamiento onSelect={setStay} />
+      <Alojamiento onSelect={home.setStay} />
       <Seguridad />
       <Galeria />
-      <Reserva stay={stay} onStay={setStay} />
+      <Reserva stay={home.stay} onStay={home.setStay} />
       <Aliados />
     </main>
   );

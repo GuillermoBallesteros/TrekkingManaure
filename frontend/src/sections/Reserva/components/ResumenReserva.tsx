@@ -1,31 +1,17 @@
 import Icon from '../../../../../shared/components/Icon';
-import { evento, precios } from '../../../../../shared/config';
-import { formatDate, formatMoney } from '../../../../../shared/utils/format';
-import type { Cotizacion, Estadia, PlanTitular } from '../../../types/reserva';
+import { evento } from '../../../../../shared/config';
+import { useResumenReserva } from '../../../hooks';
+import type { Cotizacion, Estadia } from '../../../types/reserva';
 import './ResumenReserva.css';
 
 type Props = {
   stay: Estadia;
-  plan: PlanTitular | null;
   planDate: string;
-  companion: boolean;
-  companionDate: string;
-  extrasTotal: number;
   quote: Cotizacion;
 };
 
-export default function ResumenReserva({
-  stay,
-  plan,
-  planDate,
-  companion,
-  companionDate,
-  extrasTotal,
-  quote,
-}: Props) {
-  function focusForm() {
-    document.getElementById('nombres')?.focus();
-  }
+export default function ResumenReserva(props: Props) {
+  const view = useResumenReserva(props);
 
   return (
     <aside className="summary reveal" data-delay="1" aria-label="Resumen de la reserva">
@@ -34,66 +20,54 @@ export default function ResumenReserva({
         <span>Resumen</span>
       </div>
       <div className="sum-row">
-        <span>
-          {plan === null
-            ? 'Modalidad por elegir'
-            : plan === 'total'
-              ? 'Inscripción + kit'
-              : 'Inscripción (apartado)'}
-        </span>
-        <strong>
-          {plan === null
-            ? '—'
-            : formatMoney(plan === 'total' ? precios.total : precios.inscripcion)}
-        </strong>
+        <span>Inscripción + kit</span>
+        <strong>{view.titular}</strong>
       </div>
-      {companion && (
+      {view.acompanante && (
         <div className="sum-row sum-row--dyn">
           <span>Acompañante</span>
-          <strong>{formatMoney(precios.acompanante)}</strong>
+          <strong>{view.acompanante}</strong>
         </div>
       )}
-      {extrasTotal > 0 && (
+      {view.extras && (
         <div className="sum-row sum-row--dyn">
           <span>Actividades extra</span>
-          <strong>{formatMoney(extrasTotal)}</strong>
+          <strong>{view.extras}</strong>
+        </div>
+      )}
+      {view.hotel && (
+        <div className="sum-row sum-row--dyn">
+          <span>Hotel antes del evento</span>
+          <strong>{view.hotel}</strong>
         </div>
       )}
       <div className="sum-row">
         <span>Estadía</span>
-        <strong>{stay || 'Por elegir'}</strong>
+        <strong>{view.stay}</strong>
       </div>
       <div className="sum-row">
         <span>Pagas ahora</span>
-        <strong>{formatMoney(quote.ahora)}</strong>
+        <strong>{view.ahora}</strong>
       </div>
-      {quote.saldoTitular > 0 && (
+      {view.saldo && (
         <div className="sum-row">
-          <span>Saldo kit · {planDate ? formatDate(planDate) : 'fecha por elegir'}</span>
-          <strong>{formatMoney(quote.saldoTitular)}</strong>
-        </div>
-      )}
-      {quote.saldoAcompanante > 0 && (
-        <div className="sum-row">
-          <span>
-            Saldo kit acompañante · {companionDate ? formatDate(companionDate) : 'fecha por elegir'}
-          </span>
-          <strong>{formatMoney(quote.saldoAcompanante)}</strong>
+          <span>{view.saldo.label}</span>
+          <strong>{view.saldo.amount}</strong>
         </div>
       )}
       <div className="sum-total">
         <span>Total</span>
-        <strong>{formatMoney(quote.total)}</strong>
+        <strong>{view.total}</strong>
       </div>
       <p className="summary__note">
         <Icon name="info" />
         <span>
-          El pago es por llave Bre-B. Al finalizar te llevamos a WhatsApp con tus datos y la
-          organización te indica cómo pagar. Los saldos se pagan a más tardar el {evento.plazoTexto}
-          .
+          El pago es por llave Bre-B. Al registrar tu reserva recibes un código; la organización
+          confirma tu cupo cuando verifica el pago. El restante se paga a más tardar el{' '}
+          {evento.plazoTexto}.
         </span>
       </p>
-      <button className="btn btn--gold btn--block" type="button" onClick={focusForm}>
+      <button className="btn btn--gold btn--block" type="button" onClick={view.focusForm}>
         Reservar cupo
       </button>
       <a href="#costos" className="btn btn--ghost btn--block summary__payments">

@@ -10,5 +10,4 @@
 *.txt text eol=lf
 .gitattributes text eol=lf
 .prettierignore text eol=lf
-*.webp binary
 *.woff2 binary

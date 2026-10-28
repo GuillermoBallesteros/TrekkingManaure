@@ -18,16 +18,16 @@ Tekking Manaure/
 │     │                          Extras, Alojamiento, Seguridad, Galeria, Reserva, Aliados
 │     ├─ components/layout/      Navbar, Footer
 │     ├─ components/ui/          Calendario, ContadorCupos, CuentaRegresiva, Marquee
-│     ├─ hooks/                  useReveal, useReserva, useSmoothScroll (nuevo)
+│     ├─ hooks/<dominio>/        la lógica de cada sección o componente (useGaleria, useReserva…)
+│     ├─ utils/<dominio>/        cálculos puros (cotización, calendario, mensaje de WhatsApp…)
+│     ├─ data/<dominio>/         catálogos y textos fijos (enlaces, kit, estadías, opciones…)
+│     ├─ types/ · services/      tipos de la reserva y cliente de API reservado
 │     └─ styles/global.css       reglas comunes y adaptación a móvil
 ├─ admin/                        Panel de administración (otra área)
 ├─ backend/                      API y base de datos (otra área)
 ├─ shared/                       Recursos compartidos por frontend y admin
-│  ├─ assets/fonts/              Bebas Neue y Poppins
-│  ├─ assets/images/aliados/     logos de los aliados
-│  ├─ assets/images/flyer/       afiches y foto de portada
-│  ├─ assets/images/galeria/     fotos de la galería (se incluyen solas, en orden por nombre)
-│  ├─ components/                Brand, Icon, Modal
+│  ├─ assets/fonts/              Bebas Neue y Poppins (las imágenes viven en Cloudinary)
+│  ├─ components/                Brand, Icon, Modal, CloudImage
 │  ├─ config/ · data/ · utils/   datos del evento, catálogos (aliados.ts, galeria.ts) y utilidades
 │  └─ styles/                    colores, fuentes, normalización, marca y diálogos
 ├─ docs/                         guías del equipo
@@ -35,14 +35,17 @@ Tekking Manaure/
 └─ scripts/                      comprobador de áreas del equipo
 ```
 
+Desde el 27 de octubre de 2026 `frontend/src` sigue el mismo patrón que `admin/src`: cada `.tsx` solo presenta y llama a un hook de `hooks/<dominio>/` que le entrega textos, clases y acciones ya preparados. Las rutas de archivo citadas en la sección 2 son anteriores a ese cambio.
+
 ## 2. Qué se añadió o cambió, por carpeta
 
 ### `shared/assets/images/` (archivos nuevos, ninguno existente se modificó)
 
+> Desde el 27 de octubre de 2026 estas imágenes ya no están en el repo: se migraron a Cloudinary (`trekking-manaure/`). Ver `docs/frontend/imagenes-cloudinary.md`.
+
 | Carpeta    | Archivo                                                              | Para qué sirve                                                    |
 | ---------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `aliados/` | `*-circulo.webp` (10 archivos)                                       | Logos recortados al círculo mínimo que contiene el diseño         |
-| `aliados/` | `villa-laura.webp`                                                   | Logo cuadrado original del Hostal Villa Laura (sin uso)           |
 | `flyer/`   | `portada-fondo.webp` (1776×1552)                                     | Foto de fondo de la portada, ampliada con Real-ESRGAN             |
 | `flyer/`   | `flyer-vigente.webp` (1200×2594)                                     | Afiche vigente ampliado; ya no se muestra en el sitio             |
 | `galeria/` | `01-paramo-de-frailejones.webp` … `07-jardin-de-villa-adelaida.webp` | Las 7 fotos de la galería, con título en `shared/data/galeria.ts` |
@@ -74,13 +77,15 @@ Tekking Manaure/
 
 ## 3. Cómo añadir contenido
 
-- **Foto a la galería:** guarda un `.webp`, `.jpg` o `.png` autorizado en `shared/assets/images/galeria/` con nombre `NN-descripcion.webp`. Para un título y una descripción propios, añade su nombre (sin extensión) al objeto `captions` de `shared/data/galeria.ts`.
-- **Aliado nuevo:** guarda su logo en `shared/assets/images/aliados/` y añade una línea en `shared/data/aliados.ts`. Si el logo no es redondo, recórtalo al círculo mínimo que contiene su diseño y nómbralo `nombre-circulo.webp`, como los demás.
-- **Foto de portada:** `shared/assets/images/flyer/portada-fondo.webp`. Se sustituye por una versión en alta resolución sin tocar código.
+Las imágenes se suben a Cloudinary, no al repo. El paso a paso está en `docs/frontend/imagenes-cloudinary.md`.
+
+- **Foto a la galería:** súbela a `trekking-manaure/galeria` con nombre `NN-descripcion` y añade una línea (nombre, título, descripción) a la lista de `shared/data/galeria.ts`.
+- **Aliado nuevo:** sube su logo a `trekking-manaure/aliados` y añade una línea en `shared/data/aliados.ts` con `aliadoId('nombre-circulo')`. Si el logo no es redondo, recórtalo al círculo mínimo que contiene su diseño, como los demás.
+- **Foto de portada:** reemplaza `trekking-manaure/portada/portada-fondo` en Cloudinary con el mismo `public_id`. No hace falta tocar código.
 
 ## 4. Archivos sin uso (se conservan hasta la depuración final)
 
-- **Imágenes:** `flyer/flyer-oficial.webp`, `flyer/flyer-vigente.webp`, `aliados/villa-laura.webp` y los logos originales `corptur`, `cuatri-tours`, `la-casa-de-las-arepas`, `manaure-aventura`, `manaure-vive`, `manauridad`, `metallura-nature-tourism`, `photours` y `villa-adelaida` (`casa-hostal-mi-ranchito.webp` sí se usa).
+- **Imágenes:** `flyer/flyer-oficial.webp`, `flyer/flyer-vigente.webp`.
 - **Estilos:** `.logo-grid` y `.preview-tag` en `styles/global.css`; `.preview-tag` en `Navbar.css`; `.gallery-modal__image`, `.gallery-modal__footer` y `.gallery-item--poster` en `Galeria.css`.
 - **Lógica:** el campo `poster` de `GalleryImage` y el texto de las tarjetas «La invitación» en `Galeria.tsx`.
 

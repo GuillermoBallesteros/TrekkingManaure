@@ -1,10 +1,12 @@
 import Extras from '../Extras';
-import { precios, evento } from '../../../../shared/config';
-import { formatMoney } from '../../../../shared/utils/format';
+import { evento } from '../../../../shared/config';
 import Icon from '../../../../shared/components/Icon';
+import { useCostos } from '../../hooks';
 import './Costos.css';
 
 export default function Costos() {
+  const costs = useCostos();
+
   return (
     <section className="section" id="costos">
       <div className="container">
@@ -25,7 +27,7 @@ export default function Costos() {
               Valor total obligatorio
             </span>
             <div className="price-card__total">
-              {formatMoney(precios.total)} <span>COP</span>
+              {costs.total} <span>COP</span>
             </div>
             <p className="price-card__desc">
               Debe pagarse la totalidad. La inscripción aparta el cupo y el saldo cubre el kit
@@ -35,12 +37,12 @@ export default function Costos() {
             <div className="split">
               <div className="split__item">
                 <small>1 · Inscripción</small>
-                <strong>{formatMoney(precios.inscripcion)}</strong>
+                <strong>{costs.inscripcion}</strong>
                 <span>Aparta tu cupo</span>
               </div>
               <div className="split__item">
                 <small>2 · Saldo del kit</small>
-                <strong>{formatMoney(precios.kitCompleto)}</strong>
+                <strong>{costs.kit}</strong>
                 <span>Kit completo</span>
               </div>
             </div>
@@ -49,41 +51,21 @@ export default function Costos() {
               <Icon name="calendar" />
               <div>
                 <strong>Plazo hasta el {evento.plazoTexto}.</strong> Al reservar eliges el día
-                exacto en que pagarás los {formatMoney(precios.kitCompleto)} restantes, dentro de
-                ese plazo.
+                exacto en que pagarás los {costs.kit} restantes, dentro de ese plazo.
               </div>
             </div>
           </div>
 
           <div className="steps reveal" data-delay="1">
-            <div className="step">
-              <span className="step__n">01</span>
-              <div>
-                <h3>Registra tus datos</h3>
-                <p>Completa el formulario y sigue a WhatsApp con tu información.</p>
+            {costs.steps.map((step) => (
+              <div className="step" key={step.n}>
+                <span className="step__n">{step.n}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </div>
               </div>
-            </div>
-            <div className="step">
-              <span className="step__n">02</span>
-              <div>
-                <h3>Paga por Nequi o llave Bre-B y elige tu fecha</h3>
-                <p>
-                  Paga {formatMoney(precios.inscripcion)} para apartar o{' '}
-                  {formatMoney(precios.total)} completo. Si apartas, eliges en el calendario el día
-                  en que pagarás los {formatMoney(precios.kitCompleto)}.
-                </p>
-              </div>
-            </div>
-            <div className="step">
-              <span className="step__n">03</span>
-              <div>
-                <h3>Paga el saldo</h3>
-                <p>
-                  Paga el dinero dentro del plazo. La organización valida los pagos y confirma tu
-                  cupo.
-                </p>
-              </div>
-            </div>
+            ))}
             <p className="note">
               La reserva no queda confirmada hasta validar el pago de inscripción.
             </p>

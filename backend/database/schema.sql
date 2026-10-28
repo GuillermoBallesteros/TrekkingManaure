@@ -1,9 +1,12 @@
 -- Esquema MySQL pendiente; no crea tablas.
 -- administradores: acceso al panel.
--- participantes: datos personales y estadía.
--- acompanantes: datos pendientes de confirmar.
--- pagos: inscripción, saldo, comprobante y aceptación/rechazo.
+-- participantes: datos personales, celular (país + número), EPS, contacto de emergencia,
+--   salud (incluye discapacidad), compromisos, estadía y autorización del responsable si es menor.
+-- acompanantes: los mismos datos del participante; talla solo si compra kit.
+-- consentimientos: versión de términos, fecha y hora de aceptación y uso de imagen por persona.
+-- hotel_previo: llegada, salida y si incluye al acompañante.
+-- pagos: inscripción, saldo y aceptación/rechazo (sin comprobantes).
 -- cupos: capacidad y reservas confirmadas.
 -- compromisos_pago: fecha elegida para pagar el kit.
--- extras_participante: cuatrimoto y parapente.
+-- extras_participante: cuatrimoto, parapente del titular y del acompañante.
 -- recordatorios: seguimiento de envíos mediante Brevo.
