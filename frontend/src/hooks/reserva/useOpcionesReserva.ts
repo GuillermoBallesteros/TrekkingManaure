@@ -8,8 +8,9 @@ import {
   type PreEventHotel,
 } from '../../../../shared/reservas';
 import { formatMoney } from '../../../../shared/utils/format';
-import { OPCIONES_ESTADIA, OPCIONES_EXTRA } from '../../data/reserva/opciones';
+import { AVISO_PARAMO_AGOTADO, OPCIONES_EXTRA } from '../../data/reserva/opciones';
 import { opcionDesmarcable } from '../../utils/comun/opcionDesmarcable';
+import { opcionesEstadia } from '../../utils/reserva/estadias';
 import type { Estadia, Extra, HotelFormulario } from '../../types/reserva';
 
 type Options = {
@@ -23,6 +24,8 @@ type Options = {
   /** Hotel con fechas válidas para cotizar; null si falta algo. */
   hotelCotizable: PreEventHotel | null;
   today: string;
+  /** Sin cupos en el páramo, esa estadía no se puede elegir. */
+  paramoAgotado: boolean;
 };
 
 export function useOpcionesReserva({
@@ -35,6 +38,7 @@ export function useOpcionesReserva({
   onHotel,
   hotelCotizable,
   today,
+  paramoAgotado,
 }: Options) {
   const ventana = hotelWindow(today);
   const cargo = hotelCharge({
@@ -45,10 +49,11 @@ export function useOpcionesReserva({
   const noche = formatMoney(precios.hotelNoche);
 
   return {
-    stays: OPCIONES_ESTADIA.map((option) => ({
+    stays: opcionesEstadia(paramoAgotado).map((option) => ({
       ...option,
       input: opcionDesmarcable<Estadia>(stay, option.value, onStay, ''),
     })),
+    avisoParamo: paramoAgotado ? AVISO_PARAMO_AGOTADO : null,
     // El parapente del acompañante solo aparece si hay acompañante.
     extras: OPCIONES_EXTRA.filter((extra) => companion || !extra.conAcompanante).map((extra) => ({
       ...extra,

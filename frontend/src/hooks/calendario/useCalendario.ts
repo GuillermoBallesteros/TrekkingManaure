@@ -1,6 +1,5 @@
-import { evento } from '../../../../shared/config';
-import { firstPaymentDay } from '../../../../shared/reservas';
-import { formatDate, todayInColombia } from '../../../../shared/utils/format';
+import { firstPaymentDay, useCierre, useHoy } from '../../../../shared/reservas';
+import { formatDate } from '../../../../shared/utils/format';
 import { DIAS_SEMANA } from '../../data/calendario/dias';
 import { buildMonths } from '../../utils/calendario/meses';
 import { classNames } from '../../utils/comun/classNames';
@@ -13,10 +12,13 @@ type Options = {
 };
 
 export function useCalendario({ selected, onSelect, concepto }: Options) {
+  const { fechaCierre } = useCierre();
+  const today = useHoy();
+
   return {
-    deadline: formatDate(evento.fechaLimitePago),
+    deadline: formatDate(fechaCierre),
     weekdays: DIAS_SEMANA,
-    months: buildMonths(firstPaymentDay(todayInColombia())).map((month) => ({
+    months: buildMonths(firstPaymentDay(today), fechaCierre).map((month) => ({
       key: month.key,
       label: month.label,
       ariaLabel: 'Calendario de ' + month.label,

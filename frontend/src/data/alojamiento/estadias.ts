@@ -1,4 +1,4 @@
-// Las dos opciones de estadía. value es la estadía que se preselecciona en la reserva.
+// Las tres opciones de estadía. value es la estadía que se preselecciona en la reserva.
 export const estadias = [
   {
     value: 'Páramo',
@@ -13,6 +13,7 @@ export const estadias = [
       'Desayuno, almuerzo y cena',
       'Frío intenso: lleva abrigo y ropa térmica',
       'Sin conectividad a internet en el páramo',
+      'Cupos limitados: solo para quienes se quedan',
     ],
     action: 'Elegir páramo',
     delay: 1,
@@ -32,5 +33,21 @@ export const estadias = [
     ],
     action: 'Elegir hotel',
     delay: 2,
+  },
+  {
+    value: 'Regreso a casa',
+    className: 'stay stay--casa reveal',
+    tag: 'Sin hospedaje',
+    icon: 'pin',
+    title: 'Regreso a casa',
+    text: 'Vive toda la experiencia y, al terminar, regresa directo a tu casa.',
+    items: [
+      'Recorrido completo hasta el páramo',
+      'Sin noche en la montaña ni en Manaure',
+      'Mismo precio de inscripción',
+      'No ocupa cupo del páramo',
+    ],
+    action: 'Elegir regreso a casa',
+    delay: 3,
   },
 ] as const;

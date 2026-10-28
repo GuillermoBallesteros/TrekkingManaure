@@ -32,7 +32,11 @@ export const generos = ['Femenino', 'Masculino', 'Otro', 'Prefiero no decirlo'] 
 
 export const tallas = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 
-export const estadias = ['Páramo', 'Hotel en Manaure'] as const;
+/** Dónde pasa la noche cada corredor. Solo "Páramo" ocupa cupo. */
+export const estadias = ['Páramo', 'Hotel en Manaure', 'Regreso a casa'] as const;
+
+/** La única estadía que gasta cupo: los cupos son la capacidad del páramo. */
+export const ESTADIA_CON_CUPO = 'Páramo';
 
 /** Edad desde la que una persona es mayor de edad en Colombia. */
 export const MAYORIA_EDAD = 18;
@@ -257,7 +261,7 @@ export const PAIS_PREDETERMINADO = 'CO';
  * Versión de los términos y condiciones. Cambiarla cuando cambie el texto: cada reserva guarda
  * la versión que aceptó cada persona.
  */
-export const versionTerminos = 'TYC-2026-10-27';
+export const versionTerminos = 'TYC-2026-10-28';
 
 // Patrones HTML. El guion va escapado (\-): sin escapar, el flag v de Chrome invalida la
 // expresión y el campo acepta cualquier valor. No usar paréntesis dentro de los patrones.

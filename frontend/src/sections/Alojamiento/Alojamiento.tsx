@@ -1,9 +1,11 @@
 import type { Estadia } from '../../types/reserva';
 import Icon from '../../../../shared/components/Icon';
-import { estadias } from '../../data/alojamiento/estadias';
+import { useAlojamiento } from '../../hooks';
 import './Alojamiento.css';
 
 export default function Alojamiento({ onSelect }: { onSelect: (value: Estadia) => void }) {
+  const estadias = useAlojamiento(onSelect);
+
   return (
     <section className="section" id="estadia">
       <div className="container">
@@ -14,7 +16,8 @@ export default function Alojamiento({ onSelect }: { onSelect: (value: Estadia) =
           </h2>
           <p className="section-sub">
             Todos suben al páramo. La diferencia está en dónde pasas la noche al terminar el
-            recorrido.
+            recorrido. Los cupos son solo para quienes se quedan en el páramo: hotel en Manaure y
+            regreso a casa no ocupan cupo.
           </p>
         </div>
 
@@ -34,9 +37,16 @@ export default function Alojamiento({ onSelect }: { onSelect: (value: Estadia) =
                   </li>
                 ))}
               </ul>
-              <a href="#reserva" className="btn btn--ghost" onClick={() => onSelect(stay.value)}>
-                {stay.action} <Icon name="arrow" />
-              </a>
+              {stay.sinCupo && (
+                <span className="btn btn--ghost stay__agotado" aria-disabled="true">
+                  {stay.aviso}
+                </span>
+              )}
+              {!stay.sinCupo && (
+                <a href="#reserva" className="btn btn--ghost" onClick={stay.select}>
+                  {stay.action} <Icon name="arrow" />
+                </a>
+              )}
             </article>
           ))}
         </div>

@@ -25,7 +25,7 @@ import type {
   Registration,
 } from '../tipos';
 import { getAvailability, capacityRange } from './cupos';
-import { countPeople, getBalance, getStatus, holdsSpot } from './estado';
+import { countParamoPeople, getBalance, getStatus, holdsSpot } from './estado';
 import { firstPaymentDay, getAge, isIsoDate, isMinor } from './fechas';
 import { countHotelNights, hotelWindow } from './hotel';
 import { phoneKey, validatePhone } from './telefono';
@@ -292,12 +292,37 @@ function activeDocuments(registrations: Registration[], today: string) {
   );
 }
 
+/** Las inscripciones y los pagos del restante se cierran después de la fecha de cierre. */
+export function validateCierre(today: string, fechaCierre: string): string | null {
+  return today > fechaCierre
+    ? 'Las inscripciones cerraron el ' + formatDate(fechaCierre) + '.'
+    : null;
+}
+
+/**
+ * Cupos del páramo que necesita una reserva frente a los libres. Hotel en Manaure y regreso a
+ * casa no gastan cupo, así que solo falla si alguien elige el páramo y no cabe.
+ */
+function validateParamo(people: number, available: number): string | null {
+  if (people === 0 || available >= people) return null;
+  return available === 0
+    ? 'Los cupos del páramo están agotados: elige hotel en Manaure o regreso a casa.'
+    : 'Solo queda ' +
+        available +
+        ' cupo en el páramo y tu reserva necesita ' +
+        people +
+        '. Elige otra estadía para alguno de los dos.';
+}
+
 export function validateNewRegistration(
   input: NewRegistration,
   registrations: Registration[],
   capacity: number,
   today: string,
+  fechaCierre: string,
 ): string | null {
+  const closedError = validateCierre(today, fechaCierre);
+  if (closedError) return closedError;
   const personError = validatePerson(input, TITULAR, today);
   if (personError) return personError;
   if (
@@ -332,13 +357,13 @@ export function validateNewRegistration(
   if (!includes(planesPago, input.plan)) return 'Elige la forma de pago.';
   if (input.plan === 'apartado') {
     const first = firstPaymentDay(today);
-    if (first > evento.fechaLimitePago) {
+    if (first > fechaCierre) {
       return 'Ya pasó la fecha límite para apartar; elige pagar el total.';
     }
     if (
       !input.commitmentDate ||
       input.commitmentDate < first ||
-      input.commitmentDate > evento.fechaLimitePago
+      input.commitmentDate > fechaCierre
     ) {
       return 'Elige la fecha en que pagarás el restante.';
     }
@@ -353,14 +378,7 @@ export function validateNewRegistration(
   if (repeated) return 'El documento ' + repeated + ' ya tiene una reserva registrada.';
 
   const { available } = getAvailability(registrations, capacity);
-  const people = countPeople(input);
-  if (available < people) {
-    return available === 0
-      ? 'Los cupos están agotados.'
-      : 'Solo queda ' + available + ' cupo y tu reserva necesita ' + people + '.';
-  }
-
-  return null;
+  return validateParamo(countParamoPeople(input), available);
 }
 
 /** El titular es menor y la organización aún no recibe la autorización de su responsable. */
@@ -370,8 +388,8 @@ export function needsGuardianAuthorization(registration: Registration, today: st
 
 /**
  * Aprobar un pago exige la autorización del responsable si el titular es menor. Aprobar el
- * primer pago le asigna sus cupos: solo se permite si caben. Rechazar o devolver a revisión
- * siempre se permite.
+ * primer pago le asigna sus cupos del páramo: solo se permite si caben. Quien va a hotel o
+ * regresa a casa no necesita cupo. Rechazar o devolver a revisión siempre se permite.
  */
 export function validateApproval(
   registration: Registration,
@@ -385,13 +403,13 @@ export function validateApproval(
   if (holdsSpot(registration)) return null;
   const others = registrations.filter((item) => item.id !== registration.id);
   const { available } = getAvailability(others, capacity);
-  const people = countPeople(registration);
+  const people = countParamoPeople(registration);
   return available < people
-    ? 'No hay cupos para confirmar esta inscripción (' +
+    ? 'No hay cupos en el páramo para confirmar esta inscripción (' +
         people +
-        ' personas, ' +
+        ' en páramo, ' +
         available +
-        ' libres). Amplía la capacidad en Gestión de cupos.'
+        ' libres). Cambia los cupos del páramo en Gestión de cupos.'
     : null;
 }
 
@@ -409,13 +427,25 @@ export function validateManualPayment(registration: Registration, amount: number
 
 export function validateCapacity(value: number, registrations: Registration[]) {
   const { occupied } = getAvailability(registrations, value);
-  const { min, max } = capacityRange(occupied);
-  if (!Number.isInteger(value)) return 'La capacidad debe ser un número entero.';
+  const { min } = capacityRange(occupied);
+  if (!Number.isInteger(value)) return 'Los cupos del páramo deben ser un número entero.';
   if (value < min) {
     return occupied > 0
-      ? 'La capacidad no puede ser menor que los ' + occupied + ' cupos ocupados.'
-      : 'La capacidad debe ser de al menos 1 cupo.';
+      ? 'Los cupos del páramo no pueden ser menos que los ' + occupied + ' ya ocupados.'
+      : 'Debe haber al menos 1 cupo en el páramo.';
   }
-  if (value > max) return 'La capacidad máxima del evento es de ' + max + ' cupos.';
+  return null;
+}
+
+/**
+ * Fecha de cierre que fija la organización: entre la apertura de inscripciones y la víspera del
+ * evento. Puede quedar en el pasado para cerrar antes.
+ */
+export function validateFechaCierre(value: string): string | null {
+  if (!isIsoDate(value)) return 'Elige una fecha de cierre válida.';
+  if (value < evento.fechaAperturaInscripciones) {
+    return 'La fecha de cierre no puede ser anterior a la apertura de inscripciones.';
+  }
+  if (value >= evento.fechas[0]) return 'La fecha de cierre debe ser antes del evento.';
   return null;
 }

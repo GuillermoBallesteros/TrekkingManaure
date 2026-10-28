@@ -7,6 +7,7 @@ type Props = {
   onCompanion: (value: boolean) => void;
   kit: boolean | null;
   onKit: (value: boolean | null) => void;
+  paramoAgotado: boolean;
 };
 
 export default function Acompanante(props: Props) {
@@ -77,7 +78,7 @@ export default function Acompanante(props: Props) {
                     Selecciona
                   </option>
                   {view.stays.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option key={option.value} value={option.value} disabled={option.disabled}>
                       {option.title}
                     </option>
                   ))}

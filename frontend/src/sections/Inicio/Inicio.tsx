@@ -47,7 +47,8 @@ export default function Inicio() {
           </h1>
           <p className="hero__lead">
             Del pueblo al páramo. Dos días de recorrido, fogata y montaña, con guías, seguridad y
-            cupos limitados. Vive la experiencia completa o vuelve a dormir a Manaure.
+            cupos limitados en el páramo. Vive la experiencia completa, vuelve a dormir a Manaure o
+            regresa a casa.
           </p>
           <div className="hero__facts">
             <span className="fact">

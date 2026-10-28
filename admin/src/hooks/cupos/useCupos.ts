@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { formatLongDate } from '../../../../shared/utils/format';
 import { plural } from '../../utils/comun/texto';
 import {
   capacityRange,
@@ -15,8 +16,12 @@ import {
 } from '../../../../shared/reservas';
 
 export function useCupos() {
-  const { registrations, today, capacity } = useReservas();
+  const { registrations, today, capacity, fechaCierre } = useReservas();
   const [value, setValue] = useState<number | ''>(capacity);
+  const [fecha, setFecha] = useState(fechaCierre);
+  const [fechaFeedback, setFechaFeedback] = useState('');
+  const [fechaError, setFechaError] = useState('');
+  const [fechaSaving, setFechaSaving] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -44,8 +49,23 @@ export function useCupos() {
     const result = await reservasApi.fijarCapacidad(value);
     setSaving(false);
     if (result.ok)
-      setFeedback('Capacidad actualizada a ' + plural(result.data, 'cupo', 'cupos') + '.');
+      setFeedback('Cupos del páramo actualizados a ' + plural(result.data, 'cupo', 'cupos') + '.');
     else setError(result.error);
+  }
+
+  async function applyFecha(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!fecha || fechaSaving) return;
+    setFechaSaving(true);
+    setFechaFeedback('');
+    setFechaError('');
+    const result = await reservasApi.fijarFechaCierre(fecha);
+    setFechaSaving(false);
+    if (result.ok) {
+      setFechaFeedback(
+        'Inscripciones y pagos del restante abiertos hasta el ' + formatLongDate(result.data) + '.',
+      );
+    } else setFechaError(result.error);
   }
 
   return {
@@ -53,14 +73,29 @@ export function useCupos() {
     barStyle: { width: availability.percentage + '%' },
     value,
     range,
-    limitText: 'Entre ' + range.min + ' (cupos ya ocupados) y ' + range.max + ' cupos.',
+    limitText: 'Mínimo ' + range.min + ' (cupos del páramo ya ocupados). Sin tope máximo.',
     policyText:
-      'La capacidad del evento es de ' +
+      'Hay ' +
       capacity +
-      ' cupos. Solo cambia desde este panel y el sitio público la muestra al instante.',
+      ' cupos para dormir en el páramo. Solo los ocupan corredores con estadía en el páramo; hotel en Manaure y regreso a casa no gastan cupo. Al agotarse, el sitio deshabilita esa opción y la inscripción sigue abierta.',
+    cierre: {
+      value: fecha,
+      actual: formatLongDate(fechaCierre),
+      cerrado: today > fechaCierre,
+      change: (event: ChangeEvent<HTMLInputElement>) => setFecha(event.target.value),
+      apply: applyFecha,
+      saving: fechaSaving,
+      feedback: fechaFeedback,
+      error: fechaError,
+      estado:
+        today > fechaCierre
+          ? 'Inscripciones cerradas desde el ' + formatLongDate(fechaCierre) + '.'
+          : 'Inscripciones abiertas hasta el ' + formatLongDate(fechaCierre) + '.',
+    },
     feedback,
     error,
     saving,
+    saveLabel: saving ? 'Guardando…' : 'Guardar cupos',
     changeValue: (event: ChangeEvent<HTMLInputElement>) =>
       setValue(event.target.value === '' ? '' : Number(event.target.value)),
     applyCapacity,

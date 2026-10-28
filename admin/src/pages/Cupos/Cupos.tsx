@@ -13,22 +13,25 @@ export default function Cupos() {
           <h1>
             Gestión de <em>cupos</em>
           </h1>
-          <p>Capacidad, kits por talla, estadías y experiencias de los cupos asegurados.</p>
+          <p>
+            Cupos del páramo, fecha de cierre, kits por talla, estadías y experiencias de los cupos
+            asegurados.
+          </p>
         </div>
       </div>
       <div className="admin-capacity-grid">
         <article className="admin-panel admin-capacity">
           <div className="admin-panel-head">
             <div>
-              <h2>Disponibilidad del evento</h2>
-              <p>Cada titular y acompañante con pago aprobado ocupa un cupo</p>
+              <h2>Cupos del páramo</h2>
+              <p>Ocupa cupo cada corredor con pago aprobado que se queda en el páramo</p>
             </div>
             <Icon name="users" />
           </div>
           <div className="admin-capacity-number">
             <strong>{view.availability.available}</strong>
             <span>
-              Cupos disponibles<small>de {view.availability.capacity} en total</small>
+              Cupos libres en el páramo<small>de {view.availability.capacity} en total</small>
             </span>
           </div>
           <div
@@ -48,23 +51,22 @@ export default function Cupos() {
           <p className="admin-notice">{view.policyText}</p>
         </article>
         <article className="admin-panel admin-settings">
-          <h2>Capacidad del evento</h2>
-          <p>Amplía o reduce los cupos. El cambio se refleja de inmediato en el sitio público.</p>
+          <h2>Cupos del páramo</h2>
+          <p>Cambia la cantidad de cupos. El sitio público la muestra al instante.</p>
           <form onSubmit={view.applyCapacity}>
-            <label htmlFor="capacity">Capacidad total</label>
+            <label htmlFor="capacity">Cupos para dormir en el páramo</label>
             <input
               id="capacity"
               required
               type="number"
               min={view.range.min}
-              max={view.range.max}
               step={1}
               value={view.value}
               onChange={view.changeValue}
             />
             <small>{view.limitText}</small>
             <button className="btn btn--primary" type="submit" disabled={view.saving}>
-              {view.saving ? 'Guardando…' : 'Guardar capacidad'} <Icon name="check" />
+              {view.saveLabel} <Icon name="check" />
             </button>
           </form>
           <p role="status" className="admin-feedback">
@@ -73,6 +75,33 @@ export default function Cupos() {
           {view.error && (
             <p role="alert" className="admin-error">
               {view.error}
+            </p>
+          )}
+
+          <h2 className="admin-settings__sub">Fecha de cierre</h2>
+          <p>
+            Último día para inscribirse y para pagar el restante. Si la amplías, el plazo de pago se
+            amplía igual. {view.cierre.estado}
+          </p>
+          <form onSubmit={view.cierre.apply}>
+            <label htmlFor="fechaCierre">Cierre de inscripciones y pagos</label>
+            <input
+              id="fechaCierre"
+              required
+              type="date"
+              value={view.cierre.value}
+              onChange={view.cierre.change}
+            />
+            <button className="btn btn--primary" type="submit" disabled={view.cierre.saving}>
+              Guardar fecha <Icon name="check" />
+            </button>
+          </form>
+          <p role="status" className="admin-feedback">
+            {view.cierre.feedback}
+          </p>
+          {view.cierre.error && (
+            <p role="alert" className="admin-error">
+              {view.cierre.error}
             </p>
           )}
         </article>

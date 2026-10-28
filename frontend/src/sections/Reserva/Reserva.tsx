@@ -44,9 +44,9 @@ export default function Reserva({
             onChange={state.revisar}
             onInput={state.revisar}
           >
-            {state.agotado && (
+            {state.cerrado && (
               <p className="form-error" role="status">
-                {state.soldOutText}
+                {state.cerradoText}
               </p>
             )}
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(0)}>
@@ -66,6 +66,7 @@ export default function Reserva({
                 onHotel={state.updateHotel}
                 hotelCotizable={state.preEventHotel}
                 today={state.today}
+                paramoAgotado={state.paramoAgotado}
               />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(3)}>
@@ -74,6 +75,7 @@ export default function Reserva({
                 onCompanion={state.setCompanion}
                 kit={state.companionKit}
                 onKit={state.setCompanionKit}
+                paramoAgotado={state.paramoAgotado}
               />
             </div>
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(4)}>
@@ -88,15 +90,15 @@ export default function Reserva({
             <div className="bloque-progresivo" data-bloque hidden={state.isHidden(5)}>
               <div className="form-block form-submit">
                 <Terminos companion={state.companion} onOpen={state.openConditions} />
-                {state.soldOut && (
+                {state.cerrado && (
                   <p className="form-error" role="status">
-                    {state.soldOutText}
+                    {state.cerradoText}
                   </p>
                 )}
                 <button
                   type="submit"
                   className="btn btn--primary btn--block"
-                  disabled={state.soldOut}
+                  disabled={state.cerrado}
                 >
                   Revisar y registrar <Icon name="arrow" />
                 </button>

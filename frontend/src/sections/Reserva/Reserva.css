@@ -203,6 +203,13 @@
 .choice input:checked + .choice__dot::after {
   transform: scale(1);
 }
+.choice:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.choice:has(input:disabled):hover {
+  border-color: rgba(253, 248, 223, 0.12);
+}
 .choice:has(input:checked) {
   border-color: var(--dorado);
   background: rgba(242, 193, 78, 0.08);

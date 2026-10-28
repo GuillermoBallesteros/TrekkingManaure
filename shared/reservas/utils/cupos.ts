@@ -1,6 +1,5 @@
-import { cupos } from '../../config';
 import type { Registration } from '../tipos';
-import { countRunners, holdsSpot } from './estado';
+import { countParamoRunners, holdsSpot } from './estado';
 
 export type Availability = {
   occupied: number;
@@ -11,12 +10,12 @@ export type Availability = {
 };
 
 /**
- * Disponibilidad sobre la capacidad vigente. Ocupa cupo cada corredor (titular y acompañante)
- * de una inscripción con algún pago aprobado. La capacidad la fija la organización desde el
- * panel (60 al inicio, hasta 70); no se amplía sola.
+ * Cupos del páramo. Ocupa cupo cada corredor (titular o acompañante) que se queda en el páramo,
+ * de una inscripción con algún pago aprobado. Hotel en Manaure y regreso a casa no gastan cupo.
+ * La capacidad la fija la organización desde el panel (60 al inicio).
  */
 export function getAvailability(registrations: Registration[], capacity: number): Availability {
-  const occupied = countRunners(registrations.filter(holdsSpot));
+  const occupied = countParamoRunners(registrations.filter(holdsSpot));
   const available = Math.max(0, capacity - occupied);
 
   return {
@@ -28,7 +27,7 @@ export function getAvailability(registrations: Registration[], capacity: number)
   };
 }
 
-/** Rango permitido al ajustar la capacidad: no menos que lo ocupado ni más que el máximo. */
+/** Mínimo permitido al ajustar los cupos del páramo: no menos que lo ocupado. */
 export function capacityRange(occupied: number) {
-  return { min: Math.max(1, occupied), max: Math.max(cupos.maximo, occupied) };
+  return { min: Math.max(1, occupied) };
 }

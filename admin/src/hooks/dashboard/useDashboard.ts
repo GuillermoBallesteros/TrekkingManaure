@@ -16,7 +16,7 @@ import { daysBetween, describeDeadline } from '../../utils/comun/fechas';
 import { padCount, plural } from '../../utils/comun/texto';
 
 export function useDashboard() {
-  const { registrations, today, capacity } = useReservas();
+  const { registrations, today, capacity, fechaCierre } = useReservas();
   const { setFocusPaymentId } = useAdminUi();
   const summaries = registrations.map((registration) => summarize(registration, today));
   const count = (status: RegistrationStatus) =>
@@ -39,7 +39,10 @@ export function useDashboard() {
       title: 'Inscripciones',
       value: padCount(registrations.length),
       note:
-        countRunners(registrations) + ' corredores · ' + availability.available + ' cupos libres',
+        countRunners(registrations) +
+        ' corredores · ' +
+        availability.available +
+        ' cupos libres en el páramo',
       icon: 'users' as const,
     },
     {
@@ -85,7 +88,7 @@ export function useDashboard() {
       count: count(status),
       dotClass: 'legend-dot legend-dot--' + statusClass(status),
     })),
-    deadlineLabel: formatDate(evento.fechaLimitePago),
+    deadlineLabel: formatDate(fechaCierre),
     isEmpty: registrations.length === 0,
     startTime: new Intl.DateTimeFormat('es-CO', {
       timeZone: 'America/Bogota',

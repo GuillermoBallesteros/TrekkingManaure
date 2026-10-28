@@ -50,8 +50,8 @@ export default function Costos() {
             <div className="deadline">
               <Icon name="calendar" />
               <div>
-                <strong>Plazo hasta el {evento.plazoTexto}.</strong> Al reservar eliges el día
-                exacto en que pagarás los {costs.kit} restantes, dentro de ese plazo.
+                <strong>Plazo hasta el {costs.plazo}.</strong> Al reservar eliges el día exacto en
+                que pagarás los {costs.kit} restantes, dentro de ese plazo.
               </div>
             </div>
           </div>

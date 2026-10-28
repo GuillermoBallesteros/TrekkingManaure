@@ -83,17 +83,17 @@ export function crearTarifas(contexto: LibroContexto) {
     },
     {
       name: 'FechaLimiteSaldo',
-      label: 'Fecha límite del saldo',
-      value: excelDate(evento.fechaLimitePago),
+      label: 'Cierre de inscripciones y límite del saldo',
+      value: excelDate(contexto.fechaCierre),
       style: 'parametroFecha',
-      help: 'Último día para pagar el saldo; el calendario del sitio no admite fechas posteriores.',
+      help: 'Último día para inscribirse y para pagar el saldo. Se cambia en Gestión de cupos del panel; si se amplía, el plazo de pago se amplía igual.',
     },
     {
       name: 'Capacidad',
-      label: 'Capacidad del evento',
+      label: 'Cupos del páramo',
       value: contexto.capacity,
       style: 'parametroEntero',
-      help: 'Cupos disponibles para titulares y acompañantes con pago aprobado.',
+      help: 'Solo ocupan cupo los corredores que duermen en el páramo con pago aprobado. Hotel en Manaure y regreso a casa no gastan cupo.',
     },
   ];
 

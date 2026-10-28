@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { todayInColombia } from '../../utils/format';
+import { formatLongDate, todayInColombia } from '../../utils/format';
 import { repositorio } from '../servicios/repositorio';
 import { getAvailability } from '../utils/cupos';
 
@@ -25,7 +25,18 @@ export function useReservas() {
   const state = useSyncExternalStore(repositorio.subscribe, repositorio.read);
   const today = useHoy();
 
-  return { registrations: state.registrations, capacity: state.capacity, today };
+  return {
+    registrations: state.registrations,
+    capacity: state.capacity,
+    fechaCierre: state.fechaCierre,
+    today,
+  };
+}
+
+/** Fecha de cierre vigente: último día para inscribirse y para pagar el restante. */
+export function useCierre() {
+  const { fechaCierre, today } = useReservas();
+  return { fechaCierre, cerrado: today > fechaCierre, plazoTexto: formatLongDate(fechaCierre) };
 }
 
 export function useDisponibilidad() {

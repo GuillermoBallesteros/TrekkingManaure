@@ -1,3 +1,4 @@
+import { useCierre } from '../../../../shared/reservas';
 import { formatDate, formatMoney } from '../../../../shared/utils/format';
 import type { Cotizacion, Estadia } from '../../types/reserva';
 
@@ -9,7 +10,10 @@ type Options = {
 
 /** Resumen lateral de la reserva; las filas opcionales son null cuando no aplican. */
 export function useResumenReserva({ stay, planDate, quote }: Options) {
+  const { plazoTexto } = useCierre();
+
   return {
+    plazo: plazoTexto,
     titular: formatMoney(quote.titular),
     acompanante: quote.acompanante > 0 ? formatMoney(quote.acompanante) : null,
     extras: quote.extras > 0 ? formatMoney(quote.extras) : null,

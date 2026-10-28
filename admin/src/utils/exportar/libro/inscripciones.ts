@@ -1,6 +1,7 @@
 import { formatDateTime } from '../../../../../shared/utils/format';
 import { dxfEstado, hojas } from '../../../data/exportar/libro';
 import {
+  ESTADIA_CON_CUPO,
   countHotelNights,
   countHotelPeople,
   epsLabel,
@@ -122,6 +123,11 @@ const columnas: Columna[] = [
     name: 'Nombre del acompañante',
     width: 22,
     value: ({ registration }) => (registration.companion ? fullName(registration.companion) : ''),
+  },
+  {
+    name: 'Estadía del acompañante',
+    width: 17,
+    value: ({ registration }) => registration.companion?.stay ?? '',
   },
   {
     name: 'Kit del acompañante',
@@ -297,6 +303,23 @@ const columnas: Columna[] = [
     formula: 'IF(' + r('Acompañante') + '="Sí",2,1)',
   },
   {
+    // Solo quienes duermen en el páramo ocupan cupo.
+    name: 'Personas en páramo',
+    width: 12,
+    style: 'entero',
+    total: 'sum',
+    formula:
+      '(' +
+      r('Estadía') +
+      '="' +
+      ESTADIA_CON_CUPO +
+      '")+(' +
+      r('Estadía del acompañante') +
+      '="' +
+      ESTADIA_CON_CUPO +
+      '")',
+  },
+  {
     name: 'Alertas de salud',
     width: 12,
     style: 'entero',
@@ -326,6 +349,7 @@ const listas: Record<string, string> = {
   Género: listaExcel(generos),
   Talla: listaExcel(tallas),
   Estadía: listaExcel(estadias),
+  'Estadía del acompañante': listaExcel(estadias),
   Acompañante: '"Sí,No"',
   'Kit del acompañante': '"Sí,No"',
   Cuatrimoto: '"Sí,No"',

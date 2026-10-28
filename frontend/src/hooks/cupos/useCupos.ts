@@ -1,11 +1,12 @@
 import { precios } from '../../../../shared/config';
-import { useDisponibilidad } from '../../../../shared/reservas';
+import { useCierre, useDisponibilidad } from '../../../../shared/reservas';
 import { formatMoney } from '../../../../shared/utils/format';
 
 /** Sección "Así funciona el cupo", con la capacidad y ocupación vigentes. */
 export function useCupos() {
   const inscripcion = formatMoney(precios.inscripcion);
   const { capacity, occupied, available, percentage } = useDisponibilidad();
+  const { plazoTexto } = useCierre();
 
   return {
     capacity,
@@ -13,23 +14,24 @@ export function useCupos() {
     barStyle: { width: percentage + '%' },
     legend: available
       ? available + (available === 1 ? ' cupo libre' : ' cupos libres')
-      : 'Cupos agotados',
+      : 'Cupos del páramo agotados',
     occupied,
+    plazo: plazoTexto,
     rules: [
       {
-        title: 'Son ' + capacity + ' cupos',
+        title: capacity + ' cupos para dormir en el páramo',
+        text: 'Los cupos son la capacidad del páramo: solo los ocupan quienes se quedan allá después del recorrido. Hotel en Manaure y regreso a casa no ocupan cupo.',
+      },
+      {
+        title: 'Si se agotan, la inscripción sigue abierta',
         text:
-          'La capacidad del evento es de ' +
-          capacity +
-          ' personas, para cuidar la ruta y la experiencia de todos.',
+          'Cuando se llenan los cupos del páramo, esa opción se deshabilita en la reserva, pero puedes inscribirte eligiendo hotel en Manaure o regreso a casa hasta el ' +
+          plazoTexto +
+          '.',
       },
       {
         title: 'Reservas con los ' + inscripcion,
-        text: 'El cupo se ocupa cuando la organización verifica que llegó el pago de la inscripción.',
-      },
-      {
-        title: 'Los cupos se descuentan al validar',
-        text: 'A medida que la organización verifica cada pago, el cupo queda asegurado y la disponibilidad baja.',
+        text: 'El cupo del páramo se ocupa cuando la organización verifica que llegó el pago de la inscripción.',
       },
     ].map((rule, index) => ({ ...rule, n: index + 1 })),
   };

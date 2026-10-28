@@ -127,7 +127,13 @@ export type RegistrationStatus =
 export type ReservasState = {
   version: 2;
   registrations: Registration[];
+  /** Cupos del páramo: solo los ocupan los corredores que se quedan allá. */
   capacity: number;
+  /**
+   * Fecha de cierre (AAAA-MM-DD): último día para inscribirse y para pagar el restante. La
+   * cambia la organización desde el panel.
+   */
+  fechaCierre: string;
   /** Contadores de los últimos ids asignados; no dependen de cuántos registros hay. */
   counters: { registration: number; payment: number };
 };

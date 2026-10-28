@@ -8,7 +8,7 @@ export default function Cupos() {
     <section className="section section--tight" id="cupos">
       <div className="container cupos-wrap">
         <div className="cupos-big reveal">
-          <span className="cupos-big__cap">Capacidad del evento</span>
+          <span className="cupos-big__cap">Cupos del páramo</span>
           <div className="cupos-big__num">
             <span>{view.capacity}</span> <small>CUPOS</small>
           </div>
@@ -24,11 +24,12 @@ export default function Cupos() {
           </div>
           <div className="cupos-big__legend">
             <span>{view.legend}</span>
-            <span>Límite: {view.capacity} personas</span>
+            <span>Límite: {view.capacity} personas en el páramo</span>
           </div>
           <div className="highlight">
-            <strong>Importante:</strong> el cupo se confirma cuando la organización verifica el pago
-            de inscripción de {view.inscripcion}.
+            <strong>Importante:</strong> estos cupos son solo para quienes duermen en el páramo. Si
+            se agotan, puedes inscribirte con hotel en Manaure o regreso a casa hasta el{' '}
+            {view.plazo}.
           </div>
         </div>
         <div className="reveal" data-delay="1">

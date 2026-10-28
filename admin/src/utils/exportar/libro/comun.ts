@@ -12,6 +12,8 @@ export type LibroContexto = {
   summaries: Summary[];
   today: string;
   capacity: number;
+  /** Último día para inscribirse y para pagar el restante (lo fija la organización). */
+  fechaCierre: string;
   filterLabel: string;
 };
 

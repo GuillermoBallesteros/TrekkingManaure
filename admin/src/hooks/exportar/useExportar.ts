@@ -6,7 +6,7 @@ import { downloadBlob } from '../../utils/exportar/descarga';
 import { crearLibroGestion } from '../../utils/exportar/libro/crearLibro';
 
 export function useExportar() {
-  const { registrations, today, capacity } = useReservas();
+  const { registrations, today, capacity, fechaCierre } = useReservas();
   const [filter, setFilter] = useState('Todos');
   const [feedback, setFeedback] = useState('');
   const summaries = registrations
@@ -28,6 +28,7 @@ export function useExportar() {
       summaries,
       today,
       capacity,
+      fechaCierre,
       filterLabel: filter,
     });
     downloadBlob('perija-gestion-' + today + '.xlsx', blob);

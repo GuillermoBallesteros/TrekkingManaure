@@ -4,6 +4,9 @@ import { metodoPago, versionTerminos } from '../../../../shared/reservas';
 // Términos y condiciones que acepta cada persona al reservar. BORRADOR: debe revisarlo un
 // abogado antes de publicar. Si cambia el texto, cambia también versionTerminos en
 // shared/reservas/data/catalogos.ts: cada reserva guarda la versión que aceptó.
+// {plazo} se reemplaza por la fecha de cierre vigente, que la organización cambia en el panel.
+
+export const MARCA_PLAZO = '{plazo}';
 
 export const VERSION_TERMINOS = versionTerminos;
 
@@ -69,10 +72,9 @@ export const CONDICIONES: readonly { titulo: string; parrafos: readonly string[]
     parrafos: [
       'El pago se hace por ' +
         metodoPago.label +
-        '. El cupo queda confirmado cuando la organización verifica que el pago llegó.',
-      'Si elegí apartar, pagaré el restante en la fecha que escogí, a más tardar el ' +
-        evento.plazoTexto +
-        '. Si no lo pago en esa fecha, el cupo del kit se libera.',
+        '. La reserva queda confirmada cuando la organización verifica que el pago llegó.',
+      'Los cupos son la capacidad del páramo: solo los ocupan quienes se quedan a dormir allá. Si se agotan, puedo elegir hotel en Manaure o regreso a casa; la inscripción sigue abierta.',
+      'Las inscripciones cierran el {plazo}. Si elegí apartar, pagaré el restante en la fecha que escogí, a más tardar ese mismo día. Si no lo pago en esa fecha, el cupo del kit se libera.',
       'El hotel antes del evento se cobra por noche y por persona, según las fechas que elegí.',
     ],
   },

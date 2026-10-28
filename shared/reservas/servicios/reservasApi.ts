@@ -12,6 +12,7 @@ import { conceptFor, getPaid, withReview } from '../utils/estado';
 import {
   validateApproval,
   validateCapacity,
+  validateFechaCierre,
   validateManualPayment,
   validateNewRegistration,
   validateRejection,
@@ -58,7 +59,13 @@ export const reservasApi = {
     await wait();
     const state = repositorio.read();
     const today = todayInColombia();
-    const error = validateNewRegistration(input, state.registrations, state.capacity, today);
+    const error = validateNewRegistration(
+      input,
+      state.registrations,
+      state.capacity,
+      today,
+      state.fechaCierre,
+    );
     if (error) return fail(error);
 
     const registrationNumber = state.counters.registration + 1;
@@ -188,6 +195,17 @@ export const reservasApi = {
     if (error) return fail(error);
 
     repositorio.write({ ...state, capacity: value });
+    return { ok: true, data: value };
+  },
+
+  /** Último día para inscribirse y para pagar el restante; lo cambia la organización. */
+  async fijarFechaCierre(value: string): Promise<Result<string>> {
+    await wait();
+    const state = repositorio.read();
+    const error = validateFechaCierre(value);
+    if (error) return fail(error);
+
+    repositorio.write({ ...state, fechaCierre: value });
     return { ok: true, data: value };
   },
 

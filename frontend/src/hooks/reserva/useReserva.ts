@@ -5,6 +5,7 @@ import {
   isIsoDate,
   isMinor,
   reservasApi,
+  useCierre,
   useDisponibilidad,
   useReservas,
   validateNewRegistration,
@@ -64,6 +65,7 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
   const { visibles, revisar, reiniciar } = useBloquesProgresivos(formRef);
   const { registrations, capacity, today } = useReservas();
   const availability = useDisponibilidad();
+  const cierre = useCierre();
 
   const preEventHotel = hotelCotizable(hotel, companion);
   const quote = cotizar({
@@ -73,8 +75,6 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     preEventHotel,
   });
   const needsDate = plan === 'apartado';
-  const people = companion ? 2 : 1;
-  const soldOut = availability.available < people;
 
   function toggleExtra(extra: Extra) {
     setExtras((current) =>
@@ -97,6 +97,10 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     setError('');
     const form = event.currentTarget;
 
+    if (cierre.cerrado) {
+      setError('Las inscripciones cerraron el ' + cierre.plazoTexto + '.');
+      return;
+    }
     if (!form.reportValidity()) return;
     if (!stay) {
       setError('Elige tu estadía.');
@@ -121,7 +125,13 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
       hotel,
     });
     // Las mismas reglas que aplica el servicio: se avisan antes de abrir el resumen.
-    const invalid = validateNewRegistration(reserva, registrations, capacity, today);
+    const invalid = validateNewRegistration(
+      reserva,
+      registrations,
+      capacity,
+      today,
+      cierre.fechaCierre,
+    );
     if (invalid) {
       setError(invalid);
       return;
@@ -191,11 +201,14 @@ export function useReserva(stay: Estadia, onStay: (value: Estadia) => void) {
     updateHotel,
     preEventHotel,
     error,
-    soldOut,
-    agotado: availability.soldOut,
-    soldOutText: availability.soldOut
-      ? 'Los cupos están agotados por ahora. Escríbenos por WhatsApp para quedar en lista de espera.'
-      : 'Solo queda ' + availability.available + ' cupo: no alcanza para ti y tu acompañante.',
+    // Sin cupos en el páramo solo se deshabilita esa estadía; hotel y regreso a casa siguen.
+    paramoAgotado: availability.soldOut,
+    // Pasada la fecha de cierre ya no se reciben inscripciones.
+    cerrado: cierre.cerrado,
+    cerradoText:
+      'Las inscripciones cerraron el ' +
+      cierre.plazoTexto +
+      '. Escríbenos por WhatsApp si tienes dudas.',
     preview: envio?.resumen ?? null,
     previewState: envio?.estado ?? null,
     previewError: envio?.error ?? '',

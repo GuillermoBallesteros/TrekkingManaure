@@ -66,9 +66,9 @@ const kpis: Kpi[] = [
   },
   {
     label: 'CUPOS DISPONIBLES',
-    value: 'MAX(0,Capacidad-SUMIFS(Inscripciones[Personas],Inscripciones[Pagado],">0"))',
+    value: 'MAX(0,Capacidad-SUMIFS(Inscripciones[Personas en páramo],Inscripciones[Pagado],">0"))',
     valueStyle: 'kpiValor',
-    note: 'SUMIFS(Inscripciones[Personas],Inscripciones[Pagado],">0")',
+    note: 'SUMIFS(Inscripciones[Personas en páramo],Inscripciones[Pagado],">0")',
     noteStyle: 'notaOcupados',
   },
   {
@@ -431,7 +431,7 @@ function bloqueEstadia(sheet: Sheet, summaries: Summary[], start: number) {
   sheet.charts.push({
     kind: 'pie',
     title: 'Dónde duermen los corredores',
-    pointColors: [colores.verde, colores.dorado],
+    pointColors: [colores.verde, colores.dorado, colores.tierra],
     series: [
       {
         name: 'Corredores',

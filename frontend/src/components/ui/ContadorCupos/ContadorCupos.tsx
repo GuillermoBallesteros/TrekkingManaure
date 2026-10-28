@@ -7,9 +7,9 @@ export default function ContadorCupos() {
   const counter = useContadorCupos();
 
   return (
-    <aside className="cupo-card reveal" aria-label="Cupos del evento">
+    <aside className="cupo-card reveal" aria-label="Cupos del páramo">
       <div className="cupo-card__head">
-        <span className="cupo-card__label">Cupos del evento</span>
+        <span className="cupo-card__label">Cupos del páramo</span>
         <span className="cupo-card__live">
           <i className="dot-live" /> {counter.status}
         </span>
@@ -36,7 +36,7 @@ export default function ContadorCupos() {
       </div>
       <div className="cupo-card__note">
         <Icon name="info" />
-        <span>El cupo se confirma cuando la organización verifica el pago de la inscripción.</span>
+        <span>{counter.nota}</span>
       </div>
       <CuentaRegresiva />
     </aside>

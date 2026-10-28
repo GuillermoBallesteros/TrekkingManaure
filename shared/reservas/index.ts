@@ -9,4 +9,4 @@ export * from './utils/hotel';
 export * from './utils/telefono';
 export * from './utils/validaciones';
 export { reservasApi } from './servicios/reservasApi';
-export { useDisponibilidad, useHoy, useReservas } from './hooks/useReservas';
+export { useCierre, useDisponibilidad, useHoy, useReservas } from './hooks/useReservas';

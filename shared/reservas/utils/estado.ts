@@ -1,5 +1,5 @@
 import { precios } from '../../config';
-import { EPS_OTRA } from '../data/catalogos';
+import { EPS_OTRA, ESTADIA_CON_CUPO } from '../data/catalogos';
 import type {
   Eps,
   Health,
@@ -193,6 +193,19 @@ export function countPeople(registration: Pick<Registration, 'companion'>) {
 
 export function countRunners(registrations: Registration[]) {
   return registrations.reduce((sum, registration) => sum + countPeople(registration), 0);
+}
+
+/** Corredores de una reserva que se quedan en el páramo: son los únicos que gastan cupo. */
+export function countParamoPeople(
+  registration: Pick<Registration, 'stay'> & { companion: Pick<Person, 'stay'> | null },
+) {
+  return [registration.stay, registration.companion?.stay].filter(
+    (stay) => stay === ESTADIA_CON_CUPO,
+  ).length;
+}
+
+export function countParamoRunners(registrations: Registration[]) {
+  return registrations.reduce((sum, registration) => sum + countParamoPeople(registration), 0);
 }
 
 export function countPendingReviews(registrations: Registration[]) {

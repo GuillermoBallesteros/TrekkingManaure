@@ -1,10 +1,12 @@
-import { CONDICIONES, VERSION_TERMINOS } from '../../../data/reserva/condiciones';
+import { useCondiciones } from '../../../hooks';
 
 /** Texto completo de los términos y condiciones dentro del modal. */
 export default function Condiciones() {
+  const view = useCondiciones();
+
   return (
     <div className="condiciones">
-      {CONDICIONES.map((seccion) => (
+      {view.secciones.map((seccion) => (
         <section key={seccion.titulo}>
           <h4>{seccion.titulo}</h4>
           {seccion.parrafos.map((parrafo) => (
@@ -12,7 +14,7 @@ export default function Condiciones() {
           ))}
         </section>
       ))}
-      <p className="condiciones__version">Versión {VERSION_TERMINOS}</p>
+      <p className="condiciones__version">Versión {view.version}</p>
     </div>
   );
 }

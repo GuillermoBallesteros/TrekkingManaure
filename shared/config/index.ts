@@ -7,11 +7,11 @@ export const evento = {
   distanciaKm: 13,
   encuentro: 'Restaurante El Sabor, Villa Adelaida',
   llegada: 'Páramo',
-  // Último día para pagar saldos: 14 días antes del primer día del evento.
+  // Fecha de cierre por defecto: último día para inscribirse y para pagar saldos. La
+  // organización la cambia desde el panel (Gestión de cupos); esta es solo la inicial.
   fechaLimitePago: '2026-11-09',
   fechaAperturaInscripciones: '2026-10-28',
   fechasTexto: '15 y 16 de noviembre',
-  plazoTexto: '9 de noviembre de 2026',
 } as const;
 
 // El HTML adjunto es la referencia para estos valores de la primera versión visual.
@@ -29,10 +29,10 @@ export const precios = {
   hotelNoche: 45000,
 } as const;
 
+// Cupos del páramo: solo los ocupan quienes se quedan a dormir allá. La organización cambia
+// la cantidad desde el panel; este es el valor inicial.
 export const cupos = {
   iniciales: 60,
-  ampliacion: 10,
-  maximo: 70,
 } as const;
 
 export const contacto = {

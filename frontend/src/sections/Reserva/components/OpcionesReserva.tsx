@@ -12,6 +12,7 @@ type Props = {
   onHotel: (cambios: Partial<HotelFormulario>) => void;
   hotelCotizable: PreEventHotel | null;
   today: string;
+  paramoAgotado: boolean;
 };
 
 export default function OpcionesReserva(props: Props) {
@@ -25,13 +26,25 @@ export default function OpcionesReserva(props: Props) {
           <span className="form-block__n">3</span>
           <div>
             <h3>Opción de estadía</h3>
-            <small>Elige dónde pasas la noche.</small>
+            <small>Elige dónde pasas la noche. Solo el páramo tiene cupos limitados.</small>
           </div>
         </div>
+        {view.avisoParamo && (
+          <p className="form-aviso" role="status">
+            {view.avisoParamo}
+          </p>
+        )}
         <div className="choice-grid" role="radiogroup" aria-label="Opción de estadía">
           {view.stays.map((option) => (
             <label className="choice" key={option.value}>
-              <input type="radio" name="estadia" value={option.value} required {...option.input} />
+              <input
+                type="radio"
+                name="estadia"
+                value={option.value}
+                required
+                disabled={option.disabled}
+                {...option.input}
+              />
               <span className="choice__dot" />
               <span className="choice__text">
                 <strong>{option.title}</strong>

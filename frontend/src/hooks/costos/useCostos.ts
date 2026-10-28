@@ -1,4 +1,5 @@
 import { precios } from '../../../../shared/config';
+import { useCierre } from '../../../../shared/reservas';
 import { formatMoney } from '../../../../shared/utils/format';
 
 /** Sección "Costos y pagos": valores del evento y pasos para pagar. */
@@ -6,8 +7,10 @@ export function useCostos() {
   const total = formatMoney(precios.total);
   const inscripcion = formatMoney(precios.inscripcion);
   const kit = formatMoney(precios.kitCompleto);
+  const { plazoTexto } = useCierre();
 
   return {
+    plazo: plazoTexto,
     total,
     inscripcion,
     kit,

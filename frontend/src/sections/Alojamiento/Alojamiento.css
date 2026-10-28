@@ -1,6 +1,6 @@
 .stay-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.2rem;
 }
 .stay {
@@ -38,6 +38,15 @@
   height: 280px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(232, 88, 28, 0.25), transparent 70%);
+}
+.stay--casa::after {
+  content: '';
+  position: absolute;
+  inset: auto -20% -40% auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(62, 122, 43, 0.3), transparent 70%);
 }
 .stay__foto {
   display: block;
@@ -102,4 +111,9 @@
   border-radius: 999px;
   padding: 0.3rem 0.65rem;
   background: rgba(3, 27, 22, 0.7);
+}
+
+.stay__agotado {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

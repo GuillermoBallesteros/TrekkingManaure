@@ -1,5 +1,3 @@
-import { evento } from '../../../../shared/config';
-
 type DiaCalendario = { iso: string; day: number };
 
 type MesCalendario = {
@@ -10,9 +8,9 @@ type MesCalendario = {
   days: DiaCalendario[];
 };
 
-/** Meses (año, mes) entre el primer día elegible y la fecha límite de pago, ambos inclusive. */
-function monthsInRange(first: string): Array<[number, number]> {
-  const [limitYear, limitMonth] = evento.fechaLimitePago.split('-').map(Number);
+/** Meses (año, mes) entre el primer día elegible y la fecha de cierre, ambos inclusive. */
+function monthsInRange(first: string, limit: string): Array<[number, number]> {
+  const [limitYear, limitMonth] = limit.split('-').map(Number);
   let [year, month] = first.split('-').map(Number);
   const months: Array<[number, number]> = [];
   while (year < limitYear || (year === limitYear && month <= limitMonth)) {
@@ -30,8 +28,8 @@ function isoDate(year: number, month: number, day: number): string {
   return year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
 }
 
-/** Un mes del calendario con sus días elegibles, desde `first` hasta la fecha límite de pago. */
-function buildMonth(year: number, month: number, first: string): MesCalendario {
+/** Un mes del calendario con sus días elegibles, desde `first` hasta la fecha de cierre. */
+function buildMonth(year: number, month: number, first: string, limit: string): MesCalendario {
   const label = new Intl.DateTimeFormat('es-CO', {
     month: 'long',
     year: 'numeric',
@@ -45,7 +43,7 @@ function buildMonth(year: number, month: number, first: string): MesCalendario {
 
   for (let day = firstShown; day <= daysInMonth; day += 1) {
     const iso = isoDate(year, month, day);
-    if (iso > evento.fechaLimitePago) break;
+    if (iso > limit) break;
     days.push({ iso, day });
   }
 
@@ -57,7 +55,7 @@ function buildMonth(year: number, month: number, first: string): MesCalendario {
   };
 }
 
-/** Meses que muestra el calendario a partir del primer día elegible. */
-export function buildMonths(first: string): MesCalendario[] {
-  return monthsInRange(first).map(([year, month]) => buildMonth(year, month, first));
+/** Meses que muestra el calendario desde el primer día elegible hasta la fecha de cierre. */
+export function buildMonths(first: string, limit: string): MesCalendario[] {
+  return monthsInRange(first, limit).map(([year, month]) => buildMonth(year, month, first, limit));
 }

@@ -1,5 +1,4 @@
 import Icon from '../../../../../shared/components/Icon';
-import { evento } from '../../../../../shared/config';
 import { useResumenReserva } from '../../../hooks';
 import type { Cotizacion, Estadia } from '../../../types/reserva';
 import './ResumenReserva.css';
@@ -63,8 +62,8 @@ export default function ResumenReserva(props: Props) {
         <Icon name="info" />
         <span>
           El pago es por llave Bre-B. Al registrar tu reserva recibes un código; la organización
-          confirma tu cupo cuando verifica el pago. El restante se paga a más tardar el{' '}
-          {evento.plazoTexto}.
+          confirma tu cupo cuando verifica el pago. El restante se paga a más tardar el {view.plazo}
+          .
         </span>
       </p>
       <button className="btn btn--gold btn--block" type="button" onClick={view.focusForm}>

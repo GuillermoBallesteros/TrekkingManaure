@@ -198,3 +198,9 @@
     padding-inline: 18px;
   }
 }
+
+.admin-settings__sub {
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed rgba(253, 248, 223, 0.12);
+}

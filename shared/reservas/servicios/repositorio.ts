@@ -1,4 +1,4 @@
-import { cupos } from '../../config';
+import { cupos, evento } from '../../config';
 import type { ReservasState } from '../tipos';
 
 /**
@@ -27,8 +27,16 @@ export function initialState(): ReservasState {
     version: 2,
     registrations: [],
     capacity: cupos.iniciales,
+    fechaCierre: evento.fechaLimitePago,
     counters: { registration: 0, payment: 0 },
   };
+}
+
+/** Estados guardados antes de que existiera la fecha de cierre: se completan sin perder nada. */
+function withDefaults(state: ReservasState): ReservasState {
+  return typeof state.fechaCierre === 'string'
+    ? state
+    : { ...state, fechaCierre: evento.fechaLimitePago };
 }
 
 function isState(value: unknown): value is ReservasState {
@@ -47,7 +55,7 @@ function isState(value: unknown): value is ReservasState {
 function parse(raw: string): ReservasState | null {
   try {
     const value: unknown = JSON.parse(raw);
-    return isState(value) ? value : null;
+    return isState(value) ? withDefaults(value) : null;
   } catch {
     return null;
   }

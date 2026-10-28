@@ -12,7 +12,19 @@ export const OPCIONES_ESTADIA: readonly { value: Stay; title: string; text: stri
     title: 'Hotel en Manaure',
     text: 'Subes al páramo, cumples el recorrido y regresas a dormir.',
   },
+  {
+    value: 'Regreso a casa',
+    title: 'Regreso a casa',
+    text: 'Vives toda la experiencia y regresas directo a tu casa, sin hospedaje.',
+  },
 ];
+
+/** Aviso cuando ya no quedan cupos en el páramo: el resto de la reserva sigue abierta. */
+export const AVISO_PARAMO_AGOTADO =
+  'Los cupos del páramo están agotados. Puedes inscribirte igual eligiendo hotel en Manaure o regreso a casa.';
+
+/** Texto de la opción del páramo cuando no tiene cupo. */
+export const PARAMO_SIN_CUPO = 'Sin cupos disponibles en el páramo.';
 
 /** `conAcompanante`: la opción solo aparece si la reserva lleva acompañante. */
 export const OPCIONES_EXTRA: readonly {
