@@ -1,5 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { evento } from '../../../../shared/config';
 import { formatLongDate } from '../../../../shared/utils/format';
+import { classNames } from '../../utils/comun/classNames';
 import { plural } from '../../utils/comun/texto';
 import {
   capacityRange,
@@ -85,6 +87,12 @@ export function useCupos() {
       change: (event: ChangeEvent<HTMLInputElement>) => setFecha(event.target.value),
       apply: applyFecha,
       saving: fechaSaving,
+      saveLabel: fechaSaving ? 'Guardando…' : 'Guardar fecha',
+      limitText:
+        'Entre la apertura de inscripciones (' +
+        formatLongDate(evento.fechaAperturaInscripciones) +
+        ') y la víspera del evento.',
+      estadoClass: classNames('admin-pill', today > fechaCierre && 'admin-pill--warm'),
       feedback: fechaFeedback,
       error: fechaError,
       estado:

@@ -53,38 +53,113 @@
 }
 
 .admin-settings {
-  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
-.admin-settings h2 {
-  font-size: 1.8rem;
-  margin-bottom: 13px;
+.admin-setting {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 26px 28px;
 }
 
-.admin-settings > p {
-  font-size: 0.75rem;
+.admin-setting + .admin-setting {
+  border-top: 1px solid rgba(253, 248, 223, 0.09);
+}
+
+.admin-setting__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.admin-setting__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: rgba(242, 193, 78, 0.07);
+  color: var(--dorado);
+}
+
+.admin-setting__icon .ico {
+  width: 18px;
+  height: 18px;
+}
+
+.admin-setting__head h2 {
+  font-size: 1.45rem;
+  line-height: 1.1;
+  margin: 0 0 6px;
+}
+
+.admin-setting__head p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.6;
   color: rgba(253, 248, 223, 0.6);
 }
 
-.admin-settings form {
+.admin-setting__form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 26px;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
 }
 
-.admin-settings label {
-  font-size: 0.7rem;
+.admin-setting__form label {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(253, 248, 223, 0.62);
 }
 
-.admin-settings form small {
+.admin-setting__row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.admin-setting__row input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.admin-setting__row input:focus {
+  outline: 0;
+  border-color: var(--dorado);
+  box-shadow: 0 0 0 3px rgba(242, 193, 78, 0.14);
+}
+
+.admin-setting__btn {
+  flex: none;
+  min-width: 168px;
+  padding: 0 20px;
   font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+.admin-setting__form small {
+  font-size: 0.64rem;
+  line-height: 1.5;
   color: var(--tierra);
 }
 
-.admin-settings .btn {
-  font-size: 0.65rem;
-  margin-top: 8px;
+.admin-setting__msg {
+  margin: -4px 0 0 !important;
 }
 
 .admin-kits {
@@ -187,8 +262,14 @@
   .admin-capacity-number > span {
     font-size: 0.72rem;
   }
-  .admin-settings {
-    padding: 26px 22px;
+  .admin-setting {
+    padding: 24px 20px;
+  }
+  .admin-setting__row {
+    flex-direction: column;
+  }
+  .admin-setting__btn {
+    padding: 13px 20px;
   }
   .admin-kit-sizes {
     padding-inline: 18px;

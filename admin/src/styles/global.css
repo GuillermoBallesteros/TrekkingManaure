@@ -119,7 +119,8 @@
 }
 
 select,
-input[type='number'] {
+input[type='number'],
+input[type='date'] {
   padding: 11px 13px;
   border: 1px solid rgba(253, 248, 223, 0.15);
   border-radius: 10px;
